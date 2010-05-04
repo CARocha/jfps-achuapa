@@ -1,0 +1,26 @@
+import os
+
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__)) 
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    #('nombre', 'nombre@dominio.com'),
+)
+
+MANAGERS = ADMINS
+
+TIME_ZONE = 'America/Managua'
+
+LANGUAGE_CODE = 'es-ni'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'BD',                      
+        'USER': 'nombre',                     
+        'PASSWORD': 'contraseña',                  
+        'HOST': '',                      
+        'PORT': '',                 
+    }
+}
