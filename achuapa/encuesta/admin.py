@@ -5,12 +5,10 @@ from django.contrib.contenttypes import generic
    
 class DatosInline(generic.GenericStackedInline):
 	model = DatosGenerales
-	extra = 1
 	max_num = 1
 	
 class OrganizacionInline(generic.GenericStackedInline):
     model = Organizacion
-    extra = 1
     max_num = 1
     
 class MigracionInline(generic.GenericTabularInline):
