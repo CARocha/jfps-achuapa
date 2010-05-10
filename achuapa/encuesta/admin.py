@@ -5,26 +5,32 @@ from django.contrib.contenttypes import generic
    
 class DatosInline(generic.GenericStackedInline):
 	model = DatosGenerales
+	extra = 1
 	max_num = 1
 	
 class OrganizacionInline(generic.GenericStackedInline):
     model = Organizacion
+    extra = 1
     max_num = 1
     
 class MigracionInline(generic.GenericTabularInline):
     model = Migracion
+    extra = 1
     max_num = 6
     
 class TenenciaInline(generic.GenericTabularInline):
     model = Tenencia
+    extra = 1
     max_num = 1
     
 class TierraInline(generic.GenericTabularInline):
     model = Tierra
+    extra = 1
     max_num = 7
     
 class ExistenciaArbolesInline(generic.GenericTabularInline):
     model = ExistenciaArboles
+    extra = 1
     max_num = 1
     
 class ReforestacionInline(generic.GenericTabularInline):
@@ -34,58 +40,72 @@ class ReforestacionInline(generic.GenericTabularInline):
     
 class FincaProduccionInline(generic.GenericTabularInline):
     model = FincaProduccion
-    max_num = 12
+    extra = 1
+    max_num = None
     
 class CultivosFincaInline(generic.GenericTabularInline):
     model = CultivosFinca
-    max_num = 11
+    extra = 1
+    max_num = None
 
 class IngresoFamiliarInline(generic.GenericTabularInline):
     model = IngresoFamiliar
-    max_num = 29
+    extra = 1
+    max_num = None
 
 class OtrosIngresosInline(generic.GenericTabularInline):
     model = OtrosIngresos
+    extra = 1
     max_num = 4
     
 class TipoCasaInline(generic.GenericTabularInline):
     model = TipoCasa
+    extra = 1
     max_num = 1
     
 class DetalleCasaInline(generic.GenericTabularInline):
     model = DetalleCasa
+    extra = 1
     max_num = 1
     
 class PropiedadesInline(generic.GenericTabularInline):
     model = Propiedades
+    extra = 1
     max_num = 8
     
 class HerramientasInline(generic.GenericTabularInline):
     model = Herramientas
+    extra = 1
     max_num = 9
     
 class TransporteInline(generic.GenericTabularInline):
     model = Transporte
+    extra = 1
     max_num = 6
     
 class AhorroInline(generic.GenericTabularInline):
     model = Ahorro
+    extra = 1
     max_num = 6
     
 class CreditoInline(generic.GenericTabularInline):
     model = Credito
+    extra = 1
     max_num = 1
     
 class EducacionInline(generic.GenericTabularInline):
     model = Educacion
+    extra = 1
     max_num = 6
     
 class NoEducacionInline(generic.GenericTabularInline):
     model = NoEducacion
+    extra = 1
     max_num = 4
     
 class SaludInline(generic.GenericTabularInline):
     model = Salud
+    extra = 1
     max_num = 6
     
 class AguaInline(generic.GenericTabularInline):
@@ -95,7 +115,8 @@ class AguaInline(generic.GenericTabularInline):
     
 class SeguridadInline(generic.GenericTabularInline):
     model = Seguridad
-    max_num = 27
+    extra = 1
+    max_num = None
     
 class EncuestaAdmin(admin.ModelAdmin):
     save_on_top = True
