@@ -6,6 +6,18 @@
     <style type="text/css">
         @import url({{MEDIA_URL}}css/estilo.css);
     </style>
+    <link href="{{MEDIA_URL}}css/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="{{MEDIA_URL}}js/easySlider1.7.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){	
+			$("#slider").easySlider({
+				auto: true, 
+				continuous: true,
+				numeric: true
+			});
+		});	
+	</script>
 
     {%block extra_js%}{%endblock%}
 			
@@ -14,38 +26,39 @@
   <!-- Comienza el header -->
         <div id="header">
            <div id="header_contenedor">
-			   <div id="logo" class="izq">Sistema de información JFPS</div>
+			   <div id="logo" class="izq"> <h1>Sistema de información <span>JFPS</span></h1>
+			   <div id="coop"><h2>Cooperativa Juan Francisco Paz Silva</h2> </div>
 			   <div id="imagen_header" class="der"></div>
 			   <div class="separador"></div>
-<!--
-			   <div id="menu" class="izq">
-			   <ul>
-					<li>Inicio</li>
-				</ul>
-			   </div>
-
--->
-
-			   <div id="login" class="der">
-			       
-			   </div>
            </div>
+           <!-- comienza Menu --> 
+           <ul id="nav">
+                <li><a class="selected" href="/">Inicio</a></li>
+                <li><a href="/admin">Administración</a></li>
+                <li><a href="#">Ayuda</a></li>
+            </ul>
+           <!-- comienza Menu -->
         </div>
         <!-- Termina el header -->
         <!-- comienza algo de pimp -->
-        <div class="pimp"></div>
+<div id="container">
+    <div id="content">
+        <div id="slider">
+			<ul>				
+				<li><a ><img src="{{MEDIA_URL}}imagen/1img.png" alt="jfps foto" /></a></li>
+				<li><a ><img src="{{MEDIA_URL}}imagen/2img.png" alt="jfps foto" /></a></li>
+				<li><a ><img src="{{MEDIA_URL}}imagen/3img.png" alt="jfps foto" /></a></li>
+				<li><a ><img src="{{MEDIA_URL}}imagen/4img.png" alt="jfps foto" /></a></li>
+				<li><a ><img src="{{MEDIA_URL}}imagen/5img.png" alt="jfps foto" /></a></li>	
+			</ul>
+		</div>
+	</div>
+</div>
     <div id="contenedor" class="centro">
         
       
           <!-- Comienza Contenido-->
         <div id="contenido">
-               <!-- Comienza Columna izquierda-->
-               <div id="colum_izq" class="izq">
-                  <div class="enlace_sidebar icono_filtro" id="pintar"><a href="/admin">Administración</div>
-                  <div class="enlace_sidebar icono_ayuda">Ayuda</div>
-
-               </div>
-             <!-- termina Columna izquierda--> 
              
              <!-- Comienza Columna derecha--> 
 
