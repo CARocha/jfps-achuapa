@@ -1,11 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<html lang="es">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>SISTEMA DE INFORMACIÓN DE JFPS {%block title%}{%endblock%}</title>
-    <style type="text/css">
-        @import url({{MEDIA_URL}}css/estilo.css);
-    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{%block title%}SISTEMA DE INFORMACIÓN DE JFPS{%endblock%}</title>
+    <link href="{{ MEDIA_URL }}css/estilo.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/screen.css" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/easySlider1.7.js"></script>
@@ -18,75 +16,39 @@
 			});
 		});	
 	</script>
-
-    {%block extra_js%}{%endblock%}
-			
+    {%block extra_js%}{%endblock%}	
 </head>
 <body>
   <!-- Comienza el header -->
-        <div id="header">
-           <div id="header_contenedor">
-			   <div id="logo" class="izq"> <h1>Sistema de información <span>JFPS</span></h1>
+<div id="header">
+			   <h1>Sistema de información <span>JFPS</span></h1>
 			   <div id="coop"><h2>Cooperativa Juan Francisco Paz Silva</h2> </div>
-			   <div id="imagen_header" class="der"></div>
-			   <div class="separador"></div>
-           </div>
            <!-- comienza Menu --> 
-           <ul id="nav">
+            <ul id="nav">
                 <li><a class="selected" href="/">Inicio</a></li>
                 <li><a href="/admin">Administración</a></li>
                 <li><a href="#">Ayuda</a></li>
-            </ul>
-           <!-- comienza Menu -->
-        </div>
-        <!-- Termina el header -->
+            </ul><!-- termina Menu -->
+</div> <!-- Termina el header -->
         <!-- comienza algo de pimp -->
-<div id="container">
-    <div id="content">
-        <div id="slider">
-			<ul>				
-				<li><a ><img src="{{MEDIA_URL}}imagen/1img.png" alt="jfps foto" /></a></li>
-				<li><a ><img src="{{MEDIA_URL}}imagen/2img.png" alt="jfps foto" /></a></li>
-				<li><a ><img src="{{MEDIA_URL}}imagen/3img.png" alt="jfps foto" /></a></li>
-				<li><a ><img src="{{MEDIA_URL}}imagen/4img.png" alt="jfps foto" /></a></li>
-				<li><a ><img src="{{MEDIA_URL}}imagen/5img.png" alt="jfps foto" /></a></li>	
-			</ul>
-		</div>
-	</div>
-</div>
-    <div id="contenedor" class="centro">
+        {% block pimp %} {% endblock %}
         
-      
-          <!-- Comienza Contenido-->
-        <div id="contenido">
-             
+<div id="contenedor" class="centro">  
+    <!-- Comienza Contenido-->
+	<div id="contenido">             
              <!-- Comienza Columna derecha--> 
-
-               <div id="colum_der" class="der">
+				<div id="colum_der" class="der">
                    {%block contenido%}{%endblock%}
-                  
-
-	     	   </div>
-	     	 <!-- termina Columna derecha--> 
+                </div><!-- termina Columna derecha--> 
             <div class="separador" ></div>
-            
-         </div>
-            
-        <!-- Termina Contenido-->
-        
-
-        
-    </div>
-    <!-- Termina Contenedor-->
-            <!-- Comienza Footer-->
-        
+	</div><!-- Termina Contenido-->
+</div><!-- Termina Contenedor-->
+        <!-- Comienza Footer-->
         <div id="footer">
              <div id="footer_contenedor" class="centro">
                <div id="logo_footer"></div>
                <div id="creditos">Desarrollado por <a href="http://www.simas.org.ni">SIMAS</a> bajo Django framework</div>
-             
-             </div>
-        </div>
-        <!-- Termina Footer-->
+             </div><!-- termina del footer_contenedor -->
+        </div><!-- Termina Footer-->
 </body>
 </html>

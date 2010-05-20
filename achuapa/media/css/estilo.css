@@ -49,9 +49,9 @@ span {
 
 #coop h2 {
     color: #92b74e;
-    font-size: 17;
-    padding:-28px 5 5 5;
-    margin: -7px 5px 5px 5px;
+    font-size: 17px;
+    padding: 0px 0px 0px 3px;
+    margin: 0px 0px 0px 137px;
     
 }
 
@@ -81,23 +81,56 @@ p {
 
 /* --------------Comienza Header-------------- */
 
-#header{
-  width:100%;
-  height:65px;
-  background-color: #8e451a;
-  background-image: url(../imagen/bg-header.png);
+/*#header{*/
+/*  width:100%;*/
+/*  height:65px;*/
+/*  background-color: #8e451a;*/
+/*  background-image: url(../imagen/bg-header.png);*/
+/*}*/
+#header {
+overflow: hidden;
+height: 60px;
+background-color:#8E451A;
+background-image: url(../imagen/bg-header.png);
+
+}
+#header h1, h2 {
+    margin: 2px 4px 0px 134px;
+    padding: 5px 6px 7px 9px;
+
+}
+#header ul#nav {
+    float: right;
+    font-size: 16px;
+    margin: -17px;
+    padding: 0px;
+}
+#nav li {
+    display: inline;
+    padding-right: 22px;
 }
 
-.pimp {
-    width: 960px;
-    height: 16px;
-    background-image: url(../imagen/bg-footer.png);
-    margin:8pt auto;
-    padding:2pt;
-    border-radius:7px;
-   -moz-border-radius:7px; 
-   -webkit-border-radius:7px;
+#nav a{
+    text-decoration: none;
+    color: #92B74B;
 }
+
+#nav a.selected {
+    color: #fff;
+    background: rgba(146,183,78,0.95);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+
+}
+
+#nav a:hover {
+    color: #fff;
+    background: rgba(146,183,78,0.95);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+
+}
+
 
 #header_contenedor{
   width:960px;
@@ -147,38 +180,17 @@ p {
   -webkit-border-radius:4px; /* Safari y Chrome */ 
   margin-left:7px;
 }
-
-#header_contenedor ul#nav {
-    float: right;
-    font-size: 16px;
-    margin: -36px -482px;
-    padding: 5px 0px;
-}
-#nav li {
-    display: inline;
-    padding-right: 22px;
-}
-
-#nav a{
-    text-decoration: none;
-    color: #92B74B;
+.pimp {
+    width: 960px;
+    height: 16px;
+    background-image: url(../imagen/bg-footer.png);
+    margin:8pt auto;
+    padding:2pt;
+    border-radius:7px;
+   -moz-border-radius:7px; 
+   -webkit-border-radius:7px;
 }
 
-#nav a.selected {
-    color: #fff;
-    background: rgba(146,183,78,0.95);
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-
-}
-
-#nav a:hover {
-    color: #fff;
-    background: rgba(146,183,78,0.95);
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-
-}
 
 
 /* --------------Termina Header-------------- */
@@ -198,7 +210,7 @@ p {
 
 #colum_izq{
   width:140px;
-  margin-rigth:10px;
+  margin-right:10px;
   background:#d9cfbf;
   border-radius:6px;
   -moz-border-radius:6px; /* Firefox */
