@@ -16,9 +16,9 @@ class DatosGenerales(models.Model):
     cedula = models.CharField('Cedula de socio o socia', max_length=50)
     nombre_finca = models.CharField('Nombre de la Finca', max_length=200)
     comunidad = models.ForeignKey(Comunidad)
-    coordenada_utm = models.IntegerField(blank=True, null=True)
-#    coordenada_lt = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
-#    coordenada_lg = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
+#    coordenada_utm = models.IntegerField(blank=True, null=True)
+    coordenada_lt = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
+    coordenada_lg = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Datos Generales"
