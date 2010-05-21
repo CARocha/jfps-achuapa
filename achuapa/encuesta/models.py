@@ -17,6 +17,8 @@ class DatosGenerales(models.Model):
     nombre_finca = models.CharField('Nombre de la Finca', max_length=200)
     comunidad = models.ForeignKey(Comunidad)
     coordenada_utm = models.IntegerField(blank=True, null=True)
+#    coordenada_lt = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
+#    coordenada_lg = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Datos Generales"
@@ -59,7 +61,7 @@ class Organizacion(models.Model):
     hijos_socios = models.IntegerField('Mis Hijos/hijas son socio(as) de la cooperativa', 
                                         choices=CHOICE_OPCION)
     desde_hijo = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
-    beneficio = models.ManyToManyField(Beneficios)
+    beneficio = models.ManyToManyField(Beneficios, verbose_name="Beneficios obtenidos")
     miembro = models.IntegerField('Soy miembro de la Junta Directiva', 
                                    choices=CHOICE_OPCION)
     desde_miembro = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
@@ -68,10 +70,10 @@ class Organizacion(models.Model):
     comision = models.IntegerField('Soy miembro de la comision de trabajo', 
                                     choices=CHOICE_OPCION)
     desde_comision = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
-    cargo = models.IntegerField('He recibido capasitacion para desempeñar mi cargo', 
+    cargo = models.IntegerField('He recibido capacitación para desempeñar mi cargo', 
                                  choices=CHOICE_OPCION)
     desde_cargo = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
-    quiero_miembro_junta = models.ManyToManyField(PorqueMiembro)
+    quiero_miembro_junta = models.ManyToManyField(PorqueMiembro, verbose_name="Quiero ser miembro de junta")
     
     class Meta:
         verbose_name_plural = "Organizacion"   
@@ -378,7 +380,7 @@ class TipoCasa(models.Model):
     techo = models.IntegerField('Techo de la casa', choices=CHOICE_TECHO)
     
     class Meta:
-        verbose_name_plural = "Tipos de Casa"
+        verbose_name_plural = "Tipos de Casas"
     
 class DetalleCasa(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -415,11 +417,11 @@ class Propiedades(models.Model):
     cantidad_equipo = models.IntegerField()
     infraestructura = models.ForeignKey(Infraestructuras) 
     cantidad_infra = models.IntegerField('Cantidad')
-    tipo_equipo = models.IntegerField(choices=CHOICE_EQUIPO)
-    respuesta = models.IntegerField(choices=CHOICE_OPCION)
+    tipo_equipo = models.IntegerField(choices=CHOICE_EQUIPO, null=True, blank=True)
+    respuesta = models.IntegerField(choices=CHOICE_OPCION, null=True, blank=True)
     
     class Meta:
-        verbose_name_plural = "Propiedades"
+        verbose_name_plural = "Equipos"
     def __unicode__(self):
         return self.equipo.nombre
         
@@ -505,8 +507,8 @@ class Credito(models.Model):
     content_object = generic.GenericForeignKey()
     recibe = models.IntegerField('Recibe Crédito', choices= CHOICE_OPCION)
     desde = models.IntegerField('Desde cuando', choices= CHOICE_DESDE)
-    quien_credito = models.ManyToManyField(DaCredito)
-    ocupa_credito = models.ManyToManyField(OcupaCredito)
+    quien_credito = models.ManyToManyField(DaCredito, verbose_name="De quien recibe credito")
+    ocupa_credito = models.ManyToManyField(OcupaCredito, verbose_name="Para que ocupa el credito")
     satisfaccion = models.IntegerField('Satisfacción de la demanda de crédito', choices= CHOICE_SATISFACCION)
     dia = models.IntegerField('Esta al dia con su Crédito', choices=CHOICE_OPCION)
     
@@ -536,7 +538,7 @@ class Educacion(models.Model):
     tecnico_graduado = models.IntegerField('# Técnica o Universitaria completa') 
     
     class Meta:
-        verbose_name_plural = "Educación"
+        verbose_name_plural = "Servicio - Educación"
 #    def __unicode__(self):
 #        return self.str(sexo_edad)
         
@@ -551,7 +553,7 @@ class NoEducacion(models.Model):
     razon = models.CharField(max_length=200)
     
     class Meta:
-        verbose_name_plural = "Porque No Educación"
+        verbose_name_plural = "Porque No Estudia"
     def __unicode__(self):
         return self.razon
 
@@ -624,7 +626,7 @@ class Seguridad(models.Model):
     consumen_invierno = models.IntegerField('Consumen lo necesario en los meses de invierno', choices=CHOICE_OPCION)
     
     class Meta:
-        verbose_name_plural = "Seguridad"
+        verbose_name_plural = "Seguridad alimentaria"
     def __unicode__(self):
         return self.alimento.nombre
 

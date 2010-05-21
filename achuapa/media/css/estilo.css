@@ -306,6 +306,11 @@ background-image: url(../imagen/bg-header.png);
   margin:5px;
   margin-right:20px;
 }
+.boton_filtro h2{
+    text-align: left;
+    text-decoration: underline;
+    
+}
 
 
 /*#filtros_principales a, a:visited{*/
