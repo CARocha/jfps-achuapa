@@ -1,6 +1,6 @@
 from django.contrib import admin
 from lugar.models import Municipio
-from encuesta.models import DatosGenerales, Organizacion, Migracion, Tenencia, Tierra, ExistenciaArboles, Reforestacion, FincaProduccion, CultivosFinca, IngresoFamiliar, OtrosIngresos, TipoCasa, DetalleCasa, Propiedades, Herramientas, Transporte, Ahorro, Credito, Educacion, NoEducacion, Salud, Agua, Seguridad, Recolector, Beneficios, PorqueMiembro, Maderable, Forrajero, Energetico, Frutal, Actividades, Nativos, NoNativos, UsoTierra, Animales, Producto, Cultivos, Rubros, Fuentes, Equipos, Infraestructuras, NombreHerramienta, NombreTransporte,AhorroPregunta, DaCredito, OcupaCredito, Alimentos, Encuesta
+from encuesta.models import DatosGenerales, Organizacion, Migracion, Tenencia, Tierra, ExistenciaArboles, Reforestacion, FincaProduccion, CultivosFinca, IngresoFamiliar, OtrosIngresos, TipoCasa, DetalleCasa, Propiedades, Herramientas, Transporte, Ahorro, Credito, Educacion, NoEducacion, Salud, Agua, Seguridad, Recolector, Beneficios, PorqueMiembro, Maderable, Forrajero, Energetico, Frutal, Actividades, Nativos, NoNativos, UsoTierra, Animales, Producto, Cultivos, Rubros, Fuentes, Equipos, Infraestructuras, NombreHerramienta, NombreTransporte,AhorroPregunta, DaCredito, OcupaCredito, Alimentos, Piso, Techo, Encuesta
 from django.contrib.contenttypes import generic
    
 class DatosInline(generic.GenericStackedInline):
@@ -153,4 +153,6 @@ admin.site.register(AhorroPregunta)
 admin.site.register(DaCredito)
 admin.site.register(OcupaCredito)
 admin.site.register(Alimentos)
+admin.site.register(Piso)
+admin.site.register(Techo)
 

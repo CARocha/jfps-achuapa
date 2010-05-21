@@ -369,15 +369,24 @@ class OtrosIngresos(models.Model):
 #Indicador de propiedades y bienes
 CHOICE_AMBIENTE = ((1,"1"),(2,"2"),(3,"3"),(4,"4"),(5,"5"))
 CHOICE_TIPO_CASA = ((1,"Madera rolliza"),(2,"Adobe"),(3,"Tabla"),(4,"Minifalda"),(5,"Ladrillo o Bloque"))
-CHOICE_PISO = ((1,"Tierra"),(2,"Ladrillo de barro"),(3,"Embaldosado"),(4,"Cemento fino"),(5,"ceramica"))
-CHOICE_TECHO = ((1,"Plastico"),(2,"Paja"),(3,"Teja de Madera"),(4,"Teja de barro"),(5,"Zinc"))
+class Piso(models.Model):
+    nombre = models.CharField(max_length=100)
+    def __unicode__(self):
+        return self.nombre
+        
+class Techo(models.Model):
+    nombre = models.CharField(max_length=100)
+    def __unicode__(self):
+        return self.nombre
+#CHOICE_PISO = ((1,"Tierra"),(2,"Ladrillo de barro"),(3,"Embaldosado"),(4,"Cemento fino"),(5,"ceramica"))
+#CHOICE_TECHO = ((1,"Plastico"),(2,"Paja"),(3,"Teja de Madera"),(4,"Teja de barro"),(5,"Zinc"))
 class TipoCasa(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
     tipo = models.IntegerField('Tipo de la casa', choices=CHOICE_TIPO_CASA)
-    piso = models.IntegerField('Piso de la casa', choices=CHOICE_PISO)
-    techo = models.IntegerField('Techo de la casa', choices=CHOICE_TECHO)
+    piso = models.ManyToManyField(Piso, verbose_name="Piso")
+    techo = models.ManyToManyField(Techo, verbose_name="Techo")
     
     class Meta:
         verbose_name_plural = "Tipos de Casas"
@@ -668,6 +677,9 @@ class Encuesta(models.Model):
     agua = generic.GenericRelation(Agua)
     seguridad = generic.GenericRelation(Seguridad)
     
+    def __unicode__(self):
+        return self.datos.all()[0].nombre
+        
     def nombre_datos(self):
         return self.datos.all()[0].datos
     def nombre_socios(self):
