@@ -54,26 +54,26 @@ class Organizacion(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
     socio = models.IntegerField('Soy socio o socia', choices=CHOICE_OPCION)
-    desde_socio = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
+    desde_socio = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE,blank=True, null=True)
     socio_cooperativa = models.IntegerField('Mi esposa/esposo es socio(a) de la cooperativa',
                                              choices=CHOICE_OPCION)
-    desde_socio_coop = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
+    desde_socio_coop = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE, blank=True, null=True)
     hijos_socios = models.IntegerField('Mis Hijos/hijas son socio(as) de la cooperativa', 
                                         choices=CHOICE_OPCION)
-    desde_hijo = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
-    beneficio = models.ManyToManyField(Beneficios, verbose_name="Beneficios obtenidos")
+    desde_hijo = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE, blank=True, null=True)
+    beneficio = models.ManyToManyField(Beneficios, verbose_name="Beneficios obtenidos", blank=True, null=True)
     miembro = models.IntegerField('Soy miembro de la Junta Directiva', 
                                    choices=CHOICE_OPCION)
-    desde_miembro = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
+    desde_miembro = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE, blank=True, null=True)
     no_miembro = models.IntegerField('Si no es miembro de ninguna estructura, estaria interesado en asumir un cargo',
                                       choices=CHOICE_OPCION)
     comision = models.IntegerField('Soy miembro de la comision de trabajo', 
                                     choices=CHOICE_OPCION)
-    desde_comision = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
+    desde_comision = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE, blank=True, null=True)
     cargo = models.IntegerField('He recibido capacitación para desempeñar mi cargo', 
                                  choices=CHOICE_OPCION)
-    desde_cargo = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE)
-    quiero_miembro_junta = models.ManyToManyField(PorqueMiembro, verbose_name="Quiero ser miembro de junta")
+    desde_cargo = models.IntegerField('Desde Cuando', choices=CHOICE_DESDE,blank=True, null=True)
+    quiero_miembro_junta = models.ManyToManyField(PorqueMiembro, verbose_name="Quiero ser miembro de junta", blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Organizacion"   
@@ -186,13 +186,13 @@ class ExistenciaArboles(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
-    maderable = models.ManyToManyField(Maderable)
+    maderable = models.ManyToManyField(Maderable, blank=True, null=True)
     cant_maderable = models.IntegerField()
-    forrajero = models.ManyToManyField(Forrajero)
+    forrajero = models.ManyToManyField(Forrajero, blank=True, null=True)
     cant_forrajero = models.IntegerField()
-    energetico = models.ManyToManyField(Energetico)
+    energetico = models.ManyToManyField(Energetico, blank=True, null=True)
     cant_energetico = models.IntegerField()
-    frutal = models.ManyToManyField(Frutal)
+    frutal = models.ManyToManyField(Frutal, blank=True, null=True)
     cant_frutal = models.IntegerField()
     
     class Meta:
@@ -233,8 +233,8 @@ class Reforestacion(models.Model):
     reforestacion = models.ForeignKey(Actividades)
     cantidad_nativos = models.IntegerField()
     cantidad_nonativos = models.IntegerField()
-    nativos = models.ManyToManyField(Nativos)
-    nonativos = models.ManyToManyField(NoNativos)
+    nativos = models.ManyToManyField(Nativos, blank=True, null=True)
+    nonativos = models.ManyToManyField(NoNativos, blank=True, null=True)
     porciento_nativo = models.IntegerField()
     porciento_nonativo = models.IntegerField()
     
@@ -422,10 +422,10 @@ class Propiedades(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
-    equipo = models.ForeignKey(Equipos)
-    cantidad_equipo = models.IntegerField()
-    infraestructura = models.ForeignKey(Infraestructuras) 
-    cantidad_infra = models.IntegerField('Cantidad')
+    equipo = models.ForeignKey(Equipos, blank=True, null=True)
+    cantidad_equipo = models.IntegerField(blank=True, null=True)
+    infraestructura = models.ForeignKey(Infraestructuras, blank=True, null=True) 
+    cantidad_infra = models.IntegerField('Cantidad', blank=True, null=True)
     tipo_equipo = models.IntegerField(choices=CHOICE_EQUIPO, null=True, blank=True)
     respuesta = models.IntegerField(choices=CHOICE_OPCION, null=True, blank=True)
     
@@ -515,11 +515,11 @@ class Credito(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
     recibe = models.IntegerField('Recibe Crédito', choices= CHOICE_OPCION)
-    desde = models.IntegerField('Desde cuando', choices= CHOICE_DESDE)
+    desde = models.IntegerField('Desde cuando', choices= CHOICE_DESDE, blank=True, null=True)
     quien_credito = models.ManyToManyField(DaCredito, verbose_name="De quien recibe credito")
     ocupa_credito = models.ManyToManyField(OcupaCredito, verbose_name="Para que ocupa el credito")
-    satisfaccion = models.IntegerField('Satisfacción de la demanda de crédito', choices= CHOICE_SATISFACCION)
-    dia = models.IntegerField('Esta al dia con su Crédito', choices=CHOICE_OPCION)
+    satisfaccion = models.IntegerField('Satisfacción de la demanda de crédito', choices= CHOICE_SATISFACCION, blank=True, null=True)
+    dia = models.IntegerField('Esta al dia con su Crédito', choices=CHOICE_OPCION, blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Crédito"
@@ -578,11 +578,11 @@ class Salud(models.Model):
     buena_salud = models.IntegerField('# Tiene buena salud')
     delicada_salud = models.IntegerField('# Tiene salud delicada')
     cronica = models.IntegerField('# Tiene enfermedad cronica')
-    centro = models.IntegerField('Visita centro de salud', choices=CHOICE_OPCION)
-    medico = models.IntegerField('Visita medico privado', choices=CHOICE_OPCION)
-    clinica = models.IntegerField('Visita clinica de cooperativa', choices=CHOICE_OPCION)
+    centro = models.IntegerField('Visita centro de salud', choices=CHOICE_OPCION, blank=True, null=True)
+    medico = models.IntegerField('Visita medico privado', choices=CHOICE_OPCION, blank=True, null=True)
+    clinica = models.IntegerField('Visita clinica de cooperativa', choices=CHOICE_OPCION, blank=True, null=True)
     nologra = models.IntegerField('# veces en año necesitaban algun servicio de salud y no lograron optenerlo')
-    frecuencia = models.IntegerField('Con que frecuencia vista la medico', choices= CHOICE_SALUD)
+    frecuencia = models.IntegerField('Con que frecuencia vista la medico', choices= CHOICE_SALUD, blank=True, null=True)
     
     class Meta:
         verbose_name_plural = "Salud"
