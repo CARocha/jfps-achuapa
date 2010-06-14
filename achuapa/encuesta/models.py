@@ -431,8 +431,8 @@ class Propiedades(models.Model):
     
     class Meta:
         verbose_name_plural = "Equipos"
-    def __unicode__(self):
-        return self.equipo.nombre
+#    def __unicode__(self):
+#        return self.equipo.nombre
         
 class NombreHerramienta(models.Model):
     nombre = models.CharField(max_length=100)

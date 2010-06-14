@@ -1,1 +1,14 @@
 Proyecto Achuapa sobre la cooperativa Juan Franciso Paz Silva
+
+- hacer algunos alter table:
+
+alter table encuesta_organizacion modify desde_hijo int(11) null;
+alter table encuesta_organizacion modify desde_socio int(11) null;
+alter table encuesta_organizacion modify desde_socio_coop int(11) null;
+alter table encuesta_organizacion modify desde_miembro int(11) null;
+alter table encuesta_organizacion modify desde_comision int(11) null;
+alter table encuesta_organizacion modify desde_cargo int(11) null;
+alter table encuesta_propiedades modify infraestructura_id int(11) null;
+alter table encuesta_propiedades modify cantidad_infra int(11) null;
+alter table encuesta_propiedades modify equipo_id int(11) null;
+alter table encuesta_propiedades modify cantidad_equipo int(11) null;
