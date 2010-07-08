@@ -6,6 +6,13 @@ from django.contrib.contenttypes.models import ContentType
 
 # Esta parte es la de datos generales de las encuestas.
 
+CHOICE_SEX = ((1,'Hombre'),(2,'Mujer'))
+
+class Cooperativa(models.Model):
+    nombre = models.CharField(max_length=200)
+    def __unicode__(self):
+        return self.nombre
+
 class DatosGenerales(models.Model):
     ''' Datos generales para los encuestados de la jfsp
     '''
@@ -13,10 +20,11 @@ class DatosGenerales(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
     nombre = models.CharField('Nombre de socio o socia', max_length=200)
+    sexo = models.IntegerField('Sexo del Socio/a',choices=CHOICE_SEX, null=True, blank=True)
+    coop = models.ForeignKey('Cooperativa a la que pertenece el socio/a', Cooperativa, null=True, blank=True)
     cedula = models.CharField('Cedula de socio o socia', max_length=50)
     nombre_finca = models.CharField('Nombre de la Finca', max_length=200)
     comunidad = models.ForeignKey(Comunidad)
-#    coordenada_utm = models.IntegerField(blank=True, null=True)
     coordenada_lt = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
     coordenada_lg = models.DecimalField(max_digits=24, decimal_places=16, blank=True, null=True)
     

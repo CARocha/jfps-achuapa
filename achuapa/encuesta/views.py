@@ -5,3 +5,9 @@ from django.shortcuts import render_to_response, get_object_or_404, get_list_or_
 
 def index(request):
 	return render_to_response('index.html',context_instance=RequestContext(request))
+	
+def inicio(request):
+    if request.method = 'POST':
+        form = AchuapaForm(request.POST)
+        if form.is_valid():
+            
