@@ -5,4 +5,4 @@ def session_required(f):
         if 'activo' not in request.session:
             return HttpResponseRedirect('/')
         return f(request)
-return check_session
+    return check_session

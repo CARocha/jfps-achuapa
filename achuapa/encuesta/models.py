@@ -21,7 +21,7 @@ class DatosGenerales(models.Model):
     content_object = generic.GenericForeignKey()
     nombre = models.CharField('Nombre de socio o socia', max_length=200)
     sexo = models.IntegerField('Sexo del Socio/a',choices=CHOICE_SEX, null=True, blank=True)
-    coop = models.ForeignKey('Cooperativa a la que pertenece el socio/a', Cooperativa, null=True, blank=True)
+    cooperativa = models.ForeignKey(Cooperativa, null=True, blank=True)
     cedula = models.CharField('Cedula de socio o socia', max_length=50)
     nombre_finca = models.CharField('Nombre de la Finca', max_length=200)
     comunidad = models.ForeignKey(Comunidad)
