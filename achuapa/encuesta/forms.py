@@ -10,10 +10,10 @@ ANOS_CHOICES = ((2010,'2010'),(2011,'2011'),(2012,'2012'),(2013,'2013'),(2014,'2
 class AchuapaForm(forms.Form):
     cooperativa = forms.ModelChoiceField(required = False, 
             queryset=Cooperativa.objects.all())
-    ano = forms.ChoiceField(choices=ANOS_CHOICES)
+    fecha = forms.ChoiceField(choices=ANOS_CHOICES)
     departamento = forms.ModelChoiceField(queryset=Departamento.objects.all(), 
             required=False, empty_label="Todos los Departamento")
     municipio = forms.CharField(widget = forms.Select, required=False)
     comunidad = forms.CharField(widget = forms.Select, required=False)
-#    socio = forms.CharField(widget = forms.Select, required=False)
+    socio = forms.CharField(widget = forms.Select, required=False)
 #    dueno = forms.CharField('Dueño', widget = forms.select, required=False)

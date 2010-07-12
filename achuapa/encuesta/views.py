@@ -39,7 +39,7 @@ def _queryset_filtrado(request):
         return Encuesta.objects.filter(**params)
 
 def index(request):
-	return render_to_response('index.html',context_instance=RequestContext(request))
+	return render_to_response('base.html',context_instance=RequestContext(request))
 	
 def inicio(request):
     if request.method == 'POST':
@@ -127,7 +127,7 @@ def seguridad_alimentaria(request):
     '''Seguridad Alimentaria'''
     pass
     
-# Vistas para obtener los municipios, comunidades etc..
+# Vistas para obtener los municipios, comunidades, socio, etc..
 
 def get_municipios(request, departamento):
     municipios = Municipio.objects.filter(departamento = departamento)
@@ -137,4 +137,9 @@ def get_municipios(request, departamento):
 def get_comunidad(request, municipio):
     comunidades = Comunidad.objects.filter(municipio = municipio )
     lista = [(comunidad.id, comunidad.nombre) for comunidad in comunidades]
+    return HttpResponse(simplejson.dumps(lista), mimetype='application/javascript')
+    
+def get_socio(request, comunidad):
+    socios = DatosGenerales.objects.filter(comunidad = comunidad )
+    lista = [(socio.id, socio.nombre) for socio in socios]
     return HttpResponse(simplejson.dumps(lista), mimetype='application/javascript')
