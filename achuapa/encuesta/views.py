@@ -8,15 +8,17 @@ from django.utils import simplejson
 from forms import *
 from django.views.generic.simple import direct_to_template
 from lugar.models import *
+from django.db.models import Sum, Count, Avg
+from decimal import Decimal
 
 def _queryset_filtrado(request):
     '''metodo para obtener el queryset de encuesta 
     segun los filtros del formulario que son pasados
     por la variable de sesion'''
-    fecha = date(int(request.session['ano']), 1, 1)
+    fecha = date(int(request.session['fecha']), 1, 1)
     #diccionario de parametros del queryset
     params = {}
-    if request.session['ano']:
+    if request.session['fecha']:
         params['fecha__gt'] = fecha 
         if request.session['cooperativa']:
             params['cooperativa'] = request.session['cooperativa']
@@ -84,8 +86,9 @@ def inicio(request):
 def familia(request):
     '''Tabla de familias(migracion)'''
     a = _queryset_filtrado
-    socios = a.filter(migracion__edades=1).count()
-    return render_to_response('achuapa/familia.html',{'socios':socios})
+    print a
+    #prueba = a.filter(migracion__edades=1).count()
+    return render_to_response('achuapa/familia.html',{'a':a},context_instance=RequestContext(request))
 
 @session_required
 def organizacion(request):
