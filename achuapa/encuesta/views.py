@@ -4,6 +4,10 @@ from decorators import session_required
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from datetime import date
+from django.utils import simplejson
+from forms import *
+from django.views.generic.simple import direct_to_template
+from lugar.models import *
 
 def _queryset_filtrado(request):
     '''metodo para obtener el queryset de encuesta 
@@ -15,7 +19,7 @@ def _queryset_filtrado(request):
     if request.session['ano']:
         params['fecha__gt'] = fecha 
         if request.session['cooperativa']:
-            params['coop'] = request.session['cooperativa']
+            params['cooperativa'] = request.session['cooperativa']
 
         if request.session['departamento']:
             #incluye municipio y comunidad
@@ -39,6 +43,7 @@ def index(request):
 	
 def inicio(request):
     if request.method == 'POST':
+        mensaje = None
         form = AchuapaForm(request.POST)
         if form.is_valid():
             request.session['cooperativa'] = form.cleaned_data['cooperativa']
@@ -49,11 +54,13 @@ def inicio(request):
             request.session['dueno'] = form.cleaned_data['dueno']
             request.session['activo'] = True
         else:
-            render_to_response('encuesta/inicio.html', {'form': form, 
-                'mensaje': 'Formulario con errores'})
+            mensaje = "Formulario con errores"
+            dict = {'form': form, 'mensaje': mensaje,'user': request.user}
+            return direct_to_template(request, 'achuapa/inicio.html', dict)
     else:
         form = AchuapaForm()
-        render_to_response('encuesta/inicio.html', {'form': form})
+        dict = {'form': form,'user': request.user}
+        return direct_to_template(request, 'achuapa/inicio.html', dict)
 
 @session_required
 def familia(request):
@@ -119,3 +126,15 @@ def luz(request):
 def seguridad_alimentaria(request):
     '''Seguridad Alimentaria'''
     pass
+    
+# Vistas para obtener los municipios, comunidades etc..
+
+def get_municipios(request, departamento):
+    municipios = Municipio.objects.filter(departamento = departamento)
+    lista = [(municipio.id, municipio.nombre) for municipio in municipios]
+    return HttpResponse(simplejson.dumps(lista), mimetype='application/javascript')
+
+def get_comunidad(request, municipio):
+    comunidades = Comunidad.objects.filter(municipio = municipio )
+    lista = [(comunidad.id, comunidad.nombre) for comunidad in comunidades]
+    return HttpResponse(simplejson.dumps(lista), mimetype='application/javascript')

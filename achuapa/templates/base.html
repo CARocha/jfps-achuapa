@@ -5,17 +5,8 @@
     <title>{%block title%}SISTEMA DE INFORMACIÓN DE JFPS{%endblock%}</title>
     <link href="{{ MEDIA_URL }}css/estilo.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/screen.css" rel="stylesheet" type="text/css" media="screen" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="{{MEDIA_URL}}js/easySlider1.7.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function(){	
-			$("#slider").easySlider({
-				auto: true, 
-				continuous: true,
-				numeric: true
-			});
-		});	
-	</script>
+    
+	{%block extra_header%}{%endblock%}	
     {%block extra_js%}{%endblock%}	
 </head>
 <body>
