@@ -33,8 +33,8 @@ def _queryset_filtrado(request):
 
         if request.session['socio']:
             params['organizacion__desde__socio'] = request.session['socio']
-        if request.session['duenio']:
-            params['tenencia__dueno'] = request.session['duenio']
+#        if request.session['duenio']:
+#            params['tenencia__dueno'] = request.session['duenio']
 
         return Encuesta.objects.filter(**params)
 
@@ -42,30 +42,50 @@ def index(request):
 	return render_to_response('base.html',context_instance=RequestContext(request))
 	
 def inicio(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         mensaje = None
-        form = AchuapaForm(request.POST)
+        form = AchuapaForm(request.GET)
         if form.is_valid():
-            request.session['cooperativa'] = form.cleaned_data['cooperativa']
-            request.session['ano'] = form.cleaned_data['ano']
+            try:
+                cooperativa = Cooperativa.objects.get(id=form.cleaned_data['cooperativa'])
+            except:
+                cooperativa = None
+            request.session['fecha'] = form.cleaned_data['fecha']
             request.session['departamento'] = form.cleaned_data['departamento']
-            request.session['comunidad'] = form.cleaned_data['comunidad']
-            request.session['socio'] = form.cleaned_data['socio']
-            request.session['dueno'] = form.cleaned_data['dueno']
+            try:
+                municipio = Municipio.objects.get(id=form.cleaned_data['municipio']) 
+            except:
+                municipio = None
+            try:
+                comunidad = Comunidad.objects.get(id=form.cleaned_data['comunidad'])
+                
+            except:
+                comunidad = None
+            try:
+                socio = Datosgenerales.objects.get(id=form.cleaned__data['socio'])
+            except:
+                socio = None
+            request.session['municipio'] = municipio 
+            request.session['comunidad'] = comunidad
+            request.session['socio'] = socio
+            mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
-        else:
-            mensaje = "Formulario con errores"
-            dict = {'form': form, 'mensaje': mensaje,'user': request.user}
-            return direct_to_template(request, 'achuapa/inicio.html', dict)
+#        else:
+#            mensaje = "Formulario con errores"
+#            dict = {'form': form, 'mensaje': mensaje,'user': request.user}
+#            return direct_to_template(request, 'achuapa/inicio.html', dict)
     else:
         form = AchuapaForm()
-        dict = {'form': form,'user': request.user}
-        return direct_to_template(request, 'achuapa/inicio.html', dict)
+        mensaje = ":P"
+    dict = {'form': form,'user': request.user}
+    return direct_to_template(request, 'achuapa/inicio.html', dict)
 
 @session_required
 def familia(request):
     '''Tabla de familias(migracion)'''
-    pass
+    a = _queryset_filtrado
+    socios = a.filter(migracion__edades=1).count()
+    return render_to_response('achuapa/familia.html',{'socios':socios})
 
 @session_required
 def organizacion(request):

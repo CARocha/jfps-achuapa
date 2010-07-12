@@ -9,6 +9,7 @@ info = {
 
 urlpatterns = patterns('encuesta.views',
     (r'^index/$', 'inicio'),
+    (r'^familia/$', 'familia'),
 #    (r'^inicio/$', 'inicio'),
     (r'^index/ajax/municipio/(?P<departamento>\d+)/$', 'get_municipios'),
     (r'^index/ajax/comunidad/(?P<municipio>\d+)/$', 'get_comunidad'),
