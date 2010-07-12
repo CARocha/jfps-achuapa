@@ -18,25 +18,25 @@ def _queryset_filtrado(request):
     fecha = date(int(request.session['fecha']), 1, 1)
     #diccionario de parametros del queryset
     params = {}
-    if request.session['fecha']:
+    if 'fecha' in request.session:
         params['fecha__gt'] = fecha 
-        if request.session['cooperativa']:
+        if 'cooperativa' in request.session:
             params['cooperativa'] = request.session['cooperativa']
 
-        if request.session['departamento']:
+        if 'departamento' in request.session:
             #incluye municipio y comunidad
             if request.session['municipio']:
-                if request.session['comunidad']:
+                if 'comunidad' in request.session:
                     params['datos__comunidad'] = request.session['comunidad']
                 else:
                     params['datos__comunidad__municipio'] = request.session['municipio']
             else:
                 params['datos__comunidad__municipio__departamento'] = request.session['departamento']
 
-        if request.session['socio']:
+        if 'socio' in request.session:
             params['organizacion__desde__socio'] = request.session['socio']
-#        if request.session['duenio']:
-#            params['tenencia__dueno'] = request.session['duenio']
+        #if 'duenio' in  request.session:
+        #    params['tenencia__dueno'] = request.session['duenio']
 
         return Encuesta.objects.filter(**params)
 
@@ -85,9 +85,9 @@ def inicio(request):
 @session_required
 def familia(request):
     '''Tabla de familias(migracion)'''
-    a = _queryset_filtrado
-    print a
-    #prueba = a.filter(migracion__edades=1).count()
+    a = _queryset_filtrado(request)
+    prueba = a.filter(migracion__edades=1).count()
+    print prueba
     return render_to_response('achuapa/familia.html',{'a':a},context_instance=RequestContext(request))
 
 @session_required

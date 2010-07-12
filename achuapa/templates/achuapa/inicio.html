@@ -52,7 +52,8 @@
 {% endblock %}
 {% block pimp %} {% endblock %}
 {% block contenido %}
-                    <form action"." method="GET">
+                    <form action"." method="POST">
+                        {% csrf_token %}
                     <fieldset>
 
                     <div id="formulario_tabla">
@@ -73,7 +74,7 @@
                         <div class="form_widget">{{form.dueno}}</div>      
                     </div>
 
-                      <input type="submit" value="" id="boton" class="filtro"/>
+                      <input type="submit" value="Aceptar" id="boton" class="filtro"/>
                     </fieldset>
                     </form>
                     <br>
