@@ -15,13 +15,13 @@ def _queryset_filtrado(request):
     '''metodo para obtener el queryset de encuesta 
     segun los filtros del formulario que son pasados
     por la variable de sesion'''
-    fecha = date(int(request.session['fecha']), 1, 1)
+    fecha = date(int(request.session['fecha']),1,1)
     #diccionario de parametros del queryset
     params = {}
     if 'fecha' in request.session:
-        params['fecha__gt'] = fecha 
+        params['fecha'] = fecha 
         if 'cooperativa' in request.session:
-            params['cooperativa'] = request.session['cooperativa']
+            params['datos__cooperativa'] = request.session['cooperativa']
 
         if 'departamento' in request.session:
             #incluye municipio y comunidad
@@ -34,7 +34,7 @@ def _queryset_filtrado(request):
                 params['datos__comunidad__municipio__departamento'] = request.session['departamento']
 
         if 'socio' in request.session:
-            params['organizacion__desde__socio'] = request.session['socio']
+            params['organizacion__socio'] = request.session['socio']
         #if 'duenio' in  request.session:
         #    params['tenencia__dueno'] = request.session['duenio']
 
@@ -44,14 +44,15 @@ def index(request):
 	return render_to_response('base.html',context_instance=RequestContext(request))
 	
 def inicio(request):
-    if request.method == 'GET':
+    if request.method == 'POST':
         mensaje = None
-        form = AchuapaForm(request.GET)
+        form = AchuapaForm(request.POST)
         if form.is_valid():
             try:
-                cooperativa = Cooperativa.objects.get(id=form.cleaned_data['cooperativa'])
+                cooperativa = Datosgenerales.objects.get(id=form.cleaned_data['cooperativa'])
             except:
                 cooperativa = None
+            request.session['cooperativa'] = cooperativa
             request.session['fecha'] = form.cleaned_data['fecha']
             request.session['departamento'] = form.cleaned_data['departamento']
             try:
@@ -88,7 +89,8 @@ def familia(request):
     a = _queryset_filtrado(request)
     prueba = a.filter(migracion__edades=1).count()
     print prueba
-    return render_to_response('achuapa/familia.html',{'a':a},context_instance=RequestContext(request))
+    return render_to_response('achuapa/familia.html',{'a':a, 'prueba':prueba},
+                              context_instance=RequestContext(request))
 
 @session_required
 def organizacion(request):
