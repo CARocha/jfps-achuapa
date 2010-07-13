@@ -9,8 +9,16 @@ from forms import *
 from django.views.generic.simple import direct_to_template
 from lugar.models import *
 from django.db.models import Sum, Count, Avg
+from django.core.exceptions import ViewDoesNotExist
 from decimal import Decimal
 
+
+def _get_view(request, vista):
+    if vista in VALID_VIEWS:
+        return VALID_VIEWS[vista](request)
+    else:
+        raise ViewDoesNotExist("Tried %s in module %s Error: View not defined in VALID_VIEWS." % (vista, 'encuesta.views'))
+    
 def _queryset_filtrado(request):
     '''metodo para obtener el queryset de encuesta 
     segun los filtros del formulario que son pasados
@@ -94,10 +102,9 @@ def inicio(request):
 @session_required
 def familia(request):
     '''Tabla de familias(migracion)'''
-    a = _queryset_filtrado(request)
-    prueba = a.filter(migracion__edades=1).count()
+    prueba = _queryset_filtrado(request).filter(migracion__edades=1).count()
     print prueba
-    return render_to_response('achuapa/familia.html',{'a':a, 'prueba':prueba},
+    return render_to_response('achuapa/familia.html',{'prueba':prueba},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -176,3 +183,10 @@ def get_socio(request, comunidad):
     socios = DatosGenerales.objects.filter(comunidad = comunidad )
     lista = [(socio.id, socio.nombre) for socio in socios]
     return HttpResponse(simplejson.dumps(lista), mimetype='application/javascript')
+
+#TODO: completar esto
+VALID_VIEWS = {
+        'familia': familia,
+        'seguridad_alimentaria': seguridad_alimentaria,
+        'luz': luz,
+        }
