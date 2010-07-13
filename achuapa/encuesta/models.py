@@ -135,9 +135,12 @@ class Tenencia(models.Model):
 #Indicador de uso de tierra
 
 class UsoTierra(models.Model):
+    '''Indicador de Uso de Tierra'''
     nombre = models.CharField(max_length=50, unique=True)
+
     class Meta:
         verbose_name_plural = "Tierra-Tipo de uso de Tierra"
+
     def __unicode__(self):
         return self.nombre
     

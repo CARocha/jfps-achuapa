@@ -115,6 +115,7 @@ def organizacion(request):
 @session_required
 def fincas(request):
     '''Tabla de fincas'''
+    #consulta = _queryset_filtrado(request)
     pass
 
 @session_required
