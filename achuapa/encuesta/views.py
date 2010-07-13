@@ -15,11 +15,11 @@ def _queryset_filtrado(request):
     '''metodo para obtener el queryset de encuesta 
     segun los filtros del formulario que son pasados
     por la variable de sesion'''
-    fecha = date(int(request.session['fecha']),1,1)
+    anio = int(request.session['fecha'])
     #diccionario de parametros del queryset
     params = {}
     if 'fecha' in request.session:
-        params['fecha'] = fecha 
+        params['fecha__year'] = anio 
         if 'cooperativa' in request.session:
             params['datos__cooperativa'] = request.session['cooperativa']
 
@@ -37,6 +37,14 @@ def _queryset_filtrado(request):
             params['organizacion__socio'] = request.session['socio']
         #if 'duenio' in  request.session:
         #    params['tenencia__dueno'] = request.session['duenio']
+        
+        unvalid_keys = []
+        for key in params:
+            if not params[key]:
+                unvalid_keys.append(key)
+        
+        for key in unvalid_keys:
+            del params[key]
 
         return Encuesta.objects.filter(**params)
 
