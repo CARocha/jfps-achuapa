@@ -59,7 +59,7 @@ def _queryset_filtrado(request):
         return Encuesta.objects.filter(**params)
 
 def index(request):
-	return render_to_response('base.html',context_instance=RequestContext(request))
+	return render_to_response('index.html',context_instance=RequestContext(request))
 	
 def inicio(request):
     if request.method == 'POST':
@@ -118,7 +118,7 @@ def organizacion(request):
 def fincas(request):
     '''Tabla de fincas'''
 
-    tabla = {'area_total':{}}
+    tabla = {}
     totales = {}
     consulta = _queryset_filtrado(request)
 
@@ -129,8 +129,7 @@ def fincas(request):
 
 
     for uso in UsoTierra.objects.exclude(id=1):
-        print uso
-        key = slugify(uso.nombre)
+        key = slugify(uso.nombre).replace('-', '_')
         query = consulta.filter(tierra__uso_tierra = uso)
         numero = query.count()
         porcentaje_num = saca_porcentajes(numero, totales['numero'])

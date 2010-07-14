@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Fincas{% endblock %}
+{% block contenido %}
+<table border='1'>
+    <tr>
+        <td></td>
+        <td>Número</td>
+        <td>%</td>
+        <td>Manzanas</td>
+        <td>%</td>
+    </tr>
+    <tr>
+        <td>Area Total</td>
+        <td>{{totales.numero}}</td>
+        <td>{{totales.porcentaje_num}}</td>
+        <td>{{totales.manzanas}}</td>
+        <td>{{totales.porcentaje_mz}}</td>
+    </tr>
+    {%for key, value in tabla.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.numero|floatformat}}</td>
+        <td>{{value.porcentaje_num|floatformat}}</td>
+        <td>{{value.manzanas|floatformat}}</td>
+        <td>{{value.porcentaje_mz|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+
+{% endblock %}
