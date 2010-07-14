@@ -1,15 +1,17 @@
 from django.http import Http404, HttpResponse
-from encuesta.models import *
-from decorators import session_required
+from django.template.defaultfilters import slugify
 from django.template import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
-from datetime import date
-from django.utils import simplejson
-from forms import *
 from django.views.generic.simple import direct_to_template
-from lugar.models import *
+from django.utils import simplejson
 from django.db.models import Sum, Count, Avg
 from django.core.exceptions import ViewDoesNotExist
+
+from encuesta.models import *
+from decorators import session_required
+from datetime import date
+from forms import *
+from lugar.models import *
 from decimal import Decimal
 
 
@@ -115,8 +117,32 @@ def organizacion(request):
 @session_required
 def fincas(request):
     '''Tabla de fincas'''
-    #consulta = _queryset_filtrado(request)
-    pass
+
+    tabla = {'area_total':{}}
+    totales = {}
+    consulta = _queryset_filtrado(request)
+
+    totales['numero'] = consulta.aggregate(numero=Count('tierra__uso_tierra'))['numero'] 
+    totales['porcentaje_num'] = 100
+    totales['manzanas'] = consulta.aggregate(area=Sum('tierra__areas'))['area']
+    totales['porcentaje_mz'] = 100
+
+
+    for uso in UsoTierra.objects.exclude(id=1):
+        print uso
+        key = slugify(uso.nombre)
+        query = consulta.filter(tierra__uso_tierra = uso)
+        numero = query.count()
+        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        manzanas = query.aggregate(area = Sum('tierra__areas'))['area']
+        porcentaje_mz = saca_porcentajes(manzanas, totales['manzanas'])
+        tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
+                      'manzanas': manzanas, 'porcentaje_mz': porcentaje_mz}
+
+    
+    return render_to_response('achuapa/fincas.html', 
+                              {'tabla':tabla, 'totales': totales},
+                              context_instance=RequestContext(request))
 
 @session_required
 def arboles(request):
@@ -190,4 +216,17 @@ VALID_VIEWS = {
         'familia': familia,
         'seguridad_alimentaria': seguridad_alimentaria,
         'luz': luz,
+        'fincas': fincas
         }
+
+def saca_porcentajes(values):
+    """sumamos los valores y devolvemos una lista con su porcentaje"""
+    total = sum(values)
+    valores_cero = [] #lista para anotar los indices en los que da cero el porcentaje
+    for i in range(len(values)):
+        porcentaje = (float(values[i])/total)*100
+        values[i] = "%.2f" % porcentaje + '%' 
+    return values
+
+def saca_porcentajes(dato, total):
+    return (dato/float(total)) * 100
