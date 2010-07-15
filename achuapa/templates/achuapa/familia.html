@@ -2,8 +2,36 @@
 {% block title %}JFPS - Las Familias(Migracion){% endblock %}
 {% block pimp %} {% endblock %}
 {% block contenido %}
+<h2>totales personas</h2>
+<ul>
+    <li>hombre_adulto:{{hombre_adulto}}</li>,
+    <li>mujeres_adulto:{{mujeres_adulto}}</li>,
+    <li>hombre_adolecente:{{hombre_adolecentes}}</li>,
+    <li>mujeres_adolecente:{{mujeres_adolecentes}}</li>,
+    <li>niño:{{nino}}</li>,
+    <li>niña:{{nina}}</li>,
+</ul>
+<h2>viven en casa</h2>
+<ul>
+    <li>hombre_adulto:{{hombre_adulto_viven}}</li>,
+    <li>mujeres_adulto:{{mujeres_adulto_viven}}</li>,
+    <li>hombre_adolecente:{{hombre_adolecentes_viven}}</li>,
+    <li>mujeres_adolecente:{{mujeres_adolecentes_viven}}</li>,
+    <li>niño:{{nino_viven}}</li>,
+    <li>niña:{{nina_viven}}</li>,
+</ul>
 
-<!--{{a}}-->
+<h1>otra prueba con for</h1>
+<!--<ul>-->
+<!--{% for prueba, otra in total.items %}-->
+<!--    <li>{{otra}}</li>-->
+<!--{% endfor %}-->
+<!--</ul>-->
+<ul>
+{% for h in nada %}
+    <li>{{h}}</li>
+{%endfor%}
+</ul>
 {{prueba}}
 
 

@@ -43,7 +43,7 @@ def _queryset_filtrado(request):
             else:
                 params['datos__comunidad__municipio__departamento'] = request.session['departamento']
 
-        if 'socio' in request.session:
+        elif 'socio' in request.session:
             params['organizacion__socio'] = request.session['socio']
         #if 'duenio' in  request.session:
         #    params['tenencia__dueno'] = request.session['duenio']
@@ -104,9 +104,37 @@ def inicio(request):
 @session_required
 def familia(request):
     '''Tabla de familias(migracion)'''
-    prueba = _queryset_filtrado(request).filter(migracion__edades=1).count()
-    print prueba
-    return render_to_response('achuapa/familia.html',{'prueba':prueba},
+    a = _queryset_filtrado(request)
+    #TODO: columnas totales                         
+    hombre_adulto = a.filter(migracion__edades = 1).aggregate(Sum('migracion__total_familia'))
+    mujeres_adulto = a.filter(migracion__edades = 2).aggregate(Sum('migracion__total_familia'))
+    hombre_adolecentes = a.filter(migracion__edades = 3).aggregate(Sum('migracion__total_familia'))
+    mujeres_adolecentes = a.filter(migracion__edades = 4).aggregate(Sum('migracion__total_familia'))
+    nino = a.filter(migracion__edades = 5).aggregate(Sum('migracion__total_familia'))
+    nina = a.filter(migracion__edades = 6).aggregate(Sum('migracion__total_familia'))
+#    prueba = hombre_adulto + mujeres_adulto + hombre_adolecentes + mujeres_adolecentes + nino + nina
+    #prueba de lista
+    a = _queryset_filtrado(request)
+    total={}
+    nada=[]
+    for i in range(1,7):
+        total['carlos'] = a.filter(migracion__edades=i).aggregate(carlos=Sum('migracion__total_familia'),alberto=Sum('migracion__viven_casa'),rocha=Sum('migracion__viven_fuera'))
+        nada.append(dict.copy(total))
+        
+    
+    print total
+#    #TODO: columnas que viven en casa
+    hombre_adulto_viven = _queryset_filtrado(request).filter(migracion__edades = 1).aggregate(Sum('migracion__viven_casa'))
+    mujeres_adulto_viven = _queryset_filtrado(request).filter(migracion__edades = 2).aggregate(Sum('migracion__viven_casa'))
+    hombre_adolecentes_viven =_queryset_filtrado(request).filter(migracion__edades = 3).aggregate(Sum('migracion__viven_casa'))
+    mujeres_adolecentes_viven = _queryset_filtrado(request).filter(migracion__edades = 4).aggregate(Sum('migracion__viven_casa'))
+    nino_viven = _queryset_filtrado(request).filter(migracion__edades = 5).aggregate(Sum('migracion__viven_casa'))
+    nina_viven = _queryset_filtrado(request).filter(migracion__edades = 6).aggregate(Sum('migracion__viven_casa'))
+    
+    
+#    prueba = _queryset_filtrado(request).filter(migracion__edades=1).aggregate(Sum('migracion__total_familia'))
+#    print prueba
+    return render_to_response('achuapa/familia.html',locals(),
                               context_instance=RequestContext(request))
 
 @session_required
