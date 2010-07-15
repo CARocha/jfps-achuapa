@@ -23,3 +23,5 @@ def run():
     print grafos.make_graph(data, legends, message, axis, size=(500,500),
                             multiline=True,
                       return_json=False, type=GroupedVerticalBarChart)
+if __name__ == "__main__":
+    run()
