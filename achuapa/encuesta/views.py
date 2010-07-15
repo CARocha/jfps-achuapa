@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.http import Http404, HttpResponse
 from django.template.defaultfilters import slugify
 from django.template import RequestContext
@@ -13,6 +14,7 @@ from datetime import date
 from forms import *
 from lugar.models import *
 from decimal import Decimal
+from utils import grafos
 
 
 def _get_view(request, vista):
@@ -171,10 +173,67 @@ def fincas(request):
                               {'tabla':tabla, 'totales': totales},
                               context_instance=RequestContext(request))
 
+def fincas_grafos(request, tipo):
+    '''Tipo puede ser: tenencia, solares, propietario'''
+    consulta = _queryset_filtrado(request)
+    #CHOICE_TENENCIA, CHOICE_DUENO
+    data = [] 
+    legends = []
+    if tipo == 'tenencia':
+        for opcion in CHOICE_TENENCIA:
+            data.append(consulta.filter(tenencia__parcela=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Tenencia de las parcelas', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'solares':
+        for opcion in CHOICE_TENENCIA:
+            data.append(consulta.filter(tenencia__solar=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Tenencia de los solares', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'propietario':
+        for opcion in CHOICE_DUENO:
+            data.append(consulta.filter(tenencia__dueno=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Dueño de propiedad', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
+
 @session_required
 def arboles(request):
     '''Tabla de arboles'''
     pass
+
+@session_required
+def animales(request):
+    '''Los animales y la produccion'''
+    consulta = _queryset_filtrado(request)
+    tabla = {}
+    totales = {}
+
+    totales['numero'] = consulta.aggregate(numero=Count('fincaproduccion__animales'))['numero'] 
+    totales['porcentaje_num'] = 100
+    totales['animales'] = consulta.aggregate(cantidad=Sum('fincaproduccion__cantidad'))['cantidad']
+    totales['porcentaje_animal'] = 100
+
+    for animal in Animales.objects.all():
+        key = slugify(animal.nombre).replace('-', '_')
+        query = consulta.filter(fincaproduccion__animales = animal)
+        numero = query.count()
+        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'))['cantidad']
+        porcentaje_animal = saca_porcentajes(animales, totales['animales'])
+        tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
+                      'animales': animales, 'porcentaje_animal': porcentaje_animal}
+
+    
+    return render_to_response('achuapa/animales.html', 
+                              {'tabla':tabla, 'totales': totales},
+                              context_instance=RequestContext(request))
 
 @session_required
 def ingresos(request):
@@ -243,7 +302,8 @@ VALID_VIEWS = {
         'familia': familia,
         'seguridad_alimentaria': seguridad_alimentaria,
         'luz': luz,
-        'fincas': fincas
+        'fincas': fincas,
+        'animales': animales,
         }
 
 def saca_porcentajes(values):
