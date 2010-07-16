@@ -253,7 +253,50 @@ def equipos(request):
 @session_required
 def ahorro_credito(request):
     ''' ahorro y credito'''
-    pass
+    #ahorro
+    consulta = _queryset_filtrado(request)
+    tabla_ahorro = {}
+    totales_ahorro = {}
+
+    totales_ahorro['numero'] = consulta.aggregate(numero=Count('ahorro__ahorro'))['numero'] 
+    totales_ahorro['porcentaje_num'] = 100
+
+    columnas_ahorro = [opcion[1] for opcion in CHOICE_AHORRO]
+
+    for pregunta in AhorroPregunta.objects.all():
+        key = slugify(pregunta.nombre).replace('-', '_')
+        query = consulta.filter(ahorro__ahorro = pregunta)
+        numero = query.count()
+        porcentaje_num = saca_porcentajes(numero, totales_ahorro['numero'])
+        #formato key: [numero, porcentaje, respuestas....]
+        tabla_ahorro[key] = [numero, porcentaje_num]
+        for opcion in CHOICE_AHORRO:
+            subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = opcion[0]).count()
+            subkey = slugify(opcion[1]).replace('-', '_')
+            tabla_ahorro[key].append(subquery)
+
+    #credito
+    tabla_credito= {}
+    totales_credito= {}
+
+    totales_credito['numero'] = consulta.aggregate(numero=Count('credito'))['numero'] 
+    totales_credito['porcentaje_num'] = 100
+
+    recibe = consulta.filter(credito__recibe = 1).count()
+    menos = consulta.filter(credito__desde = 1).count()
+    mas = consulta.filter(credito__desde = 2).count()
+    al_dia = consulta.filter(credito__dia= 1).count()
+              
+    tabla_credito['recibe'] = [recibe, saca_porcentajes(recibe, totales_credito['numero'])]
+    tabla_credito['menos'] = [menos, saca_porcentajes(menos, totales_credito['numero'])] 
+    tabla_credito['mas'] = [mas, saca_porcentajes(mas, totales_credito['numero'])] 
+    tabla_credito['al_dia'] = [al_dia, saca_porcentajes(al_dia, totales_credito['numero'])] 
+
+    dicc = {'tabla_ahorro':tabla_ahorro, 'columnas_ahorro': columnas_ahorro, 
+            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito}
+
+    return render_to_response('achuapa/ahorro_credito.html', dicc,
+                              context_instance=RequestContext(request))
 
 @session_required
 def servicios(request):
@@ -304,6 +347,7 @@ VALID_VIEWS = {
         'luz': luz,
         'fincas': fincas,
         'animales': animales,
+        'ahorro_credito': ahorro_credito,
         }
 
 def saca_porcentajes(values):
