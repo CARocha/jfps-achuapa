@@ -673,7 +673,7 @@ class Encuesta(models.Model):
     reforestacion = generic.GenericRelation(Reforestacion)
     fincaproduccion = generic.GenericRelation(FincaProduccion)
     cultivosfinca = generic.GenericRelation(CultivosFinca)
-    ingresofamialiar = generic.GenericRelation(IngresoFamiliar)
+    ingresofamiliar = generic.GenericRelation(IngresoFamiliar)
     otrosingreso = generic.GenericRelation(OtrosIngresos)
     tipocasa = generic.GenericRelation(TipoCasa)
     detallecasa = generic.GenericRelation(DetalleCasa)
