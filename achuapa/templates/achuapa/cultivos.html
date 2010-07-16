@@ -1,0 +1,26 @@
+{% extends "base.html"%}
+{%load unslugify %}
+{%block contenido%}
+
+número de familias: {{num_familias}}
+<table border='1'>
+<caption>Los cultivos y la producción</caption>
+    <tr>
+        <td>CULTIVOS</td>
+        <td>TOTALES</td>
+        <td>CONSUMO</td>
+        <td>VENTA LIBRE</td>
+        <td>VENTA ORGANIZADA</td>
+    </tr>
+    {%for key, value in tabla.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.totales|floatformat}}</td>
+        <td>{{value.consumo|floatformat}}</td>
+        <td>{{value.libre|floatformat}}</td>
+        <td>{{value.organizada|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+{%endblock%}

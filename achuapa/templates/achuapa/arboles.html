@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Los Arboles{% endblock %}
+
+{% block contenido %}
+
+número de familias: {{num_familias}}
+<table border='1'>
+<caption>Tabla Existencia de Arboles</caption>
+    <thead>
+         <tr>
+				 <th>TIPO</th>
+                 <th>TOTAL</th>
+                 <th>PROMEDIO/FINCA</th>
+         </tr>
+    </thead>
+<tr>
+    <td>Maderables</td>
+    <td>{{maderable}}</td>
+    <td>{{pro_maderable}}</td>
+</tr>
+<tr>
+    <td>Forrajero</td>
+    <td>{{forrajero}}</td>
+    <td>{{pro_forrajero}}</td>
+</tr>
+<tr>
+    <td>Energetico</td>
+    <td>{{energetico}}</td>
+    <td>{{pro_energetico}}</td>
+</tr>
+<tr>
+    <td>Frutales</td>
+    <td>{{frutal}}</td>
+    <td>{{pro_frutal}}</td>
+</tr>
+</table>
+<br><br>
+<table border='1'>
+<caption>Reforestación en ultimo año</caption>
+    <tr>
+        <td>Actividad</td>
+        <td>Cantidad</td>
+        <td>Nativos</td>
+        <td>% Nativo</td>
+        <td>No Nativos</td>
+        <td>% Nonativos</td>
+    </tr>
+    {%for key, value in tabla.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.numero|floatformat}}</td>
+        <td>{{value.nativos|floatformat}}</td>
+        <td>{{value.porcentaje_nativos|floatformat}}</td>
+        <td>{{value.nonativos|floatformat}}</td>
+        <td>{{value.porcentaje_nonativos|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{% endblock %}

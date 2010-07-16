@@ -1,0 +1,44 @@
+{% extends "base.html"%}
+{%load unslugify %}
+{%block contenido%}
+
+número de familias: {{num_familias}}
+<table border='1'>
+<caption>Los Ingresos familiares</caption>
+    <tr>
+        <td>RUBROS</td>
+        <td>FRECUENCIA</td>
+        <td>CANTIDAD</td>
+        <td>PRECIO PROMEDIO</td>
+    </tr>
+    {%for key, value in tabla.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.numero|floatformat}}</td>
+        <td>{{value.cantidad|floatformat}}</td>
+        <td>{{value.precio|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+<br><br>
+<table border='1'>
+<caption>Los Otros Ingresos familiares</caption>
+    <tr>
+        <td>FUENTES</td>
+        <td>FRECUENCIA</td>
+        <td>PROMEDIO MESES</td>
+        <td>INGRESO MENSUAL PROMEDIO</td>
+        <td>INGRESO TOTAL PROMEDIO</td>     
+    </tr>
+    {%for key, value in matriz.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.frecuencia|floatformat}}</td>
+        <td>{{value.meses|floatformat}}</td>
+        <td>{{value.ingreso|floatformat}}</td>
+        <td>{{value.ingresototal|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+{%endblock%}

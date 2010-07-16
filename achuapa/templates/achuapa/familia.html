@@ -1,38 +1,72 @@
 {% extends "base.html" %}
 {% block title %}JFPS - Las Familias(Migracion){% endblock %}
-{% block pimp %} {% endblock %}
-{% block contenido %}
-<h2>totales personas</h2>
-<ul>
-    <li>hombre_adulto:{{hombre_adulto}}</li>,
-    <li>mujeres_adulto:{{mujeres_adulto}}</li>,
-    <li>hombre_adolecente:{{hombre_adolecentes}}</li>,
-    <li>mujeres_adolecente:{{mujeres_adolecentes}}</li>,
-    <li>niño:{{nino}}</li>,
-    <li>niña:{{nina}}</li>,
-</ul>
-<h2>viven en casa</h2>
-<ul>
-    <li>hombre_adulto:{{hombre_adulto_viven}}</li>,
-    <li>mujeres_adulto:{{mujeres_adulto_viven}}</li>,
-    <li>hombre_adolecente:{{hombre_adolecentes_viven}}</li>,
-    <li>mujeres_adolecente:{{mujeres_adolecentes_viven}}</li>,
-    <li>niño:{{nino_viven}}</li>,
-    <li>niña:{{nina_viven}}</li>,
-</ul>
 
-<h1>otra prueba con for</h1>
-<!--<ul>-->
-<!--{% for prueba, otra in total.items %}-->
-<!--    <li>{{otra}}</li>-->
-<!--{% endfor %}-->
-<!--</ul>-->
-<ul>
-{% for h in nada %}
-    <li>{{h}}</li>
+{% block contenido %}
+
+<table border='1'>
+ <caption>Tabla Las Familias(Migración)</caption>
+<thead>
+         <tr>
+				 <th></th>
+				 <th>TOTALES</th>
+                 <th>VIVEN EN LA CASA</th>
+                 <th>%</th>
+                 <th>VIVEN FUERA</th>
+                 <th>%</th>
+         </tr>
+   </thead>
+   <tr>
+				<td>HOMBRES ADULTOS</td>
+                 <td>{{hombre_adulto }}</td>
+                 <td>{{ hombre_adulto_viven}}</td>
+                 <td>{{ hombre_porciento}}</td>
+                 <td>{{ hombre_adulto_fuera}}</td>
+                 <td>{{ hombre_fuera_porciento}}</td>
+</tr>
+<tr>
+				<td>MUJERES ADULTAS</td>
+                 <td>{{mujeres_adulto }}</td>
+                 <td>{{ mujeres_adulto_viven}}</td>
+                 <td>{{ mujeres_porciento}}</td>
+                 <td>{{ mujeres_adulto_fuera}}</td>
+                 <td>{{ mujeres_fuera_porciento}}</td>
+</tr>
+<tr>
+				<td>HOMBRES ADOLECENTES</td>
+                 <td>{{hombre_adolecentes }}</td>
+                 <td>{{ hombre_adolecentes_viven}}</td>
+                 <td>{{ hombre_adolecentes_porciento}}</td>
+                 <td>{{ hombre_adolecentes_fuera}}</td>
+                 <td>{{ hombre_adolecentes_fuera_porciento}}</td>
+</tr>
+<tr>
+				<td>MUJERES ADOLECENTES</td>
+                 <td>{{ mujeres_adolecentes}}</td>
+                 <td>{{mujeres_adolecentes_viven }}</td>
+                 <td>{{ mujeres_adolecentes_porciento}}</td>
+                 <td>{{ mujeres_adolecentes_fuera}}</td>
+                 <td>{{ mujeres_adolencentes_fuera_porciento}}</td>
+</tr>
+<tr>
+				<td>NIÑOS</td>
+                 <td>{{ nino}}</td>
+                 <td>{{nino_viven }}</td>
+                 <td>{{ nino_porciento}}</td>
+                 <td>{{ nino_fuera}}</td>
+                 <td>{{ nino_fuera_porciento}}</td>
+</tr>
+<tr>
+				<td>NIÑAS</td>
+                 <td>{{ nina}}</td>
+                 <td>{{nina_viven }}</td>
+                 <td>{{ nina_porciento}}</td>
+                 <td>{{ nina_fuera}}</td>
+                 <td>{{ nina_fuera_porciento}}</td>
+</tr>
+</table>
+{%for nada in totales %}
+    {{nada}}
 {%endfor%}
-</ul>
-{{prueba}}
 
 
 {% endblock %}

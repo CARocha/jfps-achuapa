@@ -104,32 +104,53 @@ def inicio(request):
 @session_required
 def familia(request):
     '''Tabla de familias(migracion)'''
-    a = _queryset_filtrado(request)
+    query = _queryset_filtrado(request)
+    tabla = {}
+    totales = []
+    for i in range(1,7):
+        migracion = query.filter(migracion__edades = i).aggregate(Sum('migracion__total_familia'))
+        totales.append(migracion)
+        viven = query.filter(migracion__edades = i).aggregate(Sum('migracion__viven_casa'))
+        totales.append(viven)
+        fuera = query.filter(migracion__edades = i).aggregate(Sum('migracion__viven_fuera'))
+        totales.append(fuera)
+    
+    
+    print totales
+    
+    
     #TODO: columnas totales                         
-    hombre_adulto = a.filter(migracion__edades = 1).aggregate(Sum('migracion__total_familia'))
-    mujeres_adulto = a.filter(migracion__edades = 2).aggregate(Sum('migracion__total_familia'))
-    hombre_adolecentes = a.filter(migracion__edades = 3).aggregate(Sum('migracion__total_familia'))
-    mujeres_adolecentes = a.filter(migracion__edades = 4).aggregate(Sum('migracion__total_familia'))
-    nino = a.filter(migracion__edades = 5).aggregate(Sum('migracion__total_familia'))
-    nina = a.filter(migracion__edades = 6).aggregate(Sum('migracion__total_familia'))
+    hombre_adulto = query.filter(migracion__edades = 1).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
+    mujeres_adulto = query.filter(migracion__edades = 2).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
+    hombre_adolecentes = query.filter(migracion__edades = 3).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
+    mujeres_adolecentes = query.filter(migracion__edades = 4).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
+    nino = query.filter(migracion__edades = 5).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
+    nina = query.filter(migracion__edades = 6).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
 #    prueba = hombre_adulto + mujeres_adulto + hombre_adolecentes + mujeres_adolecentes + nino + nina
     #prueba de lista
-    a = _queryset_filtrado(request)
-    total={}
-    nada=[]
-    for i in range(1,7):
-        total['carlos'] = a.filter(migracion__edades=i).aggregate(carlos=Sum('migracion__total_familia'),alberto=Sum('migracion__viven_casa'),rocha=Sum('migracion__viven_fuera'))
-        nada.append(dict.copy(total))
+#    a = _queryset_filtrado(request)
+#    total={}
+#    nada=[]
+#    for i in range(1,7):
+#        total['carlos'] = a.filter(migracion__edades=i).aggregate(migracion=Sum('migracion__total_familia'),viven=Sum('migracion__viven_casa'),fuera=Sum('migracion__viven_fuera'))
+#        nada.append(dict.copy(total))
         
     
-    print total
-#    #TODO: columnas que viven en casa
-    hombre_adulto_viven = _queryset_filtrado(request).filter(migracion__edades = 1).aggregate(Sum('migracion__viven_casa'))
-    mujeres_adulto_viven = _queryset_filtrado(request).filter(migracion__edades = 2).aggregate(Sum('migracion__viven_casa'))
-    hombre_adolecentes_viven =_queryset_filtrado(request).filter(migracion__edades = 3).aggregate(Sum('migracion__viven_casa'))
-    mujeres_adolecentes_viven = _queryset_filtrado(request).filter(migracion__edades = 4).aggregate(Sum('migracion__viven_casa'))
-    nino_viven = _queryset_filtrado(request).filter(migracion__edades = 5).aggregate(Sum('migracion__viven_casa'))
-    nina_viven = _queryset_filtrado(request).filter(migracion__edades = 6).aggregate(Sum('migracion__viven_casa'))
+   #TODO: columnas que viven en casa
+    hombre_adulto_viven = query.filter(migracion__edades = 1).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    mujeres_adulto_viven = query.filter(migracion__edades = 2).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    hombre_adolecentes_viven = query.filter(migracion__edades = 3).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    mujeres_adolecentes_viven = query.filter(migracion__edades = 4).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    nino_viven = query.filter(migracion__edades = 5).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    nina_viven = query.filter(migracion__edades = 6).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    
+    #TODO: columnas que viven fuera de casa
+    hombre_adulto_fuera = query.filter(migracion__edades = 1).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
+    mujeres_adulto_fuera = query.filter(migracion__edades = 2).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
+    hombre_adolecentes_fuera = query.filter(migracion__edades = 3).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
+    mujeres_adolecentes_fuera = query.filter(migracion__edades = 4).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
+    nino_fuera = query.filter(migracion__edades = 5).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
+    nina_fuera = query.filter(migracion__edades = 6).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
     
     
 #    prueba = _queryset_filtrado(request).filter(migracion__edades=1).aggregate(Sum('migracion__total_familia'))
@@ -174,12 +195,113 @@ def fincas(request):
 @session_required
 def arboles(request):
     '''Tabla de arboles'''
-    pass
+    #******Variables***************
+    a = _queryset_filtrado(request)
+    num_familias = a.count()
+    #******************************
+    
+    #********Existencia de arboles*****************
+    maderable = a.aggregate(Sum('existenciarboles__cant_maderable'))['existenciarboles__cant_maderable__sum']
+    forrajero = a.aggregate(Sum('existenciarboles__cant_forrajero'))['existenciarboles__cant_forrajero__sum']
+    energetico = a.aggregate(Sum('existenciarboles__cant_energetico'))['existenciarboles__cant_energetico__sum']
+    frutal = a.aggregate(Sum('existenciarboles__cant_frutal'))['existenciarboles__cant_frutal__sum']
+    #*********************************************
+    
+    #*******promedios de arboles por familia*********
+    pro_maderable = maderable / num_familias if maderable != None else 0
+    pro_forrajero = forrajero / num_familias if forrajero != None else 0
+    pro_energetico = energetico / num_familias if energetico != None else 0
+    pro_frutal = frutal / num_familias if frutal != None else 0
+    #***********************************************
+    
+    #**********Reforestacion************************
+    tabla = {}
+    totales = {}
+    totales['numero'] = a.aggregate(numero = Count('reforestacion__reforestacion'))['numero']
+    totales['porcentaje_nativos'] = 100
+    totales['nativos'] = a.aggregate(nativo=Sum('reforestacion__cantidad_nativos'))['nativo']
+#    print totales['nativos']
+    totales['nonativos'] = a.aggregate(nonativos=Sum('reforestacion__cantidad_nonativos'))['nonativos']
+    totales['porcentaje_nonativos'] = 100
+    
+    for activ in Actividades.objects.all():
+        key = slugify(activ.nombre).replace('-', '_')
+        query = a.filter(reforestacion__reforestacion = activ)
+        numero = query.count()
+#        print numero
+        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+#        print porcentaje_num
+        nativos = a.aggregate( cantidad = Sum('reforestacion__cantidad_nativos'))['cantidad']
+        nonativos = a.aggregate( cantidadno = Sum('reforestacion__cantidad_nonativos'))['cantidadno']
+        porcentaje_nativos = saca_porcentajes(nativos, totales['nativos'])
+        porcentaje_nonativos = saca_porcentajes(nonativos, totales['nonativos'])
+        tabla[key] = {'numero': numero, 'porcentaje_nativos': porcentaje_nativos,
+                      'nativos': nativos,'porcentaje_nonativos': porcentaje_nonativos,
+                      'nonativos':nonativos }
+        
+    
+    return  render_to_response('achuapa/arboles.html',
+                              {'num_familias':num_familias,'maderable':maderable,
+                               'forrajero':forrajero,'energetico':energetico,'frutal':frutal,
+                               'pro_maderable':pro_maderable,'pro_forrajero':pro_forrajero,
+                               'pro_energetico':pro_energetico,'pro_frutal':frutal,'tabla':tabla,
+                               'totales':totales},
+                                context_instance=RequestContext(request))
+
+@session_required
+def cultivos(request):
+    '''tabla los cultivos y produccion'''
+    #******Variables***************
+    a = _queryset_filtrado(request)
+    num_familias = a.count()
+    #******************************
+    #**********calculosdelasvariables*****
+    tabla = {} 
+    for i in Cultivos.objects.all():
+        key = slugify(i.nombre).replace('-', '_')
+        query = a.filter(cultivosfinca__cultivos = i)
+        totales = query.aggregate(total=Sum('cultivosfinca__total'))['total']
+        consumo = query.aggregate(consumo=Sum('cultivosfinca__consumo'))['consumo']
+        libre = query.aggregate(libre=Sum('cultivosfinca__venta_libre'))['libre']
+        organizada =query.aggregate(organizada=Sum('cultivosfinca__venta_organizada'))['organizada']
+        tabla[key] = {'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
+    #*******************************************
+    return render_to_response('achuapa/cultivos.html',
+                             {'tabla':tabla,'num_familias':num_familias},
+                             context_instance=RequestContext(request))        
 
 @session_required
 def ingresos(request):
     '''tabla de ingresos'''
-    pass
+    #******Variables***************
+    a = _queryset_filtrado(request)
+    num_familias = a.count()
+    #******************************
+    #*******calculos de las variables ingreso************
+    tabla = {}
+    for i in Rubros.objects.all():
+        key = slugify(i.nombre).replace('-','_')
+        query = a.filter(ingresofamiliar__rubro = i)
+        numero = query.count()
+        cantidad = query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad']
+        precio = query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio']
+        tabla[key] = {'numero':numero,'cantidad':cantidad,'precio':precio}
+        
+    #********* calculos de las variables de otros ingresos******
+    matriz = {}
+    for j in Fuentes.objects.all():
+        key = slugify(j.nombre).replace('-','_')
+        consulta = a.filter(otrosingreso__fuente = j)
+        frecuencia = consulta.count()
+        meses = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses']
+        ingreso = consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso']
+        ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
+        matriz[key] = {'frecuencia':frecuencia,'meses':meses,
+                       'ingreso':ingreso,'ingresototal':ingresototal}
+        
+    return render_to_response('achuapa/ingresos.html',
+                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz},
+                              context_instance=RequestContext(request))
 
 @session_required
 def bienes(request):
@@ -243,7 +365,10 @@ VALID_VIEWS = {
         'familia': familia,
         'seguridad_alimentaria': seguridad_alimentaria,
         'luz': luz,
-        'fincas': fincas
+        'fincas': fincas,
+        'arboles': arboles,
+        'cultivos': cultivos,
+        'ingresos': ingresos,
         }
 
 def saca_porcentajes(values):
@@ -256,4 +381,4 @@ def saca_porcentajes(values):
     return values
 
 def saca_porcentajes(dato, total):
-    return (dato/float(total)) * 100
+    return (dato/float(total)) * 100 if dato!=None else 0
