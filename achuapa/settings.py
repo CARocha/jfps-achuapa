@@ -64,3 +64,5 @@ INSTALLED_APPS = (
     'achuapa.encuesta',
     'achuapa.lugar',
 )
+
+NO_DATA_GRAPH_URL = ''

@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.http import Http404, HttpResponse
 from django.template.defaultfilters import slugify
 from django.template import RequestContext
@@ -13,6 +14,7 @@ from datetime import date
 from forms import *
 from lugar.models import *
 from decimal import Decimal
+from utils import grafos
 
 
 def _get_view(request, vista):
@@ -192,6 +194,36 @@ def fincas(request):
                               {'tabla':tabla, 'totales': totales},
                               context_instance=RequestContext(request))
 
+def fincas_grafos(request, tipo):
+    '''Tipo puede ser: tenencia, solares, propietario'''
+    consulta = _queryset_filtrado(request)
+    #CHOICE_TENENCIA, CHOICE_DUENO
+    data = [] 
+    legends = []
+    if tipo == 'tenencia':
+        for opcion in CHOICE_TENENCIA:
+            data.append(consulta.filter(tenencia__parcela=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Tenencia de las parcelas', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'solares':
+        for opcion in CHOICE_TENENCIA:
+            data.append(consulta.filter(tenencia__solar=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Tenencia de los solares', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'propietario':
+        for opcion in CHOICE_DUENO:
+            data.append(consulta.filter(tenencia__dueno=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Dueño de propiedad', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
+
 @session_required
 def arboles(request):
     '''Tabla de arboles'''
@@ -271,6 +303,33 @@ def cultivos(request):
                              context_instance=RequestContext(request))        
 
 @session_required
+def animales(request):
+    '''Los animales y la produccion'''
+    consulta = _queryset_filtrado(request)
+    tabla = {}
+    totales = {}
+
+    totales['numero'] = consulta.aggregate(numero=Count('fincaproduccion__animales'))['numero'] 
+    totales['porcentaje_num'] = 100
+    totales['animales'] = consulta.aggregate(cantidad=Sum('fincaproduccion__cantidad'))['cantidad']
+    totales['porcentaje_animal'] = 100
+
+    for animal in Animales.objects.all():
+        key = slugify(animal.nombre).replace('-', '_')
+        query = consulta.filter(fincaproduccion__animales = animal)
+        numero = query.count()
+        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'))['cantidad']
+        porcentaje_animal = saca_porcentajes(animales, totales['animales'])
+        tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
+                      'animales': animales, 'porcentaje_animal': porcentaje_animal}
+
+    
+    return render_to_response('achuapa/animales.html', 
+                              {'tabla':tabla, 'totales': totales},
+                              context_instance=RequestContext(request))
+
+@session_required
 def ingresos(request):
     '''tabla de ingresos'''
     #******Variables***************
@@ -316,7 +375,50 @@ def equipos(request):
 @session_required
 def ahorro_credito(request):
     ''' ahorro y credito'''
-    pass
+    #ahorro
+    consulta = _queryset_filtrado(request)
+    tabla_ahorro = {}
+    totales_ahorro = {}
+
+    totales_ahorro['numero'] = consulta.aggregate(numero=Count('ahorro__ahorro'))['numero'] 
+    totales_ahorro['porcentaje_num'] = 100
+
+    columnas_ahorro = [opcion[1] for opcion in CHOICE_AHORRO]
+
+    for pregunta in AhorroPregunta.objects.all():
+        key = slugify(pregunta.nombre).replace('-', '_')
+        query = consulta.filter(ahorro__ahorro = pregunta)
+        numero = query.count()
+        porcentaje_num = saca_porcentajes(numero, totales_ahorro['numero'])
+        #formato key: [numero, porcentaje, respuestas....]
+        tabla_ahorro[key] = [numero, porcentaje_num]
+        for opcion in CHOICE_AHORRO:
+            subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = opcion[0]).count()
+            subkey = slugify(opcion[1]).replace('-', '_')
+            tabla_ahorro[key].append(subquery)
+
+    #credito
+    tabla_credito= {}
+    totales_credito= {}
+
+    totales_credito['numero'] = consulta.aggregate(numero=Count('credito'))['numero'] 
+    totales_credito['porcentaje_num'] = 100
+
+    recibe = consulta.filter(credito__recibe = 1).count()
+    menos = consulta.filter(credito__desde = 1).count()
+    mas = consulta.filter(credito__desde = 2).count()
+    al_dia = consulta.filter(credito__dia= 1).count()
+              
+    tabla_credito['recibe'] = [recibe, saca_porcentajes(recibe, totales_credito['numero'])]
+    tabla_credito['menos'] = [menos, saca_porcentajes(menos, totales_credito['numero'])] 
+    tabla_credito['mas'] = [mas, saca_porcentajes(mas, totales_credito['numero'])] 
+    tabla_credito['al_dia'] = [al_dia, saca_porcentajes(al_dia, totales_credito['numero'])] 
+
+    dicc = {'tabla_ahorro':tabla_ahorro, 'columnas_ahorro': columnas_ahorro, 
+            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito}
+
+    return render_to_response('achuapa/ahorro_credito.html', dicc,
+                              context_instance=RequestContext(request))
 
 @session_required
 def servicios(request):
@@ -369,6 +471,8 @@ VALID_VIEWS = {
         'arboles': arboles,
         'cultivos': cultivos,
         'ingresos': ingresos,
+        'animales': animales,
+        'ahorro_credito': ahorro_credito,
         }
 
 def saca_porcentajes(values):

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Fincas{% endblock %}
+{% block contenido %}
+Ahorro
+<table border='1'>
+    <tr>
+        <td>Pregunta</td>
+        <td>Número</td>
+        <td>Porcentaje Número</td>
+        {%for columna in columnas_ahorro%}
+        <td>{{columna}}</td>
+        {%endfor%}
+    </tr>
+    {%for key, value in tabla_ahorro.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        {%for numero in value%}
+        <td>{{numero|floatformat}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+</table>
+Crédito
+<table border='1'>
+    <tr>
+        <td></td>
+        <td>Número</td>
+        <td>Porcentaje</td>
+    </tr>
+    <tr>
+        <td>Recibe Crédito</td>
+        {%for celda in tabla_credito.recibe%}
+        <td>{{celda|floatformat}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Recibe Crédito hace menos de 5 años</td>
+        {%for celda in tabla_credito.menos%}
+        <td>{{celda|floatformat}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Recibe Crédito hace más de 5 años</td>
+        {%for celda in tabla_credito.mas%}
+        <td>{{celda|floatformat}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Está al día con su crédito</td>
+        {%for celda in tabla_credito.al_dia%}
+        <td>{{celda|floatformat}}</td>
+        {%endfor%}
+    </tr>
+</table>
+
+
+
+{% endblock %}

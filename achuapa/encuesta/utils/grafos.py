@@ -11,18 +11,22 @@ bar_types = [StackedHorizontalBarChart, StackedVerticalBarChart,
              GroupedHorizontalBarChart, GroupedVerticalBarChart]
 line_types = [SimpleLineChart]
 
+PIE_CHART_3D, PIE_CHART_2D = pie_types
+BAR_CHART_H, BAR_CHART_V, GROUPED_BAR_CHART_H, GROUPED_BAR_CHART_V = bar_types
+LINE_CHART = line_types
+
 
 def make_graph(data, legends, message=None, 
                axis_labels=None, steps=4, return_json = True,
                type=PieChart2D, size=(320, 250), multiline=False):
 
     if (type in pie_types):
-        graph = __pie_graphic__(data, legends, size, type)
+        graph = _pie_graph(data, legends, size, type)
     elif (type in bar_types):
-        graph = __bar_graphic__(data, legends, axis_labels, size,
+        graph = _bar_graph(data, legends, axis_labels, size,
                                steps, type, multiline)
     elif(type in line_types):
-        graph = __line_strip_graphic__(data, legends, axis_labels,
+        graph = _line_strip_graph(data, legends, axis_labels,
                                        size, steps, type, multiline)
     try:
         graph.set_title(message)
@@ -37,7 +41,7 @@ def make_graph(data, legends, message=None,
         return url 
 
 
-def __pie_graphic__(data, legends, size, type=PieChart3D):
+def _pie_graph(data, legends, size, type=PieChart3D):
     graph = type(size[0], size[1])
     graph.set_colours([ 'FFBC13','22A410','E6EC23','2B2133','BD0915','3D43BD'])
     graph.add_data(data)
@@ -48,7 +52,7 @@ def __pie_graphic__(data, legends, size, type=PieChart3D):
 
     return graph
 
-def __bar_graphic__(data, legends, axis_labels, size, steps,  
+def _bar_graph(data, legends, axis_labels, size, steps,  
                     type=StackedVerticalBarChart, multiline=False):
     
     if multiline:
@@ -122,7 +126,7 @@ def __bar_graphic__(data, legends, axis_labels, size, steps,
     
     return graph
 
-def __line_strip_graphic__(data, legends, axis_labels, size, steps, 
+def _line_strip_graph(data, legends, axis_labels, size, steps, 
                            type=SimpleLineChart, multiline=False):
     if multiline:
         max_values = []
