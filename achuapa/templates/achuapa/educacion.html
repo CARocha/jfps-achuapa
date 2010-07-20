@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Fincas{% endblock %}
+{% block contenido %}
+<table border='1'>
+    <tr>
+        <td></td>
+        <td>número</td>
+        <td>%</td>
+    </tr>
+    {% for fila in tabla_no %}
+    <tr>
+        {%for celda in fila%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+</table>
+
+<table border='1'>
+    <tr>
+        <td></td>
+        <td>Número total</td>
+        <td>No sabe leer</td>
+        <td>Primaria incompleta</td>
+        <td>Primaria completa</td>
+        <td>Secundaria incompleta</td>
+        <td>Secundaria completa</td>
+        <td>estudiante técnico o universitario</td>
+        <td>Técnica o universidad completa</td>
+    </tr>
+    {%for fila in tabla_educacion%}
+    <tr>
+        <td>{{fila.label}}</td>
+        <td>{{fila.objeto.num_total}}</td>
+        <td>{{fila.objeto.no_lee}}</td>
+        <td>{{fila.objeto.pri_incompleta}}</td>
+        <td>{{fila.objeto.pri_completa}}</td>
+        <td>{{fila.objeto.secun_incompleta}}</td>
+        <td>{{fila.objeto.secun_completa}}</td>
+        <td>{{fila.objeto.universitario}}</td>
+        <td>{{fila.objeto.tecnico_graduado}}</td>
+    </tr>
+    {%endfor%}
+
+</table>
+
+{% endblock %}

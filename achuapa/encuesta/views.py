@@ -477,8 +477,48 @@ def ahorro_credito(request):
 
 @session_required
 def servicios(request):
-    '''servicios'''
-    pass
+    '''servicios: educacion, salud, agua, luz'''
+    consulta = _queryset_filtrado(request)
+    
+    
+@session_required
+def educacion(request):
+    '''Modelo educacion y noeducacion'''
+    #Educacion
+    consulta = _queryset_filtrado(request)
+    tabla_educacion = []
+    tabla_no= []
+    totales_educacion = {}
+    totales_no = {}
+
+    totales_educacion['numero'] = consulta.aggregate(numero=Sum('educacion__num_total'))['numero'] 
+    totales_educacion['porcentaje_num'] = 100
+    totales_no['numero'] = consulta.aggregate(numero=Sum('noeducacion__numero'))['numero'] 
+    totales_no['porcentaje_num'] = 100
+    
+    for choice in CHOICE_NINOS_EDUCACION:
+        fila = [] #etiqueta, razon, porcentaje
+        fila.append(choice[1])
+        numero = consulta.filter(noeducacion__no_asisten=choice[0]).aggregate(numero=Sum('noeducacion__numero'))['numero']
+        fila.append(numero)
+        fila.append(saca_porcentajes(numero, totales_no['numero']))
+        tabla_no.append(fila)
+
+    for choice in SEXO_CHOICES:
+        objeto = consulta.filter(educacion__sexo_edad = choice[0]).aggregate(num_total = Sum('educacion__num_total'),
+                no_lee = Sum('educacion__no_lee'), pri_incompleta = Sum('educacion__pri_incompleta'), 
+                pri_completa = Sum('educacion__pri_completa'), secun_incompleta = Sum('educacion__secun_incompleta'),
+                secun_completa = Sum('educacion__secun_completa'), universitario = Sum('educacion__estudiante_universitario'),
+                tecnico_graduado = Sum('educacion__tecnico_graduado'))
+        print objeto
+        tabla_educacion.append({'label': choice[1], 'objeto': objeto})
+
+    
+    return render_to_response('achuapa/educacion.html', 
+                              {'tabla_no':tabla_no, 'totales_no': totales_no,
+                              'tabla_educacion':tabla_educacion, 'totales_educacion': totales_educacion},
+                              context_instance=RequestContext(request))
+
 
 @session_required
 def salud(request):
@@ -528,6 +568,8 @@ VALID_VIEWS = {
         'ingresos': ingresos,
         'animales': animales,
         'ahorro_credito': ahorro_credito,
+        'servicios': servicios,
+        'educacion': educacion,
         }
 
 def saca_porcentajes(values):
