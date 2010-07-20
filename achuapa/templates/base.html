@@ -6,6 +6,8 @@
     <link href="{{ MEDIA_URL }}css/estilo.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="{{MEDIA_URL}}css/screen.css" rel="stylesheet" type="text/css" media="screen" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type='text/javascript' src='{{MEDIA_URL}}js/tablesort.js'></script>	
+    <script type='text/javascript' src='{{MEDIA_URL}}js/jquery.metadata.js'></script>
 	{%block extra_header%}{%endblock%}
 </head>
 <body>
@@ -28,12 +30,23 @@
 	<div id="contenido">             
              <!-- Comienza Columna derecha--> 
 				<div id="colum_der" class="der">
-                   {%block contenido%}
-                   {%endblock%}
+				    <div id="titulo">
+                    {% block titulo %}Cooperativa Juan Francisco Paz Silva {% endblock %}
+                    </div>
+                        <div id="contenido_interno">
+                            <div id="filtros_principales" class="izq">
+                                <div class="boton_filtro fondo_boton">
+                                        {%block contenido%}
+                                        {%endblock%}
+                                </div>
+                            </div>
+                                <div class="separador" ></div>
+                        </div>
                 </div><!-- termina Columna derecha-->
             <div class="separador" ></div>
 	</div><!-- Termina Contenido-->
 </div><!-- Termina Contenedor-->
+
         <!-- Comienza Footer-->
         <div id="footer">
              <div id="footer_contenedor" class="centro">

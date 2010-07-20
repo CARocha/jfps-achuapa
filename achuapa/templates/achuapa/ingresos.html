@@ -7,6 +7,7 @@ número de familias: {{num_familias}}
 <caption>Los Ingresos familiares</caption>
     <tr>
         <td>RUBROS</td>
+        <td>UNIDAD</td>
         <td>FRECUENCIA</td>
         <td>CANTIDAD</td>
         <td>PRECIO PROMEDIO</td>
@@ -14,6 +15,7 @@ número de familias: {{num_familias}}
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
+        <td>{{unidad|unslugify}}</td>
         <td>{{value.numero|floatformat}}</td>
         <td>{{value.cantidad|floatformat}}</td>
         <td>{{value.precio|floatformat}}</td>

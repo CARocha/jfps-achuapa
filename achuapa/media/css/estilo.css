@@ -203,8 +203,6 @@ background-image: url(../imagen/bg-header.png);
 #contenido{
   width:960px;
   !width:960px;
-  /*min-height:900px;*/
-  
   color:#5d5d5d;
  }
 
@@ -283,12 +281,13 @@ background-image: url(../imagen/bg-header.png);
 
 #filtros_principales{
   width:425px;
-  height:240px;
+/*  height:240px;*/
 }
 
 .boton_filtro{
   width:934px;
-  height:214px;
+/*  height:214px;*/
+  background: #f2f2f2;
   color:#000;
   font-size:14px;
   padding:11px;
@@ -371,5 +370,165 @@ margin-left:10px;  float:right;
     text-align: center;
     
 }
+/* CSS Especial para las tablas */
+
+caption {
+	padding: 0 0 5px 0;
+	margin:0 auto;
+	width:auto;
+	font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	text-align: right;
+}
+
+#colum_izq table {
+	width:640px;
+}
+
+#colum_izq th{
+	font: bold 10px/22px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	color: #4f6b72;
+	border-right: 1px solid #C1DAD7;
+	border-bottom: 1px solid #C1DAD7;
+	border-top: 1px solid #C1DAD7;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	text-align: left;
+	padding: 8px 12px 4px 12px;
+	background:url(../imagen/bg_header.jpg) no-repeat;
+	vertical-align:middle;
+}
+
+#colum_izq td.total{
+	border-top: 0;
+	border-left: 0;
+	border-right: 1px solid #C1DAD7;
+	background: none;
+	text-align:right;
+	font-weight:bold;
+	text-transform:uppercase;
+	letter-spacing:1px;
+}
+
+#colum_izq th.sortable,
+#colum_izq th.sortable-text,
+#colum_izq th.sortable-date,
+#colum_izq th.sortable-keep,
+#colum_izq th.sortable-date-dmy,
+#colum_izq th.sortable-numeric,
+#colum_izq th.sortable-currency,
+#colum_izq th.sortable-sortByTwelveHourTimestamp,
+#colum_izq th.sortable-sortIPAddress,
+#colum_izq th.sortable-sortEnglishLonghandDateFormat,
+#colum_izq th.sortable-sortScientificNotation,
+#colum_izq th.sortable-sortImage,
+#colum_izq th.sortable-sortFileSize,
+#colum_izq th.sortable-sortAlphaNumeric,
+#colum_izq th.sortable-sortEnglishDateTime{
+	cursor:pointer;
+	background: #CAE8EA url(../imagen/bg_header_sortable.jpg) no-repeat;
+	padding: 8px 12px 4px 16px;
+}
+
+#colum_izq th.forwardSort{
+	background:#CAE8EA url(../imagen/bg_header_down.jpg) no-repeat 0 0;
+}
+
+#colum_izq th.reverseSort{
+	background:#CAE8EA url(../imagen/bg_header_up.jpg) no-repeat 0 0;
+}
+
+#colum_izq table thead th.forwardSort a,
+#colum_izq table thead th.reverseSort a {
+	color:#000;
+	text-decoration:none;
+}
+
+/*
+These styles should be added when very long tables are expected
+th.sort-active {
+	background:#CAE8EA url(../media/bg_header_sorting.jpg) no-repeat 0 0;
+	cursor:wait;
+}
+
+th.sort-active a {
+	color:#a80000 !important;
+	cursor:wait;
+}
+*/
+
+#colum_izq th a {
+	text-decoration:none;
+	color: #4f6b72;
+	background:transparent;
+}
+
+#colum_izq td a {
+	text-decoration:none;
+	color:#239;
+	background:transparent;
+}
+
+#colum_izq td img {
+	margin:0 auto;
+	border:3px solid #ddd;
+}
+
+#colum_izq td a:hover {
+	color:#a84444;
+	border-bottom:1px dotted #a80000;
+	background:transparent;
+}
+
+#colum_izq td {
+	font: normal 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	border-right: 1px solid #C1DAD7;
+	border-bottom: 1px solid #C1DAD7;
+	padding: 6px 12px 6px 12px;
+	color: #4f6b72;
+	background: #FFFFFF;
+}
+
+#colum_izq td.lft {
+	text-align:left;
+}
+
+#colum_izq tr.alt {
+	background: #F5FAFA;
+	color: #797268;
+}
+
+/* Poor old Internet Explorer 6 has a bug that means we can't use background images for the table rows
+   as it trys to download the image each and every time that it is used (which means a 1000 row table
+   will produce 1000 http requests for the image in question) */
+#colum_izq tr[class="alt"] td {
+	background: #F5FAFA url(../media/td_alt.jpg) no-repeat;
+}
+
+#colum_izq td[class~="alt"]{
+	background: #edf3f3 url(../media/col_alt.jpg) no-repeat !important;
+}
+
+/* Poor old Internet Explorer won't see the next two rules either as it doesn't get :first-child */
+#colum_izq tbody tr.alt td:first-child{
+	background: #F5FAFA url(../imagen/bullet2.gif) no-repeat;
+	font-weight:bold;
+}
+
+#colum_izq tbody tr td:first-child {
+	background: #fff url(../imagen/bullet1.gif) no-repeat;
+	font-weight:bold;
+}
+
+/* Image free rules for Internet Explorer < 7 */
+* html tr.alt td {
+	background-color:#F5FAFA;
+}
+
+* html tr td.alt,
+* html tr.alt td.alt {
+background-color:#edf3f3;
+}
+
+/* TERMINA CSS Especial para las tablas */
 
 
