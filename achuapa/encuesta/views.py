@@ -366,6 +366,61 @@ def ingresos(request):
 def bienes(request):
     '''tabla de bienes'''
     pass
+    
+    
+def grafos_bienes(request, tipo):
+    '''tabla de bienes'''
+    consulta = _queryset_filtrado(request)
+    #CHOICE_TENENCIA, CHOICE_DUENO
+    data = [] 
+    legends = []
+    if tipo == 'tipocasa':
+        for opcion in CHOICE_TIPO_CASA:
+            data.append(consulta.filter(tipocasa__tipo=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Tipos de casas', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'tipopiso':
+        b = Piso.objects.all()
+        for opcion in b:
+            data.append(consulta.filter(tipocasa__piso=opcion).count())
+            legends.append(opcion)
+        return grafos.make_graph(data, legends, 
+                'Tipo de pisos', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'tipotecho':
+        for opcion in Techo.objects.all():
+            data.append(consulta.filter(tipocasa__techo=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Dueño de propiedad', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'ambiente':
+        for opcion in CHOICE_AMBIENTE:
+            data.append(consulta.filter(detallecasa__ambientes=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends,
+               'Numeros de ambientes', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    elif tipo == 'letrina':
+        for opcion in CHOICE_OPCION:
+            data.append(consulta.filter(detallecasa__letrina=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends,
+                'Tiene letrina', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'lavadero':
+        for opcion in CHOICE_OPCION:
+            data.append(consulta.filter(detallecasa__lavadero=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends,
+               'Tiene lavadero', return_json = True,
+               type = grafos.PIE_CHART_3D)
+            
+    else:
+        raise Http404
+    pass
 
 @session_required
 def equipos(request):
