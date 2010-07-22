@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{%block titulo%}Los Equipos{%endblock%}
+{% block contenido %}
+Número de familia: {{num_familia}}
+
+<table border='1'>
+<caption>Los Equipos</caption>
+    <tr>
+        <td>EQUIPOS</td>
+        <td>FRECUENCIA</td>
+        <td>%</td>
+        <td>CANTIDAD</td>
+        <td>%</td>
+    </tr>
+    {%for key, value in tabla.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.frecuencia|floatformat}}</td>
+        <td>{{value.por_equipo|floatformat}}</td>
+        <td>{{value.equipo|floatformat}}</td>
+        <td>{{value.por_cantidad|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+<table border='1'>
+<caption>Las Infraestructuras</caption>
+    <tr>
+        <td>INFRAESTRUCTURA</td>
+        <td>FRECUENCIA</td>
+        <td>%</td>
+        <td>CANTIDAD</td>
+        <td>%</td>
+    </tr>
+    {%for key, value in tabla_infra.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.frecuencia|floatformat}}</td>
+        <td>{{value.por_frecuencia|floatformat}}</td>
+         <td>{{value.infraestructura|floatformat}}</td>
+        <td>{{value.por_infra|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+<table border='1'>
+<caption>Las Herramientas</caption>
+    <tr>
+        <td>HERRAMIENTAS</td>
+        <td>FRECUENCIA</td>
+        <td>%</td>
+        <td>CANTIDAD</td>
+        <td>%</td>
+    </tr>
+    {%for key, value in herramienta.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.frecuencia|floatformat}}</td>
+        <td>{{value.por_frecuencia|floatformat}}</td>
+         <td>{{value.herra|floatformat}}</td>
+        <td>{{value.por_herra|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+<table border='1'>
+<caption>Los Transportes</caption>
+    <tr>
+        <td>TRANSPORTE</td>
+        <td>FRECUENCIA</td>
+        <td>%</td>
+        <td>CANTIDAD</td>
+        <td>%</td>
+    </tr>
+    {%for key, value in transporte.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.frecuencia|floatformat}}</td>
+        <td>{{value.por_frecuencia|floatformat}}</td>
+         <td>{{value.trans|floatformat}}</td>
+        <td>{{value.por_trans|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+{% endblock %}
