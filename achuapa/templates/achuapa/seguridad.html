@@ -1,0 +1,36 @@
+{% extends "base.html"%}
+{%load unslugify %}
+
+{% block contenido %}
+
+<table border='1'>
+<caption>La Seguridad Alimentaria</caption>
+    <tr>
+        <td>ALIMENTOS</td>
+        <td>FRECUENCIA</td>
+        <td>PRODUCEN</td>
+        <td>%</td>
+        <td>COMPRAN</td>
+        <td>%</td>
+        <td>CONSUMEN</td>
+        <td>%</td>
+        <td>CONSUMEN INVIERNO</td>
+        <td>%</td>
+    </tr>
+    {%for key, value in tabla.items%}
+    <tr>
+        <td>{{key|unslugify}}</td>
+        <td>{{value.frecuencia|floatformat}}</td>
+        <td>{{value.producen|floatformat}}</td>
+        <td>{{value.por_producen|floatformat}}</td>
+        <td>{{value.compran|floatformat}}</td>
+        <td>{{value.por_compran|floatformat}}</td>
+        <td>{{value.consumen|floatformat}}</td>
+        <td>{{value.por_consumen|floatformat}}</td>
+        <td>{{value.invierno|floatformat}}</td>
+        <td>{{value.por_invierno|floatformat}}</td>
+    </tr>
+    {%endfor%}
+</table>
+
+{% endblock %}

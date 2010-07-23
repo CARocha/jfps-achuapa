@@ -647,6 +647,7 @@ VALID_VIEWS = {
         'animales': animales,
         'ahorro_credito': ahorro_credito,
         'equipos': equipos,
+        'seguridad_alimentaria': seguridad_alimentaria,
         }
 
 def saca_porcentajes(values):
