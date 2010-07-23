@@ -689,6 +689,7 @@ VALID_VIEWS = {
         'servicios': servicios,
         'educacion': educacion,
         'equipos': equipos,
+        'seguridad_alimentaria': seguridad_alimentaria,
         }
 
 def saca_porcentajes(values):
