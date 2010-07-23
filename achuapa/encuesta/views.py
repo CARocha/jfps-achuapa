@@ -263,8 +263,8 @@ def arboles(request):
 #        print numero
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
 #        print porcentaje_num
-        nativos = a.aggregate( cantidad = Sum('reforestacion__cantidad_nativos'))['cantidad']
-        nonativos = a.aggregate( cantidadno = Sum('reforestacion__cantidad_nonativos'))['cantidadno']
+        nativos = query.aggregate( cantidad = Sum('reforestacion__cantidad_nativos'))['cantidad']
+        nonativos = query.aggregate( cantidadno = Sum('reforestacion__cantidad_nonativos'))['cantidadno']
         porcentaje_nativos = saca_porcentajes(nativos, totales['nativos'])
         porcentaje_nonativos = saca_porcentajes(nonativos, totales['nonativos'])
         tabla[key] = {'numero': numero, 'porcentaje_nativos': porcentaje_nativos,
@@ -381,18 +381,17 @@ def grafos_bienes(request, tipo):
         return grafos.make_graph(data, legends, 
                 'Tipos de casas', return_json = True,
                 type = grafos.PIE_CHART_3D)
-    elif tipo == 'tipopiso':
-        b = Piso.objects.all()
-        for opcion in b:
+    elif tipo == 'tipopiso': 
+        for opcion in Piso.objects.all():
             data.append(consulta.filter(tipocasa__piso=opcion).count())
-            legends.append(opcion)
+            legends.append(opcion.nombre)
         return grafos.make_graph(data, legends, 
                 'Tipo de pisos', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'tipotecho':
         for opcion in Techo.objects.all():
-            data.append(consulta.filter(tipocasa__techo=opcion[0]).count())
-            legends.append(opcion[1])
+            data.append(consulta.filter(tipocasa__techo=opcion).count())
+            legends.append(opcion.nombre)
         return grafos.make_graph(data, legends, 
                 'Dueño de propiedad', return_json = True,
                 type = grafos.PIE_CHART_3D)
@@ -425,7 +424,91 @@ def grafos_bienes(request, tipo):
 @session_required
 def equipos(request):
     '''tabla de equipos'''
-    pass
+    #******** variables globales***********
+    a = _queryset_filtrado(request)
+    num_familia = a.count()
+    #*************************************
+    
+    #********** tabla de equipos *************
+    tabla = {}
+    totales = {}
+    
+    totales['numero'] = a.aggregate(numero=Count('propiedades__equipo'))['numero']
+    totales['porciento_equipo'] = 100
+    totales['cantidad_equipo'] = a.aggregate(cantidad=Sum('propiedades__cantidad_equipo'))['cantidad']
+    totales['porciento_cantidad'] = 100
+    
+    for i in Equipos.objects.all():
+        key = slugify(i.nombre).replace('-','_')
+        query = a.filter(propiedades__equipo = i)
+        frecuencia = query.count()
+        por_equipo = saca_porcentajes(frecuencia, totales['numero'])
+        equipo = query.aggregate(equipo=Sum('propiedades__cantidad_equipo'))['equipo']
+        por_cantidad = saca_porcentajes(equipo, totales['cantidad_equipo'])
+        tabla[key] = {'frecuencia':frecuencia, 'por_equipo':por_equipo,
+                      'equipo':equipo,'por_cantidad':por_cantidad}
+    
+    #******** tabla de infraestructura *************
+    tabla_infra = {}
+    totales_infra = {}
+    
+    totales_infra['numero'] = a.aggregate(numero=Count('propiedades__infraestructura'))['numero']
+    totales_infra['porciento_infra'] = 100
+    totales_infra['cantidad_infra'] = a.aggregate(cantidad_infra=Sum('propiedades__cantidad_infra'))['cantidad_infra']
+    totales_infra['por_cantidad_infra'] = 100
+       
+    for j in Infraestructuras.objects.all():
+        key = slugify(j.nombre).replace('-','_')
+        query = a.filter(propiedades__infraestructura = j)
+        frecuencia = query.count()
+        por_frecuencia = saca_porcentajes(frecuencia, totales_infra['numero'])
+        infraestructura = query.aggregate(infraestructura=Sum('propiedades__cantidad_infra'))['infraestructura']
+        por_infra = saca_porcentajes(infraestructura, totales_infra['cantidad_infra'])
+        tabla_infra[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
+                             'infraestructura':infraestructura,'por_infra':por_infra}
+                             
+    #******************* tabla de herramientas ***************************
+    herramienta = {}
+    totales_herramientas = {}
+    
+    totales_herramientas['numero'] = a.aggregate(numero=Count('herramientas__herramienta'))['numero']
+    totales_herramientas['porciento_herra'] = 100
+    totales_herramientas['cantidad_herra'] = a.aggregate(cantidad=Sum('herramientas__numero'))['cantidad']
+    totales_herramientas['porciento_herra'] = 100
+    
+    for k in NombreHerramienta.objects.all():
+        key = slugify(k.nombre).replace('-','_')
+        query = a.filter(herramientas__herramienta = k)
+        frecuencia = query.count()
+        por_frecuencia = saca_porcentajes(frecuencia, totales_herramientas['numero'])
+        herra = query.aggregate(herramientas=Sum('herramientas__numero'))['herramientas']
+        por_herra = saca_porcentajes(herra, totales_herramientas['cantidad_herra'])
+        herramienta[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
+                            'herra':herra,'por_herra':por_herra}
+                            
+    #*************** tabla de transporte ***********************
+    transporte = {}
+    totales_transporte = {}
+    
+    totales_transporte['numero'] = a.aggregate(numero=Count('transporte__transporte'))['numero']
+    totales_transporte['porciento_trans'] = 100
+    totales_transporte['cantidad_trans'] = a.aggregate(cantidad=Sum('transporte__numero'))['cantidad']
+    totales_transporte['porciento_trans'] = 100
+    
+    for m in NombreTransporte.objects.all():
+        key = slugify(m.nombre).replace('-','_')
+        query = a.filter(transporte__transporte = m)
+        frecuencia = query.count()
+        por_frecuencia = saca_porcentajes(frecuencia, totales_transporte['numero'])
+        trans = query.aggregate(transporte=Sum('transporte__numero'))['transporte']
+        por_trans = saca_porcentajes(trans, totales_transporte['cantidad_trans'])
+        transporte[key] = {'frecuencia':frecuencia,'por_frecuencia':por_frecuencia,
+                           'trans':trans,'por_trans':por_trans}
+           
+    return render_to_response('achuapa/equipos.html', {'tabla':tabla,'totales':totales,
+                              'num_familia':num_familia,'tabla_infra':tabla_infra,
+                              'herramienta':herramienta,'transporte':transporte},
+                               context_instance=RequestContext(request))
 
 @session_required
 def ahorro_credito(request):
@@ -538,7 +621,42 @@ def luz(request):
 @session_required
 def seguridad_alimentaria(request):
     '''Seguridad Alimentaria'''
-    pass
+    #********variables globales****************
+    a = _queryset_filtrado(request)
+    num_familia = a.count()
+    #******************************************
+    tabla = {}
+    totales = {}
+    
+    totales['numero'] = a.aggregate(numero=Count('seguridad__alimento'))['numero']
+    totales['porcentaje_num'] = 100
+    totales['producen'] = a.aggregate(producen=Sum('seguridad__producen'))['producen']
+    totales['porcentaje_prod'] = 100
+    totales['compran'] = a.aggregate(compran=Sum('seguridad__compran'))['compran']
+    totales['porcentaje_compran'] = 100
+    totales['consumen'] = a.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
+    totales['porcentaje_consumen'] = 100
+    totales['consumen_invierno'] = a.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
+    totales['porcentaje_invierno'] = 100
+    
+    for u in Alimentos.objects.all():
+        key = slugify(u.nombre).replace('-','_')
+        query = a.filter(seguridad__alimento = u)
+        frecuencia = query.count()
+        producen = query.aggregate(producen=Sum('seguridad__producen'))['producen']
+        por_producen = saca_porcentajes(producen, totales['producen'])
+        compran = query.aggregate(compran=Sum('seguridad__compran'))['compran']
+        por_compran = saca_porcentajes(compran, totales['compran'])
+        consumen = query.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
+        por_consumen = saca_porcentajes(consumen, totales['consumen'])
+        invierno = query.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
+        por_invierno = saca_porcentajes(invierno, totales['consumen_invierno'])
+        tabla[key] = {'frecuencia':frecuencia, 'producen':producen, 'por_producen':por_producen,
+                      'consumen':consumen, 'por_consumen':por_consumen, 'invierno':invierno,
+                      'por_invierno':por_invierno}
+                      
+    return render_to_response('achuapa/seguridad.html',{'tabla':tabla},
+                               context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..
 
@@ -570,6 +688,7 @@ VALID_VIEWS = {
         'ahorro_credito': ahorro_credito,
         'servicios': servicios,
         'educacion': educacion,
+        'equipos': equipos,
         }
 
 def saca_porcentajes(values):
