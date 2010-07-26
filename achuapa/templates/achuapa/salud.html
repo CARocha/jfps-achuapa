@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Salud{% endblock %}
+{%block titulo%}La Salud{%endblock%}
+{% block contenido %}
+<table>
+ <thead>
+    <tr>
+        <th></th>
+        <th>número</th>
+        <th>%Buena Salud</th>
+        <th>%Salud Delicada</th>
+        <th>%Enfermedades Crónica</th>
+    </tr>
+ </thead>
+    {% for fila in tabla_estado%}
+    <tr>
+        {%for celda in fila%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+</table>
+
+<table>
+ <thead>
+    <tr>
+        <th></th>
+        <th>número</th>
+        <th>%Visita Centro de Salud</th>
+        <th>%Visita Médico Privado</th>
+        <th>%Visita Clínica</th>
+        <th># No logra salud</th>
+    </tr>
+ </thead>
+    {% for fila in tabla_sitio%}
+    <tr>
+        {%for celda in fila%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+</table>
+
+
+{% endblock %}

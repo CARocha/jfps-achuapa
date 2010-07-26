@@ -580,7 +580,38 @@ def educacion(request):
 @session_required
 def salud(request):
     '''salud'''
-    pass
+    consulta = _queryset_filtrado(request)
+    tabla_estado = []
+    tabla_sitio = []
+
+    for choice in SEXO_CHOICES:
+        query = consulta.filter(salud__edad=choice[0])
+        numero = query.count()
+        resultados = query.aggregate(bs = Sum('salud__buena_salud'),
+                                     ds = Sum('salud__delicada_salud'),
+                                     ec = Sum('salud__cronica'),
+                                     centro = Sum('salud__centro'),
+                                     medico = Sum('salud__medico'),
+                                     clinica = Sum('salud__clinica'),
+                                     nologra = Sum('salud__nologra')
+                                     )
+        fila_estado = [choice[1], numero,
+                saca_porcentajes(resultados['bs'], numero, False),
+                saca_porcentajes(resultados['ds'], numero, False),
+                saca_porcentajes(resultados['ec'], numero, False)]
+        tabla_estado.append(fila_estado)
+
+        fila_sitio = [choice[1], numero,
+                      calcular_positivos(resultados['centro'], numero),
+                      calcular_positivos(resultados['medico'], numero),
+                      calcular_positivos(resultados['clinica'], numero),
+                      resultados['nologra']]
+        tabla_sitio.append(fila_sitio)
+
+    return render_to_response('achuapa/salud.html', 
+                              {'tabla_estado':tabla_estado, 'tabla_sitio': tabla_sitio},
+                              context_instance=RequestContext(request))
+    
 
 @session_required
 def agua(request):
@@ -664,6 +695,7 @@ VALID_VIEWS = {
         'educacion': educacion,
         'equipos': equipos,
         'seguridad_alimentaria': seguridad_alimentaria,
+        'salud': salud,
         }
 
 def saca_porcentajes(values):
@@ -675,9 +707,21 @@ def saca_porcentajes(values):
         values[i] = "%.2f" % porcentaje + '%' 
     return values
 
-def saca_porcentajes(dato, total):
-    return (dato/float(total)) * 100 if dato!=None else 0
-#    try:
-#        (dato/float(total)) * 100 if dato!=None else 0 
-#    except:    
-#        pass
+def saca_porcentajes(dato, total, formato=True):
+    '''Si formato es true devuelve float caso contrario es cadena'''
+    if dato != None:
+        porcentaje = (dato/float(total)) * 100 if total != None or total != 0 else 0
+        if formato:
+            return porcentaje
+        else:
+            return '%.2f' % porcentaje
+    else: 
+        return 0
+
+def calcular_positivos(suma, numero):
+    '''Retorna el porcentaje de positivos'''
+    try:
+        positivos = (numero * 2) - suma
+        return '%.2f' % saca_porcentajes(positivos, numero)
+    except:
+        return 0
