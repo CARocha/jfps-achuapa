@@ -106,57 +106,33 @@ def inicio(request):
 @session_required
 def familia(request):
     '''Tabla de familias(migracion)'''
-    query = _queryset_filtrado(request)
+    #*******Variables globales**********
+    a = _queryset_filtrado(request)
+    num_familia = a.count()
+    #**********************************
     tabla = {}
-    totales = []
-    for i in range(1,7):
-        migracion = query.filter(migracion__edades = i).aggregate(Sum('migracion__total_familia'))
-        totales.append(migracion)
-        viven = query.filter(migracion__edades = i).aggregate(Sum('migracion__viven_casa'))
-        totales.append(viven)
-        fuera = query.filter(migracion__edades = i).aggregate(Sum('migracion__viven_fuera'))
-        totales.append(fuera)
+    totales = {}
+    totales['numero'] = a.aggregate(numero=Count('migracion__total_familia'))['numero'] 
+    totales['porcentaje_num'] = 100
+    totales['viven'] = a.aggregate(viven=Sum('migracion__viven_casa'))['viven']
+    totales['porcentaje_viven'] = 100
+    totales['fuera'] = a.aggregate(fuera=Sum('migracion__viven_fuera'))['fuera']
+    totales['porcentaje_fuera'] = 100
+
+
+    for opcion in CHOICE_MIGRACION:
+        key = (opcion[1]).replace('-','_')
+        query = a.filter(migracion__edades = opcion[0])
+        numero = query.count()
+        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        vive = query.aggregate(vive = Sum('migracion__viven_casa'))['vive']
+        porcentaje_viven = saca_porcentajes(vive, totales['viven'])
+        fuera = query.aggregate(fuera = Sum('migracion__viven_fuera'))['fuera']
+        porcentaje_fuera = saca_porcentajes(fuera, totales['fuera'])
+        tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
+                      'vive': vive, 'porcentaje_viven': porcentaje_viven,
+                      'fuera':fuera,'porcentaje_fuera':porcentaje_fuera}
     
-    
-    print totales
-    
-    
-    #TODO: columnas totales                         
-    hombre_adulto = query.filter(migracion__edades = 1).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
-    mujeres_adulto = query.filter(migracion__edades = 2).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
-    hombre_adolecentes = query.filter(migracion__edades = 3).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
-    mujeres_adolecentes = query.filter(migracion__edades = 4).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
-    nino = query.filter(migracion__edades = 5).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
-    nina = query.filter(migracion__edades = 6).aggregate(Sum('migracion__total_familia'))['migracion__total_familia__sum']
-#    prueba = hombre_adulto + mujeres_adulto + hombre_adolecentes + mujeres_adolecentes + nino + nina
-    #prueba de lista
-#    a = _queryset_filtrado(request)
-#    total={}
-#    nada=[]
-#    for i in range(1,7):
-#        total['carlos'] = a.filter(migracion__edades=i).aggregate(migracion=Sum('migracion__total_familia'),viven=Sum('migracion__viven_casa'),fuera=Sum('migracion__viven_fuera'))
-#        nada.append(dict.copy(total))
-        
-    
-   #TODO: columnas que viven en casa
-    hombre_adulto_viven = query.filter(migracion__edades = 1).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    mujeres_adulto_viven = query.filter(migracion__edades = 2).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    hombre_adolecentes_viven = query.filter(migracion__edades = 3).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    mujeres_adolecentes_viven = query.filter(migracion__edades = 4).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    nino_viven = query.filter(migracion__edades = 5).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    nina_viven = query.filter(migracion__edades = 6).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    
-    #TODO: columnas que viven fuera de casa
-    hombre_adulto_fuera = query.filter(migracion__edades = 1).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
-    mujeres_adulto_fuera = query.filter(migracion__edades = 2).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
-    hombre_adolecentes_fuera = query.filter(migracion__edades = 3).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
-    mujeres_adolecentes_fuera = query.filter(migracion__edades = 4).aggregate(Sum('migracion__viven_casa'))['migracion__viven_casa__sum']
-    nino_fuera = query.filter(migracion__edades = 5).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
-    nina_fuera = query.filter(migracion__edades = 6).aggregate(Sum('migracion__viven_fuera'))['migracion__viven_fuera__sum']
-    
-    
-#    prueba = _queryset_filtrado(request).filter(migracion__edades=1).aggregate(Sum('migracion__total_familia'))
-#    print prueba
     return render_to_response('achuapa/familia.html',locals(),
                               context_instance=RequestContext(request))
 
@@ -260,9 +236,7 @@ def arboles(request):
         key = slugify(activ.nombre).replace('-', '_')
         query = a.filter(reforestacion__reforestacion = activ)
         numero = query.count()
-#        print numero
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
-#        print porcentaje_num
         nativos = query.aggregate( cantidad = Sum('reforestacion__cantidad_nativos'))['cantidad']
         nonativos = query.aggregate( cantidadno = Sum('reforestacion__cantidad_nonativos'))['cantidadno']
         porcentaje_nativos = saca_porcentajes(nativos, totales['nativos'])
@@ -643,19 +617,20 @@ def seguridad_alimentaria(request):
         key = slugify(u.nombre).replace('-','_')
         query = a.filter(seguridad__alimento = u)
         frecuencia = query.count()
-        producen = query.aggregate(producen=Sum('seguridad__producen'))['producen']
+        producen = query.aggregate(producen=Count('seguridad__producen'))['producen']
         por_producen = saca_porcentajes(producen, totales['producen'])
-        compran = query.aggregate(compran=Sum('seguridad__compran'))['compran']
+        compran = query.aggregate(compran=Count('seguridad__compran'))['compran']
         por_compran = saca_porcentajes(compran, totales['compran'])
-        consumen = query.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
+        consumen = query.aggregate(consumen=Count('seguridad__consumen'))['consumen']
         por_consumen = saca_porcentajes(consumen, totales['consumen'])
-        invierno = query.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
+        invierno = query.aggregate(invierno=Count('seguridad__consumen_invierno'))['invierno']
         por_invierno = saca_porcentajes(invierno, totales['consumen_invierno'])
         tabla[key] = {'frecuencia':frecuencia, 'producen':producen, 'por_producen':por_producen,
-                      'consumen':consumen, 'por_consumen':por_consumen, 'invierno':invierno,
+                      'compran':compran,'por_compran':por_compran,'consumen':consumen, 
+                      'por_consumen':por_consumen, 'invierno':invierno,
                       'por_invierno':por_invierno}
                       
-    return render_to_response('achuapa/seguridad.html',{'tabla':tabla},
+    return render_to_response('achuapa/seguridad.html',{'tabla':tabla,'num_familia':num_familia},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..
@@ -678,7 +653,6 @@ def get_socio(request, comunidad):
 #TODO: completar esto
 VALID_VIEWS = {
         'familia': familia,
-        'seguridad_alimentaria': seguridad_alimentaria,
         'luz': luz,
         'fincas': fincas,
         'arboles': arboles,
@@ -703,3 +677,7 @@ def saca_porcentajes(values):
 
 def saca_porcentajes(dato, total):
     return (dato/float(total)) * 100 if dato!=None else 0
+#    try:
+#        (dato/float(total)) * 100 if dato!=None else 0 
+#    except:    
+#        pass

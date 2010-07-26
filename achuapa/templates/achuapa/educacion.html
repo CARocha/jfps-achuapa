@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {%load unslugify %}
 {% block title %}JFPS - Fincas{% endblock %}
+{%block titulo%}La Educación{%endblock%}
 {% block contenido %}
-<table border='1'>
+<table>
+ <thead>
     <tr>
-        <td></td>
-        <td>número</td>
-        <td>%</td>
+        <th></th>
+        <th>número</th>
+        <th>%</th>
     </tr>
+ </thead>
     {% for fila in tabla_no %}
     <tr>
         {%for celda in fila%}
@@ -17,18 +20,20 @@
     {%endfor%}
 </table>
 
-<table border='1'>
+<table>
+ <thead>
     <tr>
-        <td></td>
-        <td>Número total</td>
-        <td>No sabe leer</td>
-        <td>Primaria incompleta</td>
-        <td>Primaria completa</td>
-        <td>Secundaria incompleta</td>
-        <td>Secundaria completa</td>
-        <td>estudiante técnico o universitario</td>
-        <td>Técnica o universidad completa</td>
+        <th></th>
+        <th>Número total</th>
+        <th>No sabe leer</th>
+        <th>Primaria incompleta</th>
+        <th>Primaria completa</th>
+        <th>Secundaria incompleta</th>
+        <th>Secundaria completa</th>
+        <th>estudiante técnico o universitario</th>
+        <th>Técnica o universidad completa</th>
     </tr>
+ </thead>
     {%for fila in tabla_educacion%}
     <tr>
         <td>{{fila.label}}</td>

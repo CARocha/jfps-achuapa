@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {%load unslugify %}
 {% block title %}JFPS - Fincas{% endblock %}
+{%block titulo%}Ahorro y crédito{%endblock%}
 {% block contenido %}
-Ahorro
-<table border='1'>
+
+<table>
+<caption>Los Ahorro</caption>
+ <thead>
     <tr>
-        <td>Pregunta</td>
-        <td>Número</td>
-        <td>Porcentaje Número</td>
+        <th>Pregunta</th>
+        <th>Número</th>
+        <th>Porcentaje Número</th>
         {%for columna in columnas_ahorro%}
-        <td>{{columna}}</td>
+        <th>{{columna}}</th>
         {%endfor%}
     </tr>
+ </thead>
     {%for key, value in tabla_ahorro.items%}
     <tr>
         <td>{{key|unslugify}}</td>
@@ -21,13 +25,16 @@ Ahorro
     </tr>
     {%endfor%}
 </table>
-Crédito
-<table border='1'>
+
+<table>
+<caption>Los créditos</caption>
+ <thead>
     <tr>
-        <td></td>
-        <td>Número</td>
-        <td>Porcentaje</td>
+        <th></th>
+        <th>Número</th>
+        <th>Porcentaje</th>
     </tr>
+ </thead>
     <tr>
         <td>Recibe Crédito</td>
         {%for celda in tabla_credito.recibe%}

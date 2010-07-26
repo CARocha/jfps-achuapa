@@ -4,15 +4,17 @@
 {% block contenido %}
 Número de familia: {{num_familia}}
 
-<table border='1'>
+<table>
 <caption>Los Equipos</caption>
+ <thead>
     <tr>
-        <td>EQUIPOS</td>
-        <td>FRECUENCIA</td>
-        <td>%</td>
-        <td>CANTIDAD</td>
-        <td>%</td>
+        <th>EQUIPOS</th>
+        <th>FRECUENCIA</th>
+        <th>%</th>
+        <th>CANTIDAD</th>
+        <th>%</th>
     </tr>
+  </thead>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
@@ -24,15 +26,17 @@ Número de familia: {{num_familia}}
     {%endfor%}
 </table>
 
-<table border='1'>
+<table>
 <caption>Las Infraestructuras</caption>
+ <thead>
     <tr>
-        <td>INFRAESTRUCTURA</td>
-        <td>FRECUENCIA</td>
-        <td>%</td>
-        <td>CANTIDAD</td>
-        <td>%</td>
+        <th>INFRAESTRUCTURA</th>
+        <th>FRECUENCIA</th>
+        <th>%</th>
+        <th>CANTIDAD</th>
+        <th>%</th>
     </tr>
+  </thead>
     {%for key, value in tabla_infra.items%}
     <tr>
         <td>{{key|unslugify}}</td>
@@ -44,15 +48,17 @@ Número de familia: {{num_familia}}
     {%endfor%}
 </table>
 
-<table border='1'>
+<table>
 <caption>Las Herramientas</caption>
+ <thead>
     <tr>
-        <td>HERRAMIENTAS</td>
-        <td>FRECUENCIA</td>
-        <td>%</td>
-        <td>CANTIDAD</td>
-        <td>%</td>
+        <th>HERRAMIENTAS</th>
+        <th>FRECUENCIA</th>
+        <th>%</th>
+        <th>CANTIDAD</th>
+        <th>%</th>
     </tr>
+ </thead>
     {%for key, value in herramienta.items%}
     <tr>
         <td>{{key|unslugify}}</td>
@@ -64,15 +70,17 @@ Número de familia: {{num_familia}}
     {%endfor%}
 </table>
 
-<table border='1'>
+<table>
 <caption>Los Transportes</caption>
+ <thead>
     <tr>
-        <td>TRANSPORTE</td>
-        <td>FRECUENCIA</td>
-        <td>%</td>
-        <td>CANTIDAD</td>
-        <td>%</td>
+        <th>TRANSPORTE</th>
+        <th>FRECUENCIA</th>
+        <th>%</th>
+        <th>CANTIDAD</th>
+        <th>%</th>
     </tr>
+ </thead>
     {%for key, value in transporte.items%}
     <tr>
         <td>{{key|unslugify}}</td>

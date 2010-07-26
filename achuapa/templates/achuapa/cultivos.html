@@ -1,17 +1,20 @@
 {% extends "base.html"%}
 {%load unslugify %}
+{%block titulo%}Los Cultivos{%endblock%}
 {%block contenido%}
 
 número de familias: {{num_familias}}
-<table border='1'>
+<table>
 <caption>Los cultivos y la producción</caption>
+ <thead>
     <tr>
-        <td>CULTIVOS</td>
-        <td>TOTALES</td>
-        <td>CONSUMO</td>
-        <td>VENTA LIBRE</td>
-        <td>VENTA ORGANIZADA</td>
+        <th>CULTIVOS</th>
+        <th>TOTALES</th>
+        <th>CONSUMO</th>
+        <th>VENTA LIBRE</th>
+        <th>VENTA ORGANIZADA</th>
     </tr>
+ </thead>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>

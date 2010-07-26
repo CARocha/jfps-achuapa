@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {%load unslugify %}
 {% block title %}JFPS - Los Arboles{% endblock %}
-
+{%block titulo%}Los Arboles{%endblock%}
 {% block contenido %}
 
 número de familias: {{num_familias}}
-<table border='1'>
+<table>
 <caption>Tabla Existencia de Arboles</caption>
     <thead>
          <tr>
@@ -36,16 +36,18 @@ número de familias: {{num_familias}}
 </tr>
 </table>
 <br><br>
-<table border='1'>
+<table>
 <caption>Reforestación en ultimo año</caption>
+ <thead>
     <tr>
-        <td>Actividad</td>
-        <td>Cantidad</td>
-        <td>Nativos</td>
-        <td>% Nativo</td>
-        <td>No Nativos</td>
-        <td>% Nonativos</td>
+        <th>Actividad</th>
+        <th>Cantidad</th>
+        <th>Nativos</th>
+        <th>% Nativo</th>
+        <th>No Nativos</th>
+        <th>% Nonativos</th>
     </tr>
+ </thead>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>

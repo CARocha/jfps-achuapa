@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 {%load unslugify %}
 {% block title %}JFPS - Fincas{% endblock %}
+{%block titulo%}Las Fincas{%endblock%}
 {% block contenido %}
-<table border='1'>
+
+<table>
+<caption>Las Fincas</caption>
+ <thead>
     <tr>
-        <td></td>
-        <td>Número</td>
-        <td>%</td>
-        <td>Manzanas</td>
-        <td>%</td>
+        <th></th>
+        <th>Número</th>
+        <th>%</th>
+        <th>Manzanas</th>
+        <th>%</th>
     </tr>
+ </thead>
     <tr>
         <td>Area Total</td>
         <td>{{totales.numero}}</td>
