@@ -1,5 +1,5 @@
 /* Reset */
-html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote,
 a, font, img, ul, li {
 	margin: 0;
 	padding: 0;
@@ -25,7 +25,6 @@ ol, ul {
 body {
   background:#bfa17b;
   background-image: url(../imagen/bg-body.png);
-/*  background-repeat: repeat-x;*/
   font-family: 'Trebuchet MS', Helvetica, sans-serif;
   font-size:14px;
   padding:0;
@@ -81,12 +80,6 @@ p {
 
 /* --------------Comienza Header-------------- */
 
-/*#header{*/
-/*  width:100%;*/
-/*  height:65px;*/
-/*  background-color: #8e451a;*/
-/*  background-image: url(../imagen/bg-header.png);*/
-/*}*/
 #header {
 overflow: hidden;
 height: 60px;
@@ -195,7 +188,45 @@ background-image: url(../imagen/bg-header.png);
 
 /* --------------Termina Header-------------- */
 
+/* --------------Comienza menu linea base*/
 
+#menu ul {
+    background-image: url(../imagen/bg-header.png);
+    list-style: none;
+    font-size: 14px;
+    font-weight: bold;
+    width: 950px;
+    height: 30px;
+    float: left;
+    padding:7px;
+    margin-bottom: 9px;
+    -moz-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+#menu ul li {
+display: inline;
+}
+#menu ul li a:link, #menu ul li a:visited {
+color:#92b74e;
+padding: 9px 6px;
+float: left;
+text-decoration: none;
+-moz-border-radius: 10px;
+-khtml-border-radius: 10px;
+-webkit-border-radius: 10px;
+}
+#menu ul li a:hover, #menu ul li a:active{
+color: #fff;
+background-color: #333;
+height: 10px;
+text-shadow: 2px 2px 5px #fff;
+-moz-text-shadow: 2px 2px 5px #fff;
+-webkit-text-shadow: 2px 2px 5px #fff;
+}
+
+/* ---------------Termina menu linea base*/
 
 
 
@@ -281,12 +312,10 @@ background-image: url(../imagen/bg-header.png);
 
 #filtros_principales{
   width:425px;
-/*  height:240px;*/
 }
 
 .boton_filtro{
   width:934px;
-/*  height:214px;*/
   background: #f2f2f2;
   color:#000;
   font-size:14px;
@@ -310,12 +339,6 @@ background-image: url(../imagen/bg-header.png);
     text-decoration: underline;
     
 }
-
-
-/*#filtros_principales a, a:visited{*/
-/*  text-decoration:none;*/
-/*  color:#000;*/
-/*}*/
 
 #foto_menu{
   margin-right:10px;
@@ -351,18 +374,23 @@ background-image: url(../imagen/bg-header.png);
   background-repeat: no-repeat;
 }
 #creditos{
-color:#aaccee;
-font-size:14px;
-width:160px;
-height:60px;
-padding-top:10px;
-margin-left:10px;  float:right;
+    color:#aaccee;
+    font-size:14px;
+    width:160px;
+    height:60px;
+    padding-top:10px;
+    margin-left:10px;  float:right;
 }
 
-#simas a{
-  color:#3d3d3d;
-  text-decoration:underline;
-  font-weight:bold;
+#creditos a{
+    color: #92b74e;
+    font-size: 17px;
+    text-decoration: none;
+}
+
+#creditos a:hover{
+    text-shadow: 2px 2px 3px #222;
+    color: black;   
 }
 
 /* Termina footer */
@@ -373,18 +401,20 @@ margin-left:10px;  float:right;
 /* CSS Especial para las tablas */
 
 caption {
+    color: #944317;
 	padding: 0 0 5px 0;
 	margin:0 auto;
 	width:auto;
 	font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
 	text-align: right;
 }
 
-#colum_izq table {
+table {
 	width:640px;
 }
 
-#colum_izq th{
+th{
 	font: bold 10px/22px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color: #4f6b72;
 	border-right: 1px solid #C1DAD7;
@@ -398,7 +428,7 @@ caption {
 	vertical-align:middle;
 }
 
-#colum_izq td.total{
+td.total{
 	border-top: 0;
 	border-left: 0;
 	border-right: 1px solid #C1DAD7;
@@ -409,36 +439,36 @@ caption {
 	letter-spacing:1px;
 }
 
-#colum_izq th.sortable,
-#colum_izq th.sortable-text,
-#colum_izq th.sortable-date,
-#colum_izq th.sortable-keep,
-#colum_izq th.sortable-date-dmy,
-#colum_izq th.sortable-numeric,
-#colum_izq th.sortable-currency,
-#colum_izq th.sortable-sortByTwelveHourTimestamp,
-#colum_izq th.sortable-sortIPAddress,
-#colum_izq th.sortable-sortEnglishLonghandDateFormat,
-#colum_izq th.sortable-sortScientificNotation,
-#colum_izq th.sortable-sortImage,
-#colum_izq th.sortable-sortFileSize,
-#colum_izq th.sortable-sortAlphaNumeric,
-#colum_izq th.sortable-sortEnglishDateTime{
+th.sortable,
+th.sortable-text,
+th.sortable-date,
+th.sortable-keep,
+th.sortable-date-dmy,
+th.sortable-numeric,
+th.sortable-currency,
+th.sortable-sortByTwelveHourTimestamp,
+th.sortable-sortIPAddress,
+th.sortable-sortEnglishLonghandDateFormat,
+th.sortable-sortScientificNotation,
+th.sortable-sortImage,
+th.sortable-sortFileSize,
+th.sortable-sortAlphaNumeric,
+th.sortable-sortEnglishDateTime{
 	cursor:pointer;
 	background: #CAE8EA url(../imagen/bg_header_sortable.jpg) no-repeat;
 	padding: 8px 12px 4px 16px;
 }
 
-#colum_izq th.forwardSort{
+th.forwardSort{
 	background:#CAE8EA url(../imagen/bg_header_down.jpg) no-repeat 0 0;
 }
 
-#colum_izq th.reverseSort{
+th.reverseSort{
 	background:#CAE8EA url(../imagen/bg_header_up.jpg) no-repeat 0 0;
 }
 
-#colum_izq table thead th.forwardSort a,
-#colum_izq table thead th.reverseSort a {
+table thead th.forwardSort a,
+table thead th.reverseSort a {
 	color:#000;
 	text-decoration:none;
 }
@@ -456,30 +486,30 @@ th.sort-active a {
 }
 */
 
-#colum_izq th a {
+th a {
 	text-decoration:none;
 	color: #4f6b72;
 	background:transparent;
 }
 
-#colum_izq td a {
+td a {
 	text-decoration:none;
 	color:#239;
 	background:transparent;
 }
 
-#colum_izq td img {
+td img {
 	margin:0 auto;
 	border:3px solid #ddd;
 }
 
-#colum_izq td a:hover {
+td a:hover {
 	color:#a84444;
 	border-bottom:1px dotted #a80000;
 	background:transparent;
 }
 
-#colum_izq td {
+td {
 	font: normal 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	border-right: 1px solid #C1DAD7;
 	border-bottom: 1px solid #C1DAD7;
@@ -488,11 +518,11 @@ th.sort-active a {
 	background: #FFFFFF;
 }
 
-#colum_izq td.lft {
+td.lft {
 	text-align:left;
 }
 
-#colum_izq tr.alt {
+tr.alt {
 	background: #F5FAFA;
 	color: #797268;
 }
@@ -500,21 +530,21 @@ th.sort-active a {
 /* Poor old Internet Explorer 6 has a bug that means we can't use background images for the table rows
    as it trys to download the image each and every time that it is used (which means a 1000 row table
    will produce 1000 http requests for the image in question) */
-#colum_izq tr[class="alt"] td {
+tr[class="alt"] td {
 	background: #F5FAFA url(../media/td_alt.jpg) no-repeat;
 }
 
-#colum_izq td[class~="alt"]{
+td[class~="alt"]{
 	background: #edf3f3 url(../media/col_alt.jpg) no-repeat !important;
 }
 
 /* Poor old Internet Explorer won't see the next two rules either as it doesn't get :first-child */
-#colum_izq tbody tr.alt td:first-child{
+tbody tr.alt td:first-child{
 	background: #F5FAFA url(../imagen/bullet2.gif) no-repeat;
 	font-weight:bold;
 }
 
-#colum_izq tbody tr td:first-child {
+tbody tr td:first-child {
 	background: #fff url(../imagen/bullet1.gif) no-repeat;
 	font-weight:bold;
 }
