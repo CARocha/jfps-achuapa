@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Agua{% endblock %}
+{%block titulo%}Agua{%endblock%}
+{% block contenido %}
+<table>
+ <thead>
+    <tr>
+        <th>Fuente</th>
+        <th>Frecuencia</th>
+        <th>%</th>
+        <th>Cantidad</th>
+        <th>% Cantidad</th>
+    </tr>
+ </thead>
+    {% for fila in tabla%}
+    <tr>
+        {%for celda in fila%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+    <tr>
+        <td>Totales</td>
+        {%for total in totales%}
+        <td>{{total}}</td>
+        {%endfor%}
+    </tr>
+</table>
+
+{% endblock %}

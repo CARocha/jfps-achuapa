@@ -616,7 +616,24 @@ def salud(request):
 @session_required
 def agua(request):
     '''Agua'''
-    pass
+    consulta = _queryset_filtrado(request)
+    tabla = []
+    total = consulta.aggregate(total=Count('agua__fuente'), cantidad=Sum('agua__cantidad'))
+
+    for choice in CHOICE_FUENTE_AGUA:
+        query = consulta.filter(agua__fuente=choice[0])
+        numero = query.count()
+        resultados = query.aggregate(cantidad=Sum('agua__cantidad'))
+        fila = [choice[1], numero,
+                saca_porcentajes(numero, total['total'], False),
+                resultados['cantidad'],
+                saca_porcentajes(resultados['cantidad'], total['cantidad'], False)]
+        tabla.append(fila)
+
+    totales = [total['total'], 100, total['cantidad'], 100]
+    return render_to_response('achuapa/agua.html', 
+                              {'tabla':tabla, 'totales':totales},
+                              context_instance=RequestContext(request))
 
 @session_required
 def luz(request):
@@ -696,6 +713,7 @@ VALID_VIEWS = {
         'equipos': equipos,
         'seguridad_alimentaria': seguridad_alimentaria,
         'salud': salud,
+        'agua': agua,
         }
 
 def saca_porcentajes(values):
