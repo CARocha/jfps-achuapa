@@ -1,22 +1,24 @@
 {% extends "base.html"%}
 {%load unslugify %}
-
+{%block titulo%}La Seguridad Alimentaria{%endblock%}
 {% block contenido %}
-
-<table border='1'>
+número de familias: {{num_familia}}
+<table>
 <caption>La Seguridad Alimentaria</caption>
+ <thead>
     <tr>
-        <td>ALIMENTOS</td>
-        <td>FRECUENCIA</td>
-        <td>PRODUCEN</td>
-        <td>%</td>
-        <td>COMPRAN</td>
-        <td>%</td>
-        <td>CONSUMEN</td>
-        <td>%</td>
-        <td>CONSUMEN INVIERNO</td>
-        <td>%</td>
+        <th>ALIMENTOS</th>
+        <th>FRECUENCIA</th>
+        <th>PRODUCEN</th>
+        <th>%</th>
+        <th>COMPRAN</th>
+        <th>%</th>
+        <th>CONSUMEN</th>
+        <th>%</th>
+        <th>CONSUMEN INVIERNO</th>
+        <th>%</th>
     </tr>
+ </thead>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>

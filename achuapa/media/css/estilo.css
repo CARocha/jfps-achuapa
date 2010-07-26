@@ -219,7 +219,7 @@ text-decoration: none;
 }
 #menu ul li a:hover, #menu ul li a:active{
 color: #fff;
-background-color: #333;
+background: rgba(146,183,78,0.95);
 height: 10px;
 text-shadow: 2px 2px 5px #fff;
 -moz-text-shadow: 2px 2px 5px #fff;
