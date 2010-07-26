@@ -638,7 +638,22 @@ def agua(request):
 @session_required
 def luz(request):
     '''Tabla de acceso a energia electrica'''
-    pass
+    consulta = _queryset_filtrado(request)
+    tabla = []
+    total = consulta.aggregate(total=Count('propiedades__cantidad_equipo'))
+
+    for choice in CHOICE_EQUIPO:
+        query = consulta.filter(propiedades__tipo_equipo=choice[0])
+        resultados = query.aggregate(cantidad=Sum('propiedades__cantidad_equipo'))
+                                     
+        fila = [choice[1], 
+                resultados['cantidad'],
+                saca_porcentajes(resultados['cantidad'], total['total'], False)]
+        tabla.append(fila)
+
+    return render_to_response('achuapa/luz.html', 
+                              {'tabla':tabla},
+                              context_instance=RequestContext(request))
 
 @session_required
 def seguridad_alimentaria(request):
@@ -714,6 +729,7 @@ VALID_VIEWS = {
         'seguridad_alimentaria': seguridad_alimentaria,
         'salud': salud,
         'agua': agua,
+        'luz': luz,
         }
 
 def saca_porcentajes(values):

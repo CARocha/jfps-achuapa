@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Luz{% endblock %}
+{%block titulo%}Luz{%endblock%}
+{% block contenido %}
+<table>
+ <thead>
+    <tr>
+        <th>Fuente</th>
+        <th>Frecuencia</th>
+        <th>%</th>
+    </tr>
+ </thead>
+    {% for fila in tabla%}
+    <tr>
+        {%for celda in fila%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+</table>
+
+{% endblock %}
