@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{%load unslugify %}
+{% block title %}JFPS - Organización{% endblock %}
+{%block titulo%}La Organización{%endblock%}
+{% block contenido %}
+
+<table>
+ <thead>
+    <tr>
+        <th></th>
+        <th colspan="4">Socio/Socia</th>
+        <th colspan="4">Tiempo</th>
+    </tr>
+    <tr>
+        <th></th>
+        <th>Si</th>
+        <th>%</th>
+        <th>No</th>
+        <th>%</th>
+        <th>Menos de 5 años</th>
+        <th>%</th>
+        <th>Más de 5 años</th>
+        <th>%</th>
+    </tr>
+ </thead>
+    <tr>
+        <td>Hombres</td>
+        {%for dato in tabla_socio.hombres_socio%}
+        <td>{{dato}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Esposas</td>
+        {%for dato in tabla_socio.hombres_conyugue%}
+        <td>{{dato}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Hijos/Hijas</td>
+        {%for dato in tabla_socio.hombres_hijo%}
+        <td>{{dato}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td colspan="9"></td>
+    </tr>
+    <tr>
+        <td>Mujeres</td>
+        {%for dato in tabla_socio.mujeres_socio%}
+        <td>{{dato}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Esposos</td>
+        {%for dato in tabla_socio.mujeres_conyugue%}
+        <td>{{dato}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Hijos/Hijas</td>
+        {%for dato in tabla_socio.mujeres_hijo%}
+        <td>{{dato}}</td>
+        {%endfor%}
+    </tr>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="4">Integra Junta Directiva</th>
+            <th colspan="4">Integra CT</th>
+            <th colspan="4">Rec Capac</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>Si</th>
+            <th>%</th>
+            <th>No</th>
+            <th>%</th>
+            <th>Si</th>
+            <th>%</th>
+            <th>No</th>
+            <th>%</th>
+            <th>Si</th>
+            <th>%</th>
+            <th>No</th>
+            <th>%</th>
+        </tr>
+    </thead>
+    <tr>
+        <td>Hombres</td>
+        {%for celda in tabla_beneficio.hombres%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    <tr>
+        <td>Mujeres</td>
+        {%for celda in tabla_beneficio.mujeres%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+</table>
+
+
+{% endblock %}
