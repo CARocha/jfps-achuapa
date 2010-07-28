@@ -680,20 +680,22 @@ def seguridad_alimentaria(request):
         key = slugify(u.nombre).replace('-','_')
         query = a.filter(seguridad__alimento = u)
         frecuencia = query.count()
-        producen = query.aggregate(producen=Count('seguridad__producen'))['producen']
+        producen = query.aggregate(producen=Sum('seguridad__producen'))['producen']
         por_producen = saca_porcentajes(producen, totales['producen'])
-        compran = query.aggregate(compran=Count('seguridad__compran'))['compran']
+        compran = query.aggregate(compran=Sum('seguridad__compran'))['compran']
         por_compran = saca_porcentajes(compran, totales['compran'])
-        consumen = query.aggregate(consumen=Count('seguridad__consumen'))['consumen']
+        consumen = query.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
         por_consumen = saca_porcentajes(consumen, totales['consumen'])
-        invierno = query.aggregate(invierno=Count('seguridad__consumen_invierno'))['invierno']
+        invierno = query.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
         por_invierno = saca_porcentajes(invierno, totales['consumen_invierno'])
         tabla[key] = {'frecuencia':frecuencia, 'producen':producen, 'por_producen':por_producen,
                       'compran':compran,'por_compran':por_compran,'consumen':consumen, 
                       'por_consumen':por_consumen, 'invierno':invierno,
                       'por_invierno':por_invierno}
                       
-    return render_to_response('achuapa/seguridad.html',{'tabla':tabla,'num_familia':num_familia},
+    return render_to_response('achuapa/seguridad.html',{'tabla':tabla,
+                              'num_familia':num_familia,
+                              'totales':totales},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..
