@@ -139,8 +139,67 @@ def familia(request):
 @session_required
 def organizacion(request):
     '''tabla de organizacion'''
-    pass
+    tabla_socio = {}
+    tabla_beneficio = {'hombres': [], 'mujeres': []}
+    consulta = _queryset_filtrado(request)
 
+    #fila si % no % <5 % >5 %
+    hombres = consulta.filter(datos__sexo = 1).aggregate(socio = Sum('organizacion__socio'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'),
+                                                         conyugue = Sum('organizacion__socio_cooperativa'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         hijo = Sum('organizacion__hijos_socios'),
+                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         num = Count('organizacion__socio'),
+                                                         miembro = Sum('organizacion__miembro'),
+                                                         comision = Sum('organizacion__comision'),
+                                                         capacitacion = Sum('organizacion__cargo'))
+
+    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'),
+                                                         conyugue = Sum('organizacion__socio_cooperativa'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         hijo = Sum('organizacion__hijos_socios'),
+                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         num = Count('organizacion__socio'),
+                                                         miembro = Sum('organizacion__miembro'),
+                                                         comision = Sum('organizacion__comision'),
+                                                         capacitacion = Sum('organizacion__cargo'))
+    
+    lista_llaves = [('socio', 'tiempo_socio'), 
+                    ('conyugue', 'tiempo_conyugue'), 
+                    ('hijo', 'tiempo_hijo')]
+
+    for valor, tiempo in lista_llaves: 
+        tabla_socio['hombres_' + valor] = [calcular_positivos(hombres[valor], hombres['num'], False),
+                                          calcular_positivos(hombres[valor], hombres['num'], True),
+                                          calcular_negativos(hombres[valor], hombres['num'], False),
+                                          calcular_negativos(hombres[valor], hombres['num'], True),
+                                          calcular_positivos(hombres[tiempo], hombres['num'], False),
+                                          calcular_positivos(hombres[tiempo], hombres['num'], True),
+                                          calcular_negativos(hombres[tiempo], hombres['num'], False),
+                                          calcular_negativos(hombres[tiempo], hombres['num'], True)]
+
+        tabla_socio['mujeres_' + valor] = [calcular_positivos(mujeres[valor], mujeres['num'], False),
+                                          calcular_positivos(mujeres[valor], mujeres['num'], True),
+                                          calcular_negativos(mujeres[valor], mujeres['num'], False),
+                                          calcular_negativos(mujeres[valor], mujeres['num'], True),
+                                          calcular_positivos(mujeres[tiempo], mujeres['num'], False),
+                                          calcular_positivos(mujeres[tiempo], mujeres['num'], True),
+                                          calcular_negativos(mujeres[tiempo], mujeres['num'], False),
+                                          calcular_negativos(mujeres[tiempo], mujeres['num'], True)]
+
+    for llave in ('miembro', 'comision', 'capacitacion'):
+        for sexo in ('hombres', 'mujeres'):
+            tabla_beneficio[sexo].append(calcular_positivos(hombres[llave], hombres['num'], False))
+            tabla_beneficio[sexo].append(calcular_positivos(hombres[llave], hombres['num']))
+            tabla_beneficio[sexo].append(calcular_negativos(hombres[llave], hombres['num'], False))
+            tabla_beneficio[sexo].append(calcular_negativos(hombres[llave], hombres['num']))
+    
+    return render_to_response('achuapa/organizacion.html', 
+                              {'tabla_socio': tabla_socio, 'tabla_beneficio': tabla_beneficio},
+                              context_instance=RequestContext(request))
+                         
 @session_required
 def fincas(request):
     '''Tabla de fincas'''
@@ -170,6 +229,7 @@ def fincas(request):
                               {'tabla':tabla, 'totales': totales},
                               context_instance=RequestContext(request))
 
+@session_required
 def fincas_grafos(request, tipo):
     '''Tipo puede ser: tenencia, solares, propietario'''
     consulta = _queryset_filtrado(request)
@@ -337,11 +397,6 @@ def ingresos(request):
                               context_instance=RequestContext(request))
 
 @session_required
-def bienes(request):
-    '''tabla de bienes'''
-    pass
-    
-    
 def grafos_bienes(request, tipo):
     '''tabla de bienes'''
     consulta = _queryset_filtrado(request)
@@ -533,10 +588,42 @@ def ahorro_credito(request):
                               context_instance=RequestContext(request))
 
 @session_required
+def ahorro_credito_grafos(request, tipo):
+    '''Tipo puede ser: ahorro, uso, origen, satisfaccion'''
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    if tipo == 'ahorro': #ahorra a nombre de quien
+        #choice_ahorro (5, hombre), (6, mujeres), (7,ambos)
+        for numero in (5, 6, 7):
+            #FIX: numero de la pregunta hardcored
+            dato = consulta.filter(ahorro__ahorro=5, ahorro__respuesta = numero).count()
+            data.append(dato)
+            legends.append(CHOICE_AHORRO[numero - 1][1])
+        return grafos.make_graph(data, legends, 
+                'A nombre de quien ahorra', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'origen': #de donde viene el credito
+        #TODO: make this graph
+        return grafos.make_graph(data, legends, 
+                'Tenencia de los solares', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'satisfaccion':
+        for opcion in CHOICE_SATISFACCION:
+            data.append(consulta.filter(credito__satisfaccion=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Nivel de satisfacción con el crédito', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'uso':
+        pass
+    else:
+        raise Http404
+
+@session_required
 def servicios(request):
     '''servicios: educacion, salud, agua, luz'''
-    consulta = _queryset_filtrado(request)
-    
+    pass #poner un direct to template?    
     
 @session_required
 def educacion(request):
@@ -635,6 +722,9 @@ def agua(request):
                               {'tabla':tabla, 'totales':totales},
                               context_instance=RequestContext(request))
 
+def agua_grafo(request, tipo):
+    pass
+
 @session_required
 def luz(request):
     '''Tabla de acceso a energia electrica'''
@@ -732,8 +822,10 @@ VALID_VIEWS = {
         'salud': salud,
         'agua': agua,
         'luz': luz,
+        'organizacion': organizacion,
         }
 
+#funciones de utileria
 def saca_porcentajes(values):
     """sumamos los valores y devolvemos una lista con su porcentaje"""
     total = sum(values)
@@ -754,10 +846,20 @@ def saca_porcentajes(dato, total, formato=True):
     else: 
         return 0
 
-def calcular_positivos(suma, numero):
+def calcular_positivos(suma, numero, porcentaje=True):
     '''Retorna el porcentaje de positivos'''
     try:
         positivos = (numero * 2) - suma
-        return '%.2f' % saca_porcentajes(positivos, numero)
+        if porcentaje:
+            return '%.2f' % saca_porcentajes(positivos, numero)
+        else:
+            return positivos
     except:
         return 0
+
+def calcular_negativos(suma, numero, porcentaje = True):
+    positivos = calcular_positivos(suma, numero, porcentaje)
+    if porcentaje:
+        return 100 - positivos
+    else:
+        return numero - positivos
