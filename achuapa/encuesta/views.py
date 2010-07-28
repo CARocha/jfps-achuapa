@@ -229,6 +229,7 @@ def fincas(request):
                               {'tabla':tabla, 'totales': totales},
                               context_instance=RequestContext(request))
 
+@session_required
 def fincas_grafos(request, tipo):
     '''Tipo puede ser: tenencia, solares, propietario'''
     consulta = _queryset_filtrado(request)
@@ -587,10 +588,42 @@ def ahorro_credito(request):
                               context_instance=RequestContext(request))
 
 @session_required
+def ahorro_credito_grafos(request, tipo):
+    '''Tipo puede ser: ahorro, uso, origen, satisfaccion'''
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    if tipo == 'ahorro': #ahorra a nombre de quien
+        #choice_ahorro (5, hombre), (6, mujeres), (7,ambos)
+        for numero in (5, 6, 7):
+            #FIX: numero de la pregunta hardcored
+            dato = consulta.filter(ahorro__ahorro=5, ahorro__respuesta = numero).count()
+            data.append(dato)
+            legends.append(CHOICE_AHORRO[numero - 1][1])
+        return grafos.make_graph(data, legends, 
+                'A nombre de quien ahorra', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'origen': #de donde viene el credito
+        #TODO: make this graph
+        return grafos.make_graph(data, legends, 
+                'Tenencia de los solares', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'satisfaccion':
+        for opcion in CHOICE_SATISFACCION:
+            data.append(consulta.filter(credito__satisfaccion=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends, 
+                'Nivel de satisfacción con el crédito', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'uso':
+        pass
+    else:
+        raise Http404
+
+@session_required
 def servicios(request):
     '''servicios: educacion, salud, agua, luz'''
-    consulta = _queryset_filtrado(request)
-    
+    pass #poner un direct to template?    
     
 @session_required
 def educacion(request):
@@ -688,6 +721,9 @@ def agua(request):
     return render_to_response('achuapa/agua.html', 
                               {'tabla':tabla, 'totales':totales},
                               context_instance=RequestContext(request))
+
+def agua_grafo(request, tipo):
+    pass
 
 @session_required
 def luz(request):
@@ -787,6 +823,7 @@ VALID_VIEWS = {
         'organizacion': organizacion,
         }
 
+#funciones de utileria
 def saca_porcentajes(values):
     """sumamos los valores y devolvemos una lista con su porcentaje"""
     total = sum(values)
