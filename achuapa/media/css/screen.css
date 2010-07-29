@@ -1,12 +1,13 @@
 img{border:none;}
 #container{	
-		margin:0 auto;
+		
 		position:relative;
 		text-align:left;
-		width:960px;
+		width:470px;
 		background:#fff;
-		background-image: url(../imagen/bg-body.png);		
+		background-image: url(../imagen/bg.jpg);		
 		margin-bottom:2em;
+        float:left;
 		}	
 
 	#content{
@@ -36,7 +37,7 @@ img{border:none;}
 			define width and height of list item (slide)
 			entire slider area will adjust according to the parameters provided here
 		*/ 
-		width:960px;
+		width:470px;
 		height:241px;
 		overflow:hidden; 
 		}	
@@ -51,7 +52,7 @@ img{border:none;}
 		z-index:1000;
 		}	
 	#nextBtn, #slider1next{ 
-		left:960px;
+		left:470px;
 		}														
 	#prevBtn a, #nextBtn a,
 	#slider1next a, #slider1prev a{  
