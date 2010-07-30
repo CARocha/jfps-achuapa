@@ -1,9 +1,25 @@
 {% extends "base.html" %}
 {%load unslugify %}
-{%block titulo%}Los Equipos{%endblock%}
-{% block contenido %}
-Número de familia: {{num_familia}}
+{% block extra_header %}
+ <script>
+$(document).ready(function(){
+$("#boton-grafo-tipo").toggle(function () { 
+     $.getJSON("/grafo/bienes/tipocasa",
+            function(data){
+                $("#grafo").replaceWith('<div id="grafo"><img src="' + data.url + '" /></div>');
+            });
+        },
+        function(){$('#grafo').html('');});         
+ });
+</script>
 
+{% endblock %}
+{%block titulo%}Los Equipos{%endblock%}
+
+{% block contenido %}
+
+Número de familia: {{num_familia}}
+--Consulta: Departamento: {{ request.session.departamento.nombre }} | Municipio: {{request.session.municipio.nombre}} | Comunidad:{{request.session.comunidad.nombre}}
 <table>
 <caption>Los Equipos</caption>
  <thead>
@@ -91,5 +107,9 @@ Número de familia: {{num_familia}}
     </tr>
     {%endfor%}
 </table>
+
+<h2>Graficos de los distintos bienes</h2>
+ <li><div id="boton-grafo-tipo"><a href="#"title="Ver grafico">Tipo Casa</a></div></li>
+ <div id="grafo"></div>
 
 {% endblock %}

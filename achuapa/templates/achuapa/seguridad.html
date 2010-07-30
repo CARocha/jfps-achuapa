@@ -19,6 +19,18 @@ número de familias: {{num_familia}}
         <th>%</th>
     </tr>
  </thead>
+  <tr>
+        <td>Total</td>
+        <td>{{totales.numero}}</td>
+        <td>{{totales.producen}}</td>
+        <td>{{totales.porcentaje_prod}}</td>
+        <td>{{totales.compran}}</td>
+        <td>{{totales.porcentaje_compran}}</td>
+        <td>{{totales.consumen}}</td>
+        <td>{{totales.porcentaje_consumen}}</td>
+        <td>{{totales.consumen_invierno}}</td>
+        <td>{{totales.porcentaje_invierno}}</td>
+    </tr>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
