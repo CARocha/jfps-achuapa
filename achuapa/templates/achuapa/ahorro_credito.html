@@ -2,8 +2,34 @@
 {%load unslugify %}
 {% block title %}JFPS - Fincas{% endblock %}
 {%block titulo%}Ahorro y crédito{%endblock%}
+{%block extra_header%}
+<script type="text/javascript">
+    //si activo es 0 el html interno esta vacio
+    //caso si activo es otro num sustituir grafico
+    //si activo es el mismo id, esconder grafico
+    var activo = 0; 
+    function click_callback(id){
+        $.getJSON('/grafo/ahorro-credito/' + id, function(data) {
+            if (activo!= id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
+</script>
+{%endblock%}
 {% block contenido %}
-
+Gráficos
+<ul>
+    <li><a href="#" onCLick="click_callback('ahorro')">Ahorro</a></li>
+    <li><a href="#" onCLick="click_callback('origen')">Origen del Crédito</a></li>
+    <li><a href="#" onCLick="click_callback('satisfaccion')">Satisfacción con el crédito</a></li>
+    <li><a href="#" onCLick="click_callback('uso')">Uso del crédito</a></li>
+</ul>
+<div id="grafo"></div>
 <table>
 <caption>Los Ahorro</caption>
  <thead>

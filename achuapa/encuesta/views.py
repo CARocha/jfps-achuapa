@@ -710,7 +710,7 @@ def salud_grafos(request, tipo):
         for opcion in CHOICE_DISPONIBILIDAD:
             data.append(consulta.filter(salud__frecuencia=opcion[0]).count())
             legends.append(opcion[1])
-            titulo = 'Disponibilidad del salud en %s' % SEXO_CHOICES[int(tipo)][1]
+        titulo = 'Disponibilidad del salud para %s' % SEXO_CHOICES[int(tipo)-1][1]
         return grafos.make_graph(data, legends, 
                 titulo, return_json = True,
                 type = grafos.PIE_CHART_3D)
@@ -749,7 +749,7 @@ def agua_grafos_disponibilidad(request, tipo):
         for opcion in CHOICE_DISPONIBILIDAD:
             data.append(consulta.filter(agua__diponibilidad=opcion[0]).count())
             legends.append(opcion[1])
-            titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo)][1]
+        titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
         return grafos.make_graph(data, legends, 
                 titulo, return_json = True,
                 type = grafos.PIE_CHART_3D)
@@ -766,7 +766,7 @@ def agua_grafos_calidad(request, tipo):
         for opcion in CHOICE_CALIDAD_AGUA:
             data.append(consulta.filter(agua__calidad=opcion[0]).count())
             legends.append(opcion[1])
-            titulo = 'Calidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo)][1]
+        titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
         return grafos.make_graph(data, legends, 
                 titulo, return_json = True,
                 type = grafos.PIE_CHART_3D)
