@@ -590,6 +590,7 @@ def ahorro_credito(request):
 @session_required
 def ahorro_credito_grafos(request, tipo):
     '''Tipo puede ser: ahorro, uso, origen, satisfaccion'''
+    #TODO: origen y uso
     consulta = _queryset_filtrado(request)
     data = [] 
     legends = []
@@ -698,7 +699,23 @@ def salud(request):
     return render_to_response('achuapa/salud.html', 
                               {'tabla_estado':tabla_estado, 'tabla_sitio': tabla_sitio},
                               context_instance=RequestContext(request))
-    
+
+@session_required
+def salud_grafos(request, tipo):
+    '''Graficos de salud'''
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    if int(tipo) in [numero[0] for numero in SEXO_CHOICES]:
+        for opcion in CHOICE_DISPONIBILIDAD:
+            data.append(consulta.filter(salud__frecuencia=opcion[0]).count())
+            legends.append(opcion[1])
+        titulo = 'Disponibilidad del salud para %s' % SEXO_CHOICES[int(tipo)-1][1]
+        return grafos.make_graph(data, legends, 
+                titulo, return_json = True,
+                type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
 
 @session_required
 def agua(request):
@@ -722,8 +739,39 @@ def agua(request):
                               {'tabla':tabla, 'totales':totales},
                               context_instance=RequestContext(request))
 
-def agua_grafo(request, tipo):
-    pass
+@session_required
+def agua_grafos_disponibilidad(request, tipo):
+    '''Tipo: numero del 1 al 6 en CHOICE_FUENTE_AGUA'''
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
+        for opcion in CHOICE_DISPONIBILIDAD:
+            data.append(consulta.filter(agua__diponibilidad=opcion[0]).count())
+            legends.append(opcion[1])
+        titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
+        return grafos.make_graph(data, legends, 
+                titulo, return_json = True,
+                type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
+
+@session_required
+def agua_grafos_calidad(request, tipo):
+    '''Tipo: numero del 1 al 6 en CHOICE_FUENTE_AGUA'''
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
+        for opcion in CHOICE_CALIDAD_AGUA:
+            data.append(consulta.filter(agua__calidad=opcion[0]).count())
+            legends.append(opcion[1])
+        titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
+        return grafos.make_graph(data, legends, 
+                titulo, return_json = True,
+                type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
 
 @session_required
 def luz(request):

@@ -13,7 +13,8 @@
 <body>
   <!-- Comienza el header -->
 <div id="header">
-			   <h1>Sistema de información <span>JFPS</span></h1>
+    <div id="header_contenedor">
+			   <h1>Sistema de información <span class="jfps">JFPS</span></h1>
 			   <div id="coop"><h2>Cooperativa Juan Francisco Paz Silva</h2> </div>
            <!-- comienza Menu --> 
             <ul id="nav">
@@ -22,6 +23,7 @@
                 <li><a href="/admin">Administración</a></li>
                 <li><a href="#">Ayuda</a></li>
             </ul><!-- termina Menu -->
+    </div><!-- Termina el header contenedor -->
 </div> <!-- Termina el header -->
         <!-- comienza algo de pimp -->
         {%block pimp%}{%endblock%}
@@ -34,7 +36,7 @@
         <div id="menu">
             <ul>
                 <li><a href="/familia">Familia</a></li>
-                <li><a href="#">Organización</a></li>
+                <li><a href="/organizacion">Organización</a></li>
                 <li><a href="/fincas">Fincas</a></li>
                 <li><a href="/arboles">Árboles</a></li>
                 <li><a href="/animales">Animales</a></li>
@@ -42,7 +44,7 @@
                 <li><a href="/ingresos">Ingresos</a></li>
                 <li><a href="/equipos">Bienes</a></li>
                 <li><a href="/ahorro_credito">Ahorro y Crédito</a></li>
-                <li><a href="#">Servicios</a></li>
+                <li><a href="/servicios">Servicios</a></li>
                 <li><a href="/seguridad_alimentaria">Seguridad Alimentaria</a></li>
             </ul>
         </div>
@@ -51,14 +53,16 @@
              <!-- Comienza Columna derecha--> 
 				<div id="colum_der" class="der">
 				    <div id="titulo">
-                    {% block titulo %}Cooperativa Juan Francisco Paz Silva {% endblock %}
+                    {% block titulo %} {% endblock %}
                     </div>
+                   {%block filtros%}
+                   {%endblock%}
                         <div id="contenido_interno">
-                            <div id="filtros_principales" class="izq">
-                                <div class="boton_filtro fondo_boton">
+
                                         {%block contenido%}
+
                                         {%endblock%}
-                                </div>
+
                             </div>
                                 <div class="separador" ></div>
                         </div>
@@ -74,10 +78,10 @@
                <div id="creditos">Desarrollado por <a href="http://www.simas.org.ni">SIMAS</a> Con <a href="http://www.djangoproject.com/">Django</a> framework</div>
              </div><!-- termina del footer_contenedor -->
         </div><!-- Termina Footer-->
-        <div id="validador"><p>
+<!-- Termina Contenedor       <div id="validador"><p>
     <a href="http://validator.w3.org/check?uri=referer"><img
         src="http://www.w3.org/Icons/valid-xhtml10"
         alt="Valid XHTML 1.0 Transitional" height="31" width="88" /></a>
-  </p></div>
+  </p></div>--> 
 </body>
 </html>

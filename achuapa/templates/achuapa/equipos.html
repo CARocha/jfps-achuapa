@@ -3,13 +3,13 @@
 {% block extra_header %}
  <script>
 $(document).ready(function(){
-$("#boton-grafo-tipo").click(function () { 
+$("#boton-grafo-tipo").toggle(function () { 
      $.getJSON("/grafo/bienes/tipocasa",
             function(data){
                 $("#grafo").replaceWith('<div id="grafo"><img src="' + data.url + '" /></div>');
             });
- });         
-
+        },
+        function(){$('#grafo').html('');});         
  });
 </script>
 

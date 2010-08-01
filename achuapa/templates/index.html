@@ -6,12 +6,16 @@
 			$("#slider").easySlider({
 				auto: true, 
 				continuous: true,
-				numeric: true
+				numeric: true,
+                speed: 800,
+                pause: 4000,
+                controlsShow: true,
 			});
 		});	
 	</script>
  {%endblock%}	
- {% block pimp %}
+  {% block pimp %}
+<div id="sub_header">
  <div id="container">
     <div id="content">
         <div id="slider">
@@ -19,19 +23,35 @@
 				<li><a ><img src="{{MEDIA_URL}}imagen/1img.png" alt="jfps foto" /></a></li>
 				<li><a ><img src="{{MEDIA_URL}}imagen/2img.png" alt="jfps foto" /></a></li>
 				<li><a ><img src="{{MEDIA_URL}}imagen/3img.png" alt="jfps foto" /></a></li>
-				<li><a ><img src="{{MEDIA_URL}}imagen/4img.png" alt="jfps foto" /></a></li>
-				<li><a ><img src="{{MEDIA_URL}}imagen/5img.png" alt="jfps foto" /></a></li>	
 			</ul>
 		</div>
 	</div>
 </div>
+  <div id="pasos">
+         <div class="pasos_elementos"><img src="{{MEDIA_URL}}imagen/uno.png" />Visita nuestra area de consulta del sistema, tienes la opción de filtros por posición geográfica o por cooperativas</div>
+         <div class="pasos_elementos"><img src="{{MEDIA_URL}}imagen/dos.png" />Selecciona las variables que serviran para filtrar la consulta, por ejemplo: fecha, departamento, muncipio</div>
+         <div class="pasos_elementos" style="margin-bottom:22px"><img src="{{MEDIA_URL}}imagen/tres.png" />Visita los resultados de tu consulta con cada indicador de medición del sistema.</div>
+         
+         <a href="/index">Consultar Ahora</a>
+  </div>
+</div>
 {% endblock %}
 {%block menu%}{%endblock%}
- {%block contenido%}                 
-                           
-                            <img src="{{MEDIA_URL}}imagen/historia.png" alt="historia" />
-                            <h2><b>Reseña Historica</b></h2><br></br>
-                            <p>La Cooperativa Juan Francisco Paz Silva tiene sus inicios en las tiendas campesinas que impulsó el gobierno durante los Años 80 y ha venido adoptando diferentes figuras legales con el propósito de tener condición jurídica para dar respuestas a los problemas de sus Asociados y Clientes  en comunidades rurales. El centro neurálgico de la organización es la Tienda Campesina de la Cooperativa en la Población de Achuapa la cual es usada por un importante grupo poblacional como abastecedor de comercio al por menor.</p><br></br>
-                            <p>La Cooperativa tiene en la actualidad 148 miembros contribuyentes, los servicios que esta ofrece se extienden a toda la población de la Municipalidad. De los 148 miembros, 131 son Hombres y 17 son Mujeres.</p>
-<br><br><br><br><br>                      
+
+ {%block contenido%}
+    <div id="index_left">
+      <h2>Estadísticas Generales</h2>
+            <div class="estadisticas">
+                <span class="hombre"><img src="{{MEDIA_URL}}imagen/hombre.png" />Hombre <br><b style="font-size:18px;">128</b> </span>
+                <span class="hombre"><img src="{{MEDIA_URL}}imagen/mujer.png" />Mujer <br><b style="font-size:18px;">128</b> </span>
+                <span class="hombre total">Total de Encuestados <br><b style="font-size:22px;"> 256</b></span>
+            </div>
+    </div><!-- Termina index left-->
+    
+    <div id="index_right">
+    <h2>La Cooperativa</h2>
+        <br><p>La Cooperativa Juan Francisco Paz Silva tiene sus inicios en las tiendas campesinas que impulsó el gobierno durante los Años 80 y ha venido adoptando diferentes figuras legales con el propósito de tener condición jurídica para dar respuestas a los problemas de sus Asociados y Clientes en comunidades rurales. El centro neurálgico de la organización es la Tienda Campesina de la Cooperativa en la Población de Achuapa la cual es usada por un importante grupo poblacional como abastecedor de comercio al por menor.</p>
+        <br><p>La Cooperativa tiene en la actualidad 148 miembros contribuyentes, los servicios que esta ofrece se extienden a toda la población de la Municipalidad. De los 148 miembros, 131 son Hombres y 17 son Mujeres.</p>
+    </div><!-- Termina index right-->
+    <div class="separador" ></div>
  {% endblock %}
