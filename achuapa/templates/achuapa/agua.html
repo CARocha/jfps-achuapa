@@ -2,7 +2,51 @@
 {%load unslugify %}
 {% block title %}JFPS - Agua{% endblock %}
 {%block titulo%}Agua{%endblock%}
+{%block extra_header%}
+<script type="text/javascript">
+    //si activo es 0 el html interno esta vacio
+    //caso si activo es otro num sustituir grafico
+    //si activo es el mismo id, esconder grafico
+    var activo = 0; 
+    function click_callback(url, id){
+        $.getJSON(url + id, function(data) {
+            if (activo!= url + id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = url + id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
+    function disp(id){
+        click_callback('/grafo/agua-disponibilidad/', id);
+    }
+    function calidad(id){
+        click_callback('/grafo/agua-calidad/', id);
+    }
+</script>
+{%endblock%}
 {% block contenido %}
+Disponibilidad
+<ul>
+    <li><a href="#" onCLick="disp(1)">Disponibilidad en Ojo de Agua</a></li>
+    <li><a href="#" onCLick="disp(2)">Disponibilidad en Quebrada</a></li>
+    <li><a href="#" onCLick="disp(3)">Disponibilidad en Pozo Comunitario</a></li>
+    <li><a href="#" onCLick="disp(4)">Disponibilidad en Pozo Propio</a></li>
+    <li><a href="#" onCLick="disp(5)">Disponibilidad en Agua Entubada llave comunitaria</a></li>
+    <li><a href="#" onCLick="disp(6)">Disponibilidad en Agua entubada de la casa</a></li>
+</ul>
+Calidad
+<ul>
+    <li><a href="#" onCLick="calidad(1)">Calidad en Ojo de Agua</a></li>
+    <li><a href="#" onCLick="calidad(2)">Calidad en Quebrada</a></li>
+    <li><a href="#" onCLick="calidad(3)">Calidad en Pozo Comunitario</a></li>
+    <li><a href="#" onCLick="calidad(4)">Calidad en Pozo Propio</a></li>
+    <li><a href="#" onCLick="calidad(5)">Calidad en Agua Entubada llave comunitaria</a></li>
+    <li><a href="#" onCLick="calidad(6)">Calidad en Agua entubada de la casa</a></li>
+</ul>
+<div id="grafo"></div>
 <table>
  <thead>
     <tr>

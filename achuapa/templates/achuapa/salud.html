@@ -2,7 +2,36 @@
 {%load unslugify %}
 {% block title %}JFPS - Salud{% endblock %}
 {%block titulo%}La Salud{%endblock%}
+{%block extra_header%}
+<script type="text/javascript">
+    //si activo es 0 el html interno esta vacio
+    //caso si activo es otro num sustituir grafico
+    //si activo es el mismo id, esconder grafico
+    var activo = 0; 
+    function click_callback(id){
+        $.getJSON('/grafo/salud/' + id, function(data) {
+            if (activo!= id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
+</script>
+{%endblock%}
 {% block contenido %}
+Gráficos
+<ul>
+    <li><a href="#" onCLick="click_callback(1)">Hombres de mas de 15 años</a></li>
+    <li><a href="#" onCLick="click_callback(2)">Mujeres de mas de 15 años</a></li>
+    <li><a href="#" onCLick="click_callback(3)">Hombres de 7 a 15 años</a></li>
+    <li><a href="#" onCLick="click_callback(4)">Mujeres de 7 a 15 años</a></li>
+    <li><a href="#" onCLick="click_callback(5)">Niños menor de 6 años</a></li>
+    <li><a href="#" onCLick="click_callback(6)">Niñas menores de 6 años</a></li>
+</ul>
+<div id="grafo"></div>
 <table>
  <thead>
     <tr>
