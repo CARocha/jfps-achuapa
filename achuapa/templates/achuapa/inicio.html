@@ -6,8 +6,6 @@
         var departamento = document.getElementById("id_departamento");
         var municipio = document.getElementById("id_municipio");
         var comunidad= document.getElementById("id_comunidad");
-        var socio = document.getElementById("id_socio");
-        var propietario = document.getElementById("id_propietario")
        
         $("#id_departamento").change(function () {
             var index = departamento.options.selectedIndex;
@@ -71,6 +69,8 @@
                         <div class="form_widget">{{form.comunidad}}</div>
                         <div class="form_label"><b>{{form.socio.label}}</b></div>
                         <div class="form_widget">{{form.socio}}</div>  
+                        <div class="form_label"><b>{{form.dueno.label}}</b></div>
+                        <div class="form_widget">{{form.dueno}}</div>  
                     </div>
 
                       <input type="submit" value="Aceptar" id="boton" class="filtro"/>

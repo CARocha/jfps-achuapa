@@ -16,5 +16,5 @@ class AchuapaForm(forms.Form):
             required=False, empty_label="Todos los Departamento")
     municipio = forms.CharField(widget = forms.Select, required=False)
     comunidad = forms.CharField(widget = forms.Select, required=False)
-    socio = forms.CharField(widget = forms.Select, required=False)
-#    dueno = forms.CharField('Dueño', widget = forms.select, required=False)
+    socio = forms.ChoiceField(choices = CHOICE_OPCION , required=False)
+    dueno = forms.ChoiceField(label = 'Dueño', choices = CHOICE_DUENO, required=False)

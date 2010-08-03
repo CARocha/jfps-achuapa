@@ -45,10 +45,11 @@ def _queryset_filtrado(request):
             else:
                 params['datos__comunidad__municipio__departamento'] = request.session['departamento']
 
-        elif 'socio' in request.session:
+        if 'socio' in request.session:
             params['organizacion__socio'] = request.session['socio']
-        #if 'duenio' in  request.session:
-        #    params['tenencia__dueno'] = request.session['duenio']
+
+        if 'duenio' in  request.session:
+            params['tenencia__dueno'] = request.session['duenio']
         
         unvalid_keys = []
         for key in params:
@@ -84,13 +85,11 @@ def inicio(request):
                 
             except:
                 comunidad = None
-            try:
-                socio = Datosgenerales.objects.get(id=form.cleaned__data['socio'])
-            except:
-                socio = None
+
             request.session['municipio'] = municipio 
             request.session['comunidad'] = comunidad
-            request.session['socio'] = socio
+            request.session['socio'] = form.cleaned_data['socio']
+            request.session['duenio'] = form.cleaned_data['dueno']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
 #        else:
