@@ -315,6 +315,48 @@ def arboles(request):
                                 context_instance=RequestContext(request))
 
 @session_required
+def arboles_grafos(request, tipo):
+    ''' graficos para los distintos tipos de arboles en las fincas
+        Maderables, Forrajero, Energetico y Frutal
+    '''
+    #--- variables ---
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    #-----------------
+    if tipo == 'maderable':
+        for opcion in Maderable.objects.all():
+            data.append(consulta.filter(existenciarboles__maderable=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends, 
+                'Tipo Maderable', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'forrajero': 
+        for opcion in Forrajero.objects.all():
+            data.append(consulta.filter(existenciarboles__forrajero=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends, 
+                'Tipo Forrajero', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'energetico':
+        for opcion in Energetico.objects.all():
+            data.append(consulta.filter(existenciarboles__energetico=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends,
+               'Tipo Energetico', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    elif tipo == 'frutal':
+        for opcion in Frutal.objects.all():
+            data.append(consulta.filter(existenciarboles__energetico=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends,
+               'Tipo Frutal', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
+    
+
+@session_required
 def cultivos(request):
     '''tabla los cultivos y produccion'''
     #******Variables***************
@@ -422,7 +464,7 @@ def grafos_bienes(request, tipo):
             data.append(consulta.filter(tipocasa__techo=opcion).count())
             legends.append(opcion.nombre)
         return grafos.make_graph(data, legends, 
-                'Dueño de propiedad', return_json = True,
+                'Tipos de Techos', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'ambiente':
         for opcion in CHOICE_AMBIENTE:
