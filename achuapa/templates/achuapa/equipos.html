@@ -1,18 +1,20 @@
 {% extends "base.html" %}
 {%load unslugify %}
 {% block extra_header %}
- <script>
-$(document).ready(function(){
-$("#boton-grafo-tipo").toggle(function () { 
-     $.getJSON("/grafo/bienes/tipocasa",
-            function(data){
-                $("#grafo").replaceWith('<div id="grafo"><img src="' + data.url + '" /></div>');
-            });
-        },
-        function(){$('#grafo').html('');});         
- });
+ <script type="text/javascript">
+    var activo = 0; 
+    function click_callback(id){
+        $.getJSON('/grafo/bienes/' + id, function(data) {
+            if (activo!= id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
 </script>
-
 {% endblock %}
 {%block titulo%}Los Equipos{%endblock%}
 
@@ -20,6 +22,17 @@ $("#boton-grafo-tipo").toggle(function () {
 
 Número de familia: {{num_familia}}
 --Consulta: Departamento: {{ request.session.departamento.nombre }} | Municipio: {{request.session.municipio.nombre}} | Comunidad:{{request.session.comunidad.nombre}}
+
+<h2>Graficos de los distintos bienes</h2>
+<ul>
+ <li><a href="#" onCLick="click_callback('tipocasa')">Tipo Casa</a></li>
+ <li><a href="#" onCLick="click_callback('tipopiso')">Tipo Piso</a></li>
+ <li><a href="#" onCLick="click_callback('tipotecho')">Tipo Techo</a></li>
+ <li><a href="#" onCLick="click_callback('ambiente')">Ambientes</a></li>
+ <li><a href="#" onCLick="click_callback('letrina')">Letrina</a></li>
+ <li><a href="#" onCLick="click_callback('lavadero')">Lavadero</a></li>
+</ul>
+ <div id="grafo"></div>
 <table>
 <caption>Los Equipos</caption>
  <thead>
@@ -107,9 +120,4 @@ Número de familia: {{num_familia}}
     </tr>
     {%endfor%}
 </table>
-
-<h2>Graficos de los distintos bienes</h2>
- <li><div id="boton-grafo-tipo"><a href="#"title="Ver grafico">Tipo Casa</a></div></li>
- <div id="grafo"></div>
-
 {% endblock %}
