@@ -100,7 +100,7 @@ def inicio(request):
     else:
         form = AchuapaForm()
         mensaje = ":P"
-    dict = {'form': form,'user': request.user}
+    dict = {'form': form,'user': request.user, 'session':request.session}
     return direct_to_template(request, 'achuapa/inicio.html', dict)
 
 @session_required

@@ -232,7 +232,7 @@ height:300px;
   -webkit-text-shadow: 0px -1px 0px #37461c;
   border-radius:100px;
   -moz-border-radius:100px; 
-  -webkit-border-radius:7px;
+  -webkit-border-radius:100px;
   float:right;
   box-shadow: 0px 0px 6px #19200d);
   -moz-box-shadow: 0px 0px 6px #19200d;
@@ -386,9 +386,9 @@ text-shadow: 2px 2px 5px #fff;
   font-weight:bold;
   text-decoration:none;
   border:#94b957 1px solid;
-  text-shadow: 0px -1px 0px #37461c;
-  -moz-text-shadow: 0px -1px 0px #37461c;
-  -webkit-text-shadow: 0px -1px 0px #37461c;
+  text-shadow: 0px -1px 0px #4D6325;
+  -moz-text-shadow: 0px -1px 0px #4D6325;
+  -webkit-text-shadow: 0px -1px 0px #4D6325;
   border-radius:100px;
   -moz-border-radius:100px; 
   -webkit-border-radius:100px;
@@ -447,7 +447,7 @@ text-shadow: 2px 2px 5px #fff;
 
 #index_left .hombre{ 
     float:left;
-    margin-right:20px;
+    margin-right:24px;
     font-size:13px;
 }
 
@@ -456,6 +456,32 @@ text-shadow: 2px 2px 5px #fff;
     padding-left:15px;
 }
 
+#index_left .familia_promedio{ 
+    background:#e5e3e2;
+    width:73px;
+    height:38px;
+    font-weight:bold;
+    float:left;
+    padding-top:8px;
+    padding-left:8px;
+    margin-right:15px;
+    border-radius:4px;
+    -moz-border-radius:4px; 
+    -webkit-border-radius:4px;
+}
+#index_left .ultima_encuesta{ 
+    font-size:11px;
+    font-style:italic;
+    float:right;
+    margin-top:5px;
+    padding-top:3px;
+    
+}
+
+#index_left .ultima_encuesta img{ 
+    float:right;
+    margin-left:8px;
+}
 #index_right{
   width:540px;
   float:right;
