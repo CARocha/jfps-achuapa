@@ -1,9 +1,35 @@
 {% extends "base.html"%}
 {%load unslugify %}
 {%block titulo%}Los Ingresos de las familias{%endblock%}
+{% block extra_header %}
+ <script type="text/javascript">
+    var activo = 0; 
+    function click_callback(id){
+        $.getJSON('/grafo/ingreso/' + id, function(data) {
+            if (activo!= id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
+</script>
+{% endblock %}
 {%block contenido%}
 
 número de familias: {{num_familias}}
+
+<h2>Graficos de los distintas especies de árboles</h2>
+<ul>
+ <li><a href="#" onCLick="click_callback('vendio')">A quien venden</a></li>
+ <li><a href="#" onCLick="click_callback('maneja')">Quien maneja el negocio</a></li>
+ <li><a href="#" onCLick="click_callback('ingreso')">Quien tiene los ingresos</a></li>
+</ul>
+
+<div id="grafo"></div>
+
 <table>
 <caption>Los Ingresos familiares</caption>
  <thead>
