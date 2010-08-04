@@ -99,7 +99,7 @@ def inicio(request):
     else:
         form = AchuapaForm()
         mensaje = ":P"
-    dict = {'form': form,'user': request.user}
+    dict = {'form': form,'user': request.user, 'session':request.session}
     return direct_to_template(request, 'achuapa/inicio.html', dict)
 
 @session_required
@@ -314,6 +314,62 @@ def arboles(request):
                                 context_instance=RequestContext(request))
 
 @session_required
+def arboles_grafos(request, tipo):
+    ''' graficos para los distintos tipos de arboles en las fincas
+        Maderables, Forrajero, Energetico y Frutal
+    '''
+    #--- variables ---
+    consulta = _queryset_filtrado(request)
+    data = [] 
+    legends = []
+    #-----------------
+    if tipo == 'maderable':
+        for opcion in Maderable.objects.all():
+            data.append(consulta.filter(existenciarboles__maderable=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends, 
+                'Tipo Maderable', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'forrajero': 
+        for opcion in Forrajero.objects.all():
+            data.append(consulta.filter(existenciarboles__forrajero=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends, 
+                'Tipo Forrajero', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'energetico':
+        for opcion in Energetico.objects.all():
+            data.append(consulta.filter(existenciarboles__energetico=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends,
+               'Tipo Energetico', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    elif tipo == 'frutal':
+        for opcion in Frutal.objects.all():
+            data.append(consulta.filter(existenciarboles__energetico=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends,
+               'Tipo Frutal', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    elif tipo == 'nativos':
+        for opcion in Nativos.objects.all():
+            data.append(consulta.filter(reforestacion__nativos=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends,
+               'Arboles Nativos', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    elif tipo == 'nonativos':
+        for opcion in NoNativos.objects.all():
+            data.append(consulta.filter(reforestacion__nonativos=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends,
+               'Arboles No Nativos', return_json = True,
+               type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
+    
+
+@session_required
 def cultivos(request):
     '''tabla los cultivos y produccion'''
     #******Variables***************
@@ -394,14 +450,50 @@ def ingresos(request):
     return render_to_response('achuapa/ingresos.html',
                               {'tabla':tabla,'num_familias':num_familias,'matriz':matriz},
                               context_instance=RequestContext(request))
+                              
+@session_required
+def grafos_ingreso(request, tipo):
+    ''' tabla sobre los ingresos familiares
+    '''
+    #------ varaibles ------
+    consulta = _queryset_filtrado(request)
+    data = []
+    legends = []
+    #-----------------------
+    if tipo == 'vendio':
+        for opcion in CHOICE_VENDIO:
+            data.append(consulta.filter(ingresofamiliar__quien_vendio=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends,
+                'A quien venden', return_json=True,
+                type=grafos.PIE_CHART_3D)
+    elif tipo == 'maneja':
+        for opcion in CHOICE_MANEJA:
+            data.append(consulta.filter(ingresofamiliar__quien_vendio=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends,
+                'Quien maneja negocio', return_json=True,
+                type=grafos.PIE_CHART_3D)
+    elif tipo == 'ingreso':
+        for opcion in CHOICE_MANEJA:
+            data.append(consulta.filter(otrosingreso__tiene_ingreso=opcion[0]).count())
+            legends.append(opcion[1])
+        return grafos.make_graph(data, legends,
+                'Quien tiene los ingresos', return_json=True,
+                type=grafos.PIE_CHART_3D)
+    else:
+        raise Http404
+    pass
+            
 
 @session_required
 def grafos_bienes(request, tipo):
     '''tabla de bienes'''
+    #----- variables ------
     consulta = _queryset_filtrado(request)
-    #CHOICE_TENENCIA, CHOICE_DUENO
     data = [] 
     legends = []
+    #----------------------
     if tipo == 'tipocasa':
         for opcion in CHOICE_TIPO_CASA:
             data.append(consulta.filter(tipocasa__tipo=opcion[0]).count())
@@ -421,7 +513,7 @@ def grafos_bienes(request, tipo):
             data.append(consulta.filter(tipocasa__techo=opcion).count())
             legends.append(opcion.nombre)
         return grafos.make_graph(data, legends, 
-                'Dueño de propiedad', return_json = True,
+                'Tipos de Techos', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'ambiente':
         for opcion in CHOICE_AMBIENTE:

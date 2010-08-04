@@ -1,5 +1,9 @@
  {%extends "base.html"%}
  {%block extra_header%}
+    <link href="{{MEDIA_URL}}css/visualize.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{MEDIA_URL}}css/visualize-light.css" rel="stylesheet" type="text/css" media="screen" />
+    <script type="text/javascript" src="{{MEDIA_URL}}js/excanvas.js"></script>
+    <script type="text/javascript" src="{{MEDIA_URL}}js/visualize.jQuery.js"></script>
 	<script type="text/javascript" src="{{MEDIA_URL}}js/easySlider1.7.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){	
@@ -11,7 +15,7 @@
                 pause: 4000,
                 controlsShow: true,
 			});
-		});	
+		});
 	</script>
  {%endblock%}	
   {% block pimp %}
@@ -37,7 +41,7 @@
 </div>
 {% endblock %}
 {%block menu%}{%endblock%}
-
+{% block filtros%}{%endblock%}
  {%block contenido%}
     <div id="index_left">
       <h2>Estadísticas Generales</h2>
@@ -46,6 +50,15 @@
                 <span class="hombre"><img src="{{MEDIA_URL}}imagen/mujer.png" />Mujer <br><b style="font-size:18px;">128</b> </span>
                 <span class="hombre total">Total de Encuestados <br><b style="font-size:22px;"> 256</b></span>
             </div>
+            <div class="estadisticas">
+                <div class="familia_promedio">Familia Promedio <br></div>
+                <span class="hombre"><b style="font-size:24px;">5</b><br>Personas</span>
+                <span class="hombre"><b style="font-size:24px;">4.5</b><br>Manzanas</span>
+                <span class="hombre"><b style="font-size:24px;">8,500</b><br>C$/mes</span>
+      
+            </div>
+            <span class="ultima_encuesta">Última encuesta subida al sistema  <b>27 Junio 2010</b><img src="{{MEDIA_URL}}imagen/calendario.png" /></span>
+
     </div><!-- Termina index left-->
     
     <div id="index_right">
@@ -54,4 +67,63 @@
         <br><p>La Cooperativa tiene en la actualidad 148 miembros contribuyentes, los servicios que esta ofrece se extienden a toda la población de la Municipalidad. De los 148 miembros, 131 son Hombres y 17 son Mujeres.</p>
     </div><!-- Termina index right-->
     <div class="separador" ></div>
+    <div id="grafo_index">
+    <table>
+	<caption>Familias Beneficiadas</caption>
+	<thead>
+		<tr>
+			<td></td>
+			<th scope="col">Encuestados</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th scope="row">Crédito</th>
+			<td>190</td>
+		</tr>
+		<tr>
+			<th scope="row">Semilla</th>
+			<td>200</td>
+		</tr>
+		<tr>
+			<th scope="row">Asistencia técnica</th>
+			<td>24</td>
+		</tr>
+		<tr>
+			<th scope="row">Capacitación</th>
+			<td>45</td>
+		</tr>
+		<tr>
+			<th scope="row">Retención de cosecha</th>
+			<td>67</td>
+		</tr>
+		<tr>
+			<th scope="row">Comercialización</th>
+			<td>33</td>
+		</tr>
+		<tr>
+			<th scope="row">Beneficios familiares</th>
+			<td>160</td>
+		</tr>
+		<tr>
+			<th scope="row">Proyecto social</th>
+			<td>120</td>
+		</tr>
+		<tr>
+			<th scope="row">Proyecto productivo</th>
+			<td>180</td>
+		</tr>
+	</tbody>
+</table>
+
+    </div>
+	<script type="text/javascript">
+		$(document).ready(function(){	
+            $('table').visualize({width:850,height:150,barMargin:25});
+            $('table').hide();
+		});
+        
+
+	</script>
+
  {% endblock %}
