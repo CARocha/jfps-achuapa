@@ -66,9 +66,21 @@ def index(request):
     conteo_total = encuestas.all().count()
     conteo_hombre = DatosGenerales.objects.filter(sexo=1).count()
     conteo_mujer = DatosGenerales.objects.filter(sexo=2).count()
-    #faltan varias variables que calcular 
-    dict = {'conteo_total': conteo_total,'conteo_hombre': conteo_hombre,'conteo_mujer': conteo_mujer,}
-    return direct_to_template(request, 'index.html', dict)
+    #personas es la suma de personas en la familia/encuesta
+    personas = encuestas.aggregate(num=Sum('migracion__total_familia'))['num'] / conteo_total
+    manzanas = encuestas.aggregate(num=Sum('tierra__areas'))['num'] / conteo_total
+    dicc = {'conteo_total': conteo_total, 
+            'conteo_hombre': conteo_hombre, 
+            'conteo_mujer': conteo_mujer,
+            'personas': personas,
+            'manzanas': manzanas,
+            'valores': []}
+
+    for beneficio in Beneficios.objects.all():
+        conteo = Encuesta.objects.filter(organizacion__beneficio = beneficio).aggregate(num=Count('organizacion__beneficio'))
+        dicc['valores'].append([beneficio.nombre, conteo['num']])
+
+    return direct_to_template(request, 'index.html', dicc)
 	
 def inicio(request):
     if request.method == 'POST':

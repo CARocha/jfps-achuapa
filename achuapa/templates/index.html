@@ -52,8 +52,8 @@
             </div>
             <div class="estadisticas">
                 <div class="familia_promedio">Familia Promedio <br></div>
-                <span class="hombre"><b style="font-size:24px;">5</b><br>Personas</span>
-                <span class="hombre"><b style="font-size:24px;">4.5</b><br>Manzanas</span>
+                <span class="hombre"><b style="font-size:24px;">{{personas}}</b><br>Personas</span>
+                <span class="hombre"><b style="font-size:24px;">{{manzanas}}</b><br>Manzanas</span>
                 <span class="hombre"><b style="font-size:24px;">8,500</b><br>C$/mes</span>
       
             </div>
@@ -77,42 +77,12 @@
 		</tr>
 	</thead>
 	<tbody>
+        {%for valor in valores%}
 		<tr>
-			<th scope="row">Crédito</th>
-			<td>190</td>
+            <th scope="row">{{valor|first}}</th>
+            <td>{{valor|last}}</td>
 		</tr>
-		<tr>
-			<th scope="row">Semilla</th>
-			<td>200</td>
-		</tr>
-		<tr>
-			<th scope="row">Asistencia técnica</th>
-			<td>24</td>
-		</tr>
-		<tr>
-			<th scope="row">Capacitación</th>
-			<td>45</td>
-		</tr>
-		<tr>
-			<th scope="row">Retención de cosecha</th>
-			<td>67</td>
-		</tr>
-		<tr>
-			<th scope="row">Comercialización</th>
-			<td>33</td>
-		</tr>
-		<tr>
-			<th scope="row">Beneficios familiares</th>
-			<td>160</td>
-		</tr>
-		<tr>
-			<th scope="row">Proyecto social</th>
-			<td>120</td>
-		</tr>
-		<tr>
-			<th scope="row">Proyecto productivo</th>
-			<td>180</td>
-		</tr>
+        {%endfor%}
 	</tbody>
 </table>
 
