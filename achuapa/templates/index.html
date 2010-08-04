@@ -46,9 +46,9 @@
     <div id="index_left">
       <h2>Estadísticas Generales</h2>
             <div class="estadisticas">
-                <span class="hombre"><img src="{{MEDIA_URL}}imagen/hombre.png" />Hombre <br><b style="font-size:18px;">128</b> </span>
-                <span class="hombre"><img src="{{MEDIA_URL}}imagen/mujer.png" />Mujer <br><b style="font-size:18px;">128</b> </span>
-                <span class="hombre total">Total de Encuestados <br><b style="font-size:22px;"> 256</b></span>
+                <span class="hombre"><img src="{{MEDIA_URL}}imagen/hombre.png" />Hombre <br><b style="font-size:18px;">{{conteo_hombre}}</b> </span>
+                <span class="hombre"><img src="{{MEDIA_URL}}imagen/mujer.png" />Mujer <br><b style="font-size:18px;">{{conteo_mujer}}</b> </span>
+                <span class="hombre total">Total de Encuestados <br><b style="font-size:22px;"> {{conteo_total}}</b></span>
             </div>
             <div class="estadisticas">
                 <div class="familia_promedio">Familia Promedio <br></div>
@@ -119,7 +119,7 @@
     </div>
 	<script type="text/javascript">
 		$(document).ready(function(){	
-            $('table').visualize({width:850,height:150,barMargin:25});
+            $('table').visualize({width:850,height:130,barMargin:25});
             $('table').hide();
 		});
         
