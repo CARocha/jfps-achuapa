@@ -61,7 +61,13 @@ def _queryset_filtrado(request):
         return Encuesta.objects.filter(**params)
 
 def index(request):
-	return render_to_response('index.html',context_instance=RequestContext(request))
+    encuestas = Encuesta.objects.all()
+    conteo_total = encuestas.all().count()
+    conteo_hombre = DatosGenerales.objects.filter(sexo=1).count()
+    conteo_mujer = DatosGenerales.objects.filter(sexo=2).count()
+    #faltan varias variables que calcular 
+    dict = {'conteo_total': conteo_total,'conteo_hombre': conteo_hombre,'conteo_mujer': conteo_mujer,}
+    return direct_to_template(request, 'index.html', dict)
 	
 def inicio(request):
     if request.method == 'POST':

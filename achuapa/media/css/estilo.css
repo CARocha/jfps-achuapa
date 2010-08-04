@@ -248,7 +248,7 @@ height:300px;
 /* --------------Comienza menu linea base*/
 
 #menu ul {
-    background:#2F1D0A;
+    background:#92b74e;
     list-style: none;
     font-size: 14px;
     font-weight: bold;
@@ -264,23 +264,26 @@ height:300px;
 
 #menu ul li {
 display: inline;
+
 }
 #menu ul li a:link, #menu ul li a:visited {
-color:#92b74e;
+color:#fff;
+background: #86a848;
 padding: 9px 6px;
 float: left;
 text-decoration: none;
--moz-border-radius: 10px;
--khtml-border-radius: 10px;
--webkit-border-radius: 10px;
+border-radius:100px;
+-moz-border-radius: 100px;
+-khtml-border-radius: 100px;
+-webkit-border-radius: 100px;
+margin-right:6px;
+
 }
 #menu ul li a:hover, #menu ul li a:active{
 color: #fff;
-background: rgba(146,183,78,0.95);
+background:#a2c268 ;
 height: 10px;
-text-shadow: 2px 2px 5px #fff;
--moz-text-shadow: 2px 2px 5px #fff;
--webkit-text-shadow: 2px 2px 5px #fff;
+
 }
 
 /* ---------------Termina menu linea base*/
