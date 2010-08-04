@@ -59,11 +59,11 @@
                            <div id="filtros">
                                 <span class="variables">Variables</span>
                                 
-                                <span class="variables_filtro"><b>Cooperativa</b><br>{%if session.cooperativa%}{{session.cooperativa}}{%endif%}</span>
-                                <span class="variables_filtro"><b>Año</b><br>{{session.fecha}}</span>
-                                <span class="variables_filtro"><b>Departamento</b><br>{{session.departamento}}</span>
-                                <span class="variables_filtro"><b>Municipio</b><br>{{session.municipio.nombre}}</span>
-                                <span class="variables_filtro"><b>Comunidad</b><br>{{session.comunidad.nombre}}</span>
+                                <span class="variables_filtro"><b>Cooperativa</b><br>{%if request.session.cooperativa%}{{session.cooperativa}}{%endif%}</span>
+                                <span class="variables_filtro"><b>Año</b><br>{{request.session.fecha}}</span>
+                                <span class="variables_filtro"><b>Departamento</b><br>{{request.session.departamento}}</span>
+                                <span class="variables_filtro"><b>Municipio</b><br>{{request.session.municipio.nombre}}</span>
+                                <span class="variables_filtro"><b>Comunidad</b><br>{{request.session.comunidad.nombre}}</span>
                                 <a href="/index">Nueva Consulta</a>
                             </div>
                    {%endblock%}

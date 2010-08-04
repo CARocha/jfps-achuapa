@@ -117,8 +117,9 @@ def inicio(request):
     else:
         form = AchuapaForm()
         mensaje = ":P"
-    dict = {'form': form,'user': request.user, 'session':request.session}
-    return direct_to_template(request, 'achuapa/inicio.html', dict)
+    dict = {'form': form,'user': request.user,}
+    return render_to_response('achuapa/inicio.html', dict,
+                              context_instance=RequestContext(request))
 
 @session_required
 def familia(request):
