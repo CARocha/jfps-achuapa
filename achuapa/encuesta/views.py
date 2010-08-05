@@ -143,12 +143,13 @@ def familia(request):
         query = a.filter(migracion__edades = opcion[0])
         numero = query.count()
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        totalv = query.aggregate(totalv=Sum('migracion__viven_casa'))['totalv']
         vive = query.aggregate(vive = Sum('migracion__viven_casa'))['vive']
-        porcentaje_viven = saca_porcentajes(vive, totales['viven'])
+        porcentaje_viven = saca_porcentajes(vive, totalv)
         fuera = query.aggregate(fuera = Sum('migracion__viven_fuera'))['fuera']
         porcentaje_fuera = saca_porcentajes(fuera, totales['fuera'])
         tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
-                      'vive': vive, 'porcentaje_viven': porcentaje_viven,
+                      'totalv':totalv,'vive': vive, 'porcentaje_viven': porcentaje_viven,
                       'fuera':fuera,'porcentaje_fuera':porcentaje_fuera}
     
     return render_to_response('achuapa/familia.html',locals(),
@@ -286,7 +287,7 @@ def arboles(request):
     num_familias = a.count()
     #******************************
     
-    #********Existencia de arboles*****************
+    #********Existencia de arboles sumatorias*****************
     maderable = a.aggregate(Sum('existenciarboles__cant_maderable'))['existenciarboles__cant_maderable__sum']
     forrajero = a.aggregate(Sum('existenciarboles__cant_forrajero'))['existenciarboles__cant_forrajero__sum']
     energetico = a.aggregate(Sum('existenciarboles__cant_energetico'))['existenciarboles__cant_energetico__sum']
@@ -299,6 +300,12 @@ def arboles(request):
     pro_energetico = energetico / num_familias if energetico != None else 0
     pro_frutal = frutal / num_familias if frutal != None else 0
     #***********************************************
+    
+    #******conteo de arboles********************
+    maderablect = a.aggregate(Count('existenciarboles__cant_maderable'))['existenciarboles__cant_maderable__count']
+    forrajeroct = a.aggregate(Count('existenciarboles__cant_forrajero'))['existenciarboles__cant_forrajero__count']
+    energeticoct = a.aggregate(Count('existenciarboles__cant_energetico'))['existenciarboles__cant_energetico__count']
+    frutalct = a.aggregate(Count('existenciarboles__cant_frutal'))['existenciarboles__cant_frutal__count']
     
     #**********Reforestacion************************
     tabla = {}
@@ -314,22 +321,25 @@ def arboles(request):
         key = slugify(activ.nombre).replace('-', '_')
         query = a.filter(reforestacion__reforestacion = activ)
         numero = query.count()
-        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        porcentaje_num = saca_porcentajes(numero, num_familias)
         nativos = query.aggregate( cantidad = Sum('reforestacion__cantidad_nativos'))['cantidad']
         nonativos = query.aggregate( cantidadno = Sum('reforestacion__cantidad_nonativos'))['cantidadno']
-        porcentaje_nativos = saca_porcentajes(nativos, totales['nativos'])
-        porcentaje_nonativos = saca_porcentajes(nonativos, totales['nonativos'])
-        tabla[key] = {'numero': numero, 'porcentaje_nativos': porcentaje_nativos,
-                      'nativos': nativos,'porcentaje_nonativos': porcentaje_nonativos,
-                      'nonativos':nonativos }
+        totalnn = nativos + nonativos
+        porcentaje_nativos = saca_porcentajes(nativos, totalnn)
+        porcentaje_nonativos = saca_porcentajes(nonativos, totalnn)
+        tabla[key] = {'numero': numero, 'porcentaje_num':porcentaje_num, 
+                      'porcentaje_nativos': porcentaje_nativos,'nativos': nativos,
+                      'porcentaje_nonativos': porcentaje_nonativos,'nonativos':nonativos }
         
     
     return  render_to_response('achuapa/arboles.html',
                               {'num_familias':num_familias,'maderable':maderable,
                                'forrajero':forrajero,'energetico':energetico,'frutal':frutal,
                                'pro_maderable':pro_maderable,'pro_forrajero':pro_forrajero,
-                               'pro_energetico':pro_energetico,'pro_frutal':frutal,'tabla':tabla,
-                               'totales':totales},
+                               'pro_energetico':pro_energetico,'pro_frutal':pro_frutal,
+                               'maderablect':maderablect,'forrajeroct':forrajeroct,
+                               'energeticoct':energeticoct,'frutalct':frutalct,
+                               'tabla':tabla,'totales':totales},
                                 context_instance=RequestContext(request))
 
 @session_required
@@ -996,7 +1006,10 @@ def saca_porcentajes(values):
 def saca_porcentajes(dato, total, formato=True):
     '''Si formato es true devuelve float caso contrario es cadena'''
     if dato != None:
-        porcentaje = (dato/float(total)) * 100 if total != None or total != 0 else 0
+        try:
+            porcentaje = (dato/float(total)) * 100 if total != None or total != 0 else 0
+        except:
+            return 0
         if formato:
             return porcentaje
         else:
