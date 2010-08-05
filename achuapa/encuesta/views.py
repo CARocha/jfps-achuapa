@@ -324,7 +324,7 @@ def arboles(request):
         porcentaje_num = saca_porcentajes(numero, num_familias)
         nativos = query.aggregate( cantidad = Sum('reforestacion__cantidad_nativos'))['cantidad']
         nonativos = query.aggregate( cantidadno = Sum('reforestacion__cantidad_nonativos'))['cantidadno']
-        totalnn = nativos + nonativos
+        totalnn = nativos + nonativos if nativos != None and nonativos != None else 0 
         porcentaje_nativos = saca_porcentajes(nativos, totalnn)
         porcentaje_nonativos = saca_porcentajes(nonativos, totalnn)
         tabla[key] = {'numero': numero, 'porcentaje_num':porcentaje_num, 
