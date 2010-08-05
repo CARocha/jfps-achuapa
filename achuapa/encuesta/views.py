@@ -143,11 +143,11 @@ def familia(request):
         query = a.filter(migracion__edades = opcion[0])
         numero = query.count()
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
-        totalv = query.aggregate(totalv=Sum('migracion__viven_casa'))['totalv']
+        totalv = query.aggregate(totalv=Sum('migracion__total_familia'))['totalv']
         vive = query.aggregate(vive = Sum('migracion__viven_casa'))['vive']
         porcentaje_viven = saca_porcentajes(vive, totalv)
         fuera = query.aggregate(fuera = Sum('migracion__viven_fuera'))['fuera']
-        porcentaje_fuera = saca_porcentajes(fuera, totales['fuera'])
+        porcentaje_fuera = saca_porcentajes(fuera, totalv)
         tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
                       'totalv':totalv,'vive': vive, 'porcentaje_viven': porcentaje_viven,
                       'fuera':fuera,'porcentaje_fuera':porcentaje_fuera}
