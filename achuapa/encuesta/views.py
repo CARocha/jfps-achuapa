@@ -227,6 +227,8 @@ def fincas(request):
     totales = {}
     consulta = _queryset_filtrado(request)
 
+    total_encuesta = consulta.count()
+
     totales['numero'] = consulta.aggregate(numero=Count('tierra__uso_tierra'))['numero'] 
     totales['porcentaje_num'] = 100
     totales['manzanas'] = consulta.aggregate(area=Sum('tierra__areas'))['area']
