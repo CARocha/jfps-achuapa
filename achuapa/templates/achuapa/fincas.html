@@ -19,6 +19,7 @@
         });
     }
 </script>
+{%endblock%}
 {%block titulo%}Las Fincas{%endblock%}
 
 {% block contenido %}
@@ -28,7 +29,7 @@ Gráficos
     <li><a href="#" onCLick="click_callback('solares')">Tenencia de los solares</a></li>
     <li><a href="#" onCLick="click_callback('propietario')">Dueño de la Propiedad</a></li>
 </ul>
-
+<div id="grafo"></div>
 <table>
 <caption>Las Fincas</caption>
  <thead>
