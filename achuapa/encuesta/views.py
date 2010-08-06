@@ -746,7 +746,8 @@ def ahorro_credito_grafos(request, tipo):
 @session_required
 def servicios(request):
     '''servicios: educacion, salud, agua, luz'''
-    pass #poner un direct to template?    
+    return render_to_response('achuapa/servicios.html', 
+                              context_instance=RequestContext(request))
     
 @session_required
 def educacion(request):
