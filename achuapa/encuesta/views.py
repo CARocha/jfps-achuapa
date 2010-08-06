@@ -218,6 +218,31 @@ def organizacion(request):
     return render_to_response('achuapa/organizacion.html', 
                               {'tabla_socio': tabla_socio, 'tabla_beneficio': tabla_beneficio},
                               context_instance=RequestContext(request))
+
+@session_required
+def organizacion_grafos(request, tipo):
+    '''grafos de organizacion
+       tipo puede ser: beneficio, miembro'''
+    consulta = _queryset_filtrado(request)
+    
+    data = [] 
+    legends = []
+    if tipo == 'beneficio':
+        for opcion in Beneficios.objects.all():
+            data.append(consulta.filter(organizacion__beneficio=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends, 
+                'Beneficios de ser socios/socias', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    elif tipo == 'miembro':
+        for opcion in PorqueMiembro.objects.all():
+            data.append(consulta.filter(organizacion__beneficio=opcion).count())
+            legends.append(opcion.nombre)
+        return grafos.make_graph(data, legends, 
+                'Por que soy miembro de ...', return_json = True,
+                type = grafos.PIE_CHART_3D)
+    else:
+        raise Http404
                          
 @session_required
 def fincas(request):
