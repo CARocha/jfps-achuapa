@@ -47,6 +47,9 @@ def _queryset_filtrado(request):
 
         if 'socio' in request.session:
             params['organizacion__socio'] = request.session['socio']
+            
+        if 'desde' in request.session:
+            params['organizacion__desde_socio'] = request.session['desde']
 
         if 'duenio' in  request.session:
             params['tenencia__dueno'] = request.session['duenio']
@@ -107,6 +110,7 @@ def inicio(request):
             request.session['municipio'] = municipio 
             request.session['comunidad'] = comunidad
             request.session['socio'] = form.cleaned_data['socio']
+            request.session['desde'] = form.cleaned_data['desde']
             request.session['duenio'] = form.cleaned_data['dueno']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
@@ -921,39 +925,27 @@ def seguridad_alimentaria(request):
     num_familia = a.count()
     #******************************************
     tabla = {}
-    totales = {}
-    
-    totales['numero'] = a.aggregate(numero=Count('seguridad__alimento'))['numero']
-    totales['porcentaje_num'] = 100
-    totales['producen'] = a.aggregate(producen=Sum('seguridad__producen'))['producen']
-    totales['porcentaje_prod'] = 100
-    totales['compran'] = a.aggregate(compran=Sum('seguridad__compran'))['compran']
-    totales['porcentaje_compran'] = 100
-    totales['consumen'] = a.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
-    totales['porcentaje_consumen'] = 100
-    totales['consumen_invierno'] = a.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
-    totales['porcentaje_invierno'] = 100
     
     for u in Alimentos.objects.all():
         key = slugify(u.nombre).replace('-','_')
         query = a.filter(seguridad__alimento = u)
         frecuencia = query.count()
-        producen = query.aggregate(producen=Sum('seguridad__producen'))['producen']
-        por_producen = saca_porcentajes(producen, totales['producen'])
-        compran = query.aggregate(compran=Sum('seguridad__compran'))['compran']
-        por_compran = saca_porcentajes(compran, totales['compran'])
-        consumen = query.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
-        por_consumen = saca_porcentajes(consumen, totales['consumen'])
-        invierno = query.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
-        por_invierno = saca_porcentajes(invierno, totales['consumen_invierno'])
+        producen = query.filter(seguridad__alimento=u,seguridad__producen=1).aggregate(producen=Count('seguridad__producen'))['producen']
+        por_producen = saca_porcentajes(producen, num_familia)
+        compran = query.filter(seguridad__alimento=u,seguridad__compran=1).aggregate(compran=Count('seguridad__compran'))['compran']
+        por_compran = saca_porcentajes(compran, num_familia)
+        consumen = query.filter(seguridad__alimento=u,seguridad__consumen=1).aggregate(consumen=Count('seguridad__consumen'))['consumen']
+        por_consumen = saca_porcentajes(consumen, num_familia)
+        invierno = query.filter(seguridad__alimento=u,seguridad__consumen_invierno=1).aggregate(invierno=Count('seguridad__consumen_invierno'))['invierno']
+        por_invierno = saca_porcentajes(invierno, num_familia)
         tabla[key] = {'frecuencia':frecuencia, 'producen':producen, 'por_producen':por_producen,
                       'compran':compran,'por_compran':por_compran,'consumen':consumen, 
                       'por_consumen':por_consumen, 'invierno':invierno,
                       'por_invierno':por_invierno}
+                     
                       
     return render_to_response('achuapa/seguridad.html',{'tabla':tabla,
-                              'num_familia':num_familia,
-                              'totales':totales},
+                              'num_familia':num_familia},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..
