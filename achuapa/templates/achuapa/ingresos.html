@@ -44,7 +44,7 @@ número de familias: {{num_familias}}
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
-        <td>{{unidad|unslugify}}</td>
+        <td>{{value.key2|unslugify}}</td>
         <td>{{value.numero|floatformat}}</td>
         <td>{{value.cantidad|floatformat}}</td>
         <td>{{value.precio|floatformat}}</td>

@@ -440,12 +440,13 @@ def cultivos(request):
     tabla = {} 
     for i in Cultivos.objects.all():
         key = slugify(i.nombre).replace('-', '_')
+        key2 = slugify(i.unidad).replace('-', '_')
         query = a.filter(cultivosfinca__cultivos = i)
         totales = query.aggregate(total=Sum('cultivosfinca__total'))['total']
         consumo = query.aggregate(consumo=Sum('cultivosfinca__consumo'))['consumo']
         libre = query.aggregate(libre=Sum('cultivosfinca__venta_libre'))['libre']
         organizada =query.aggregate(organizada=Sum('cultivosfinca__venta_organizada'))['organizada']
-        tabla[key] = {'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
+        tabla[key] = {'key2':key2,'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
     #*******************************************
     return render_to_response('achuapa/cultivos.html',
                              {'tabla':tabla,'num_familias':num_familias},
@@ -489,11 +490,12 @@ def ingresos(request):
     tabla = {}
     for i in Rubros.objects.all():
         key = slugify(i.nombre).replace('-','_')
+        key2 = slugify(i.unidad).replace('-','_')
         query = a.filter(ingresofamiliar__rubro = i)
         numero = query.count()
         cantidad = query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad']
         precio = query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio']
-        tabla[key] = {'numero':numero,'cantidad':cantidad,'precio':precio}
+        tabla[key] = {'key2':key2,'numero':numero,'cantidad':cantidad,'precio':precio}
         
     #********* calculos de las variables de otros ingresos******
     matriz = {}
