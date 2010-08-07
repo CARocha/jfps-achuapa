@@ -2,7 +2,30 @@
 {%load unslugify %}
 {% block title %}JFPS - Organización{% endblock %}
 {%block titulo%}La Organización{%endblock%}
+{%block extra_header%}
+<script type="text/javascript">
+    var activo = 0; 
+    function click_callback(id){
+        $.getJSON('/grafo/organizacion/' + id, function(data) {
+            if (activo!= id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
+</script>
+{%endblock%}
+
 {% block contenido %}
+Gráficos
+<ul>
+    <li><a href="#" onCLick="click_callback('miembro')">Por que es miembro</a></li>
+    <li><a href="#" onCLick="click_callback('beneficio')">Beneficio de ser socios/socias</a></li>
+</ul>
+<div id="grafo"></div>
 
 <table>
  <thead>

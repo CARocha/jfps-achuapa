@@ -1,11 +1,35 @@
 {% extends "base.html" %}
 {%load unslugify %}
 {% block title %}JFPS - Fincas{% endblock %}
+{%block extra_header%}
+<script type="text/javascript">
+    //si activo es 0 el html interno esta vacio
+    //caso si activo es otro num sustituir grafico
+    //si activo es el mismo id, esconder grafico
+    var activo = 0; 
+    function click_callback(id){
+        $.getJSON('/grafo/fincas/' + id, function(data) {
+            if (activo!= id){
+                $("#grafo").html('<img src="' + data.url + '" />');
+                activo = id;
+            }else{
+                $("#grafo").html('');
+                activo = 0;
+            }
+        });
+    }
+</script>
+{%endblock%}
 {%block titulo%}Las Fincas{%endblock%}
 
 {% block contenido %}
-
-
+Gráficos
+<ul>
+    <li><a href="#" onCLick="click_callback('tenencia')">Tenencia de la Tierra</a></li>
+    <li><a href="#" onCLick="click_callback('solares')">Tenencia de los solares</a></li>
+    <li><a href="#" onCLick="click_callback('propietario')">Dueño de la Propiedad</a></li>
+</ul>
+<div id="grafo"></div>
 <table>
 <caption>Las Fincas</caption>
  <thead>

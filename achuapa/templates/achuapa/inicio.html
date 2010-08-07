@@ -53,11 +53,10 @@
 {% block contenido %}
                     <form action"." method="POST">
                         {% csrf_token %}
-                    <fieldset>
 
                     <div id="formulario_tabla">
                         <div class="form_label"><b>{{form.cooperativa.label}}</b></div>
-                        <div class="form_widget">{{form.cooperativa}}</div>
+                        <div class="form_widget">{{form.cooperativa}}</div></br style="clear:both">
                         <div class="form_label"><b>{{form.fecha.label}}</b></div>
                         <div class="form_widget">{{form.fecha}}</div>
 
@@ -75,8 +74,7 @@
                         <div class="form_widget">{{form.dueno}}</div>  
                     </div>
 
-                      <input type="submit" value="Aceptar" id="boton" class="filtro"/>
-                    </fieldset>
+                      <input type="submit" value="Consultar" id="boton" class="filtro"/>
                     </form>
                     <br>
     </div>
