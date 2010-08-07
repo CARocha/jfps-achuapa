@@ -624,9 +624,9 @@ def equipos(request):
         key = slugify(i.nombre).replace('-','_')
         query = a.filter(propiedades__equipo = i)
         frecuencia = query.count()
-        por_equipo = saca_porcentajes(frecuencia, totales['numero'])
+        por_equipo = saca_porcentajes(frecuencia, num_familia)
         equipo = query.aggregate(equipo=Sum('propiedades__cantidad_equipo'))['equipo']
-        por_cantidad = saca_porcentajes(equipo, totales['cantidad_equipo'])
+        por_cantidad = saca_porcentajes(equipo, num_familia)
         tabla[key] = {'frecuencia':frecuencia, 'por_equipo':por_equipo,
                       'equipo':equipo,'por_cantidad':por_cantidad}
     
@@ -643,9 +643,9 @@ def equipos(request):
         key = slugify(j.nombre).replace('-','_')
         query = a.filter(propiedades__infraestructura = j)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_infra['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         infraestructura = query.aggregate(infraestructura=Sum('propiedades__cantidad_infra'))['infraestructura']
-        por_infra = saca_porcentajes(infraestructura, totales_infra['cantidad_infra'])
+        por_infra = saca_porcentajes(infraestructura, num_familia)
         tabla_infra[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
                              'infraestructura':infraestructura,'por_infra':por_infra}
                              
@@ -662,9 +662,9 @@ def equipos(request):
         key = slugify(k.nombre).replace('-','_')
         query = a.filter(herramientas__herramienta = k)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_herramientas['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         herra = query.aggregate(herramientas=Sum('herramientas__numero'))['herramientas']
-        por_herra = saca_porcentajes(herra, totales_herramientas['cantidad_herra'])
+        por_herra = saca_porcentajes(herra, num_familia)
         herramienta[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
                             'herra':herra,'por_herra':por_herra}
                             
@@ -681,9 +681,9 @@ def equipos(request):
         key = slugify(m.nombre).replace('-','_')
         query = a.filter(transporte__transporte = m)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_transporte['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         trans = query.aggregate(transporte=Sum('transporte__numero'))['transporte']
-        por_trans = saca_porcentajes(trans, totales_transporte['cantidad_trans'])
+        por_trans = saca_porcentajes(trans, num_familia)
         transporte[key] = {'frecuencia':frecuencia,'por_frecuencia':por_frecuencia,
                            'trans':trans,'por_trans':por_trans}
            
