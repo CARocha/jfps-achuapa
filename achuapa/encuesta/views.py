@@ -488,6 +488,13 @@ def ingresos(request):
     #******************************
     #*******calculos de las variables ingreso************
     tabla = {}
+    respuesta = {}
+    respuesta['bruto']=[]
+    respuesta['ingreso']=0
+    respuesta['ingreso_total']=0
+    respuesta['ingreso_otro']=0
+    respuesta['brutoo'] = 0
+    respuesta['total_neto'] = 0
     for i in Rubros.objects.all():
         key = slugify(i.nombre).replace('-','_')
         key2 = slugify(i.unidad).replace('-','_')
@@ -495,7 +502,12 @@ def ingresos(request):
         numero = query.count()
         cantidad = query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad']
         precio = query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio']
-        tabla[key] = {'key2':key2,'numero':numero,'cantidad':cantidad,'precio':precio}
+        ingreso = cantidad * precio if cantidad != None and precio != None else 0
+        respuesta['ingreso']= query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad'] * query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio'] if cantidad != None and precio != None else 0
+        respuesta['ingreso_total'] +=  respuesta['ingreso']
+        
+        tabla[key] = {'key2':key2,'numero':numero,'cantidad':cantidad,
+                      'precio':precio,'ingreso':ingreso}
         
     #********* calculos de las variables de otros ingresos******
     matriz = {}
@@ -505,12 +517,18 @@ def ingresos(request):
         frecuencia = consulta.count()
         meses = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses']
         ingreso = consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso']
-        ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
+        ingresototal = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses'] * consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso'] if meses != None and ingreso != None else 0
+        respuesta['ingreso_otro'] +=  ingresototal
+        #ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
         matriz[key] = {'frecuencia':frecuencia,'meses':meses,
                        'ingreso':ingreso,'ingresototal':ingresototal}
+                       
+    respuesta['brutoo'] = (respuesta['ingreso_total'] + respuesta['ingreso_otro']) / num_familias
+    respuesta['total_neto'] = respuesta['brutoo'] * 0.6
         
     return render_to_response('achuapa/ingresos.html',
-                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz},
+                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz,
+                              'respuesta':respuesta},
                               context_instance=RequestContext(request))
                               
 @session_required
@@ -626,9 +644,9 @@ def equipos(request):
         frecuencia = query.count()
         por_equipo = saca_porcentajes(frecuencia, num_familia)
         equipo = query.aggregate(equipo=Sum('propiedades__cantidad_equipo'))['equipo']
-        por_cantidad = saca_porcentajes(equipo, num_familia)
+        cantidad_pro = query.aggregate(cantidad_pro=Avg('propiedades__cantidad_equipo'))['cantidad_pro']
         tabla[key] = {'frecuencia':frecuencia, 'por_equipo':por_equipo,
-                      'equipo':equipo,'por_cantidad':por_cantidad}
+                      'equipo':equipo,'cantidad_pro':cantidad_pro}
     
     #******** tabla de infraestructura *************
     tabla_infra = {}
@@ -645,9 +663,10 @@ def equipos(request):
         frecuencia = query.count()
         por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         infraestructura = query.aggregate(infraestructura=Sum('propiedades__cantidad_infra'))['infraestructura']
-        por_infra = saca_porcentajes(infraestructura, num_familia)
+        infraestructura_pro = query.aggregate(infraestructura_pro=Avg('propiedades__cantidad_infra'))['infraestructura_pro']
         tabla_infra[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
-                             'infraestructura':infraestructura,'por_infra':por_infra}
+                             'infraestructura':infraestructura,
+                             'infraestructura_pro':infraestructura_pro}
                              
     #******************* tabla de herramientas ***************************
     herramienta = {}
@@ -664,7 +683,7 @@ def equipos(request):
         frecuencia = query.count()
         por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         herra = query.aggregate(herramientas=Sum('herramientas__numero'))['herramientas']
-        por_herra = saca_porcentajes(herra, num_familia)
+        por_herra = query.aggregate(por_herra=Avg('herramientas__numero'))['por_herra']
         herramienta[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
                             'herra':herra,'por_herra':por_herra}
                             
@@ -683,7 +702,7 @@ def equipos(request):
         frecuencia = query.count()
         por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         trans = query.aggregate(transporte=Sum('transporte__numero'))['transporte']
-        por_trans = saca_porcentajes(trans, num_familia)
+        por_trans = query.aggregate(por_trans=Avg('transporte__numero'))['por_trans']
         transporte[key] = {'frecuencia':frecuencia,'por_frecuencia':por_frecuencia,
                            'trans':trans,'por_trans':por_trans}
            
