@@ -852,7 +852,7 @@ def salud_grafos(request, tipo):
     data = [] 
     legends = []
     if int(tipo) in [numero[0] for numero in SEXO_CHOICES]:
-        for opcion in CHOICE_DISPONIBILIDAD:
+        for opcion in CHOICE_SALUD:
             data.append(consulta.filter(salud__frecuencia=opcion[0]).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del salud para %s' % SEXO_CHOICES[int(tipo)-1][1]
