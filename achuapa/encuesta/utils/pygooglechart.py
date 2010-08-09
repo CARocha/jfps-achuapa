@@ -28,6 +28,7 @@ import random
 import re
 import warnings
 import copy
+from django.utils.http import urlquote
 
 # Helper variables and functions
 # -----------------------------------------------------------------------------
@@ -400,7 +401,7 @@ class Chart(object):
         assert(isinstance(legend, list) or isinstance(legend, tuple) or
             legend is None)
         if legend:
-            self.legend = [urllib.quote(a) for a in legend]
+            self.legend = [urlquote(a) for a in legend]
         else:
             self.legend = None
 

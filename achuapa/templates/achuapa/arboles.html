@@ -44,27 +44,32 @@ número de familias: {{num_familias}}
 				 <th>TIPO</th>
                  <th>TOTAL</th>
                  <th>PROMEDIO/FINCA</th>
+                 <th>FRECUENCIA FINCA TIENE ÁRBOLES</th>
          </tr>
     </thead>
 <tr>
     <td>Maderables</td>
     <td>{{maderable}}</td>
     <td>{{pro_maderable}}</td>
+    <td>{{maderablect}}</td>
 </tr>
 <tr>
     <td>Forrajero</td>
     <td>{{forrajero}}</td>
     <td>{{pro_forrajero}}</td>
+    <td>{{forrajeroct}}</td>
 </tr>
 <tr>
     <td>Energetico</td>
     <td>{{energetico}}</td>
     <td>{{pro_energetico}}</td>
+    <td>{{energeticoct}}</td>
 </tr>
 <tr>
     <td>Frutales</td>
     <td>{{frutal}}</td>
     <td>{{pro_frutal}}</td>
+    <td>{{frutalct}}</td>
 </tr>
 </table>
 <br><br>
@@ -73,7 +78,8 @@ número de familias: {{num_familias}}
  <thead>
     <tr>
         <th>Actividad</th>
-        <th>Cantidad</th>
+        <th>Frecuencia</th>
+        <th>% Frec.</th>
         <th>Nativos</th>
         <th>% Nativo</th>
         <th>No Nativos</th>
@@ -84,6 +90,7 @@ número de familias: {{num_familias}}
     <tr>
         <td>{{key|unslugify}}</td>
         <td>{{value.numero|floatformat}}</td>
+        <td>{{value.porcentaje_num|floatformat}}</td>
         <td>{{value.nativos|floatformat}}</td>
         <td>{{value.porcentaje_nativos|floatformat}}</td>
         <td>{{value.nonativos|floatformat}}</td>

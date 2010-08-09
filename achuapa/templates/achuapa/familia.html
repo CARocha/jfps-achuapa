@@ -19,8 +19,7 @@ Número de familia: {{num_familia}}
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
-        <td>{{value.numero|floatformat}}</td>
-<!--        <td>{{value.porcentaje_num|floatformat}}</td>-->
+        <td>{{value.totalv|floatformat}}</td>
         <td>{{value.vive|floatformat}}</td>
         <td>{{value.porcentaje_viven|floatformat}}</td>
         <td>{{value.fuera|floatformat}}</td>
