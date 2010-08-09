@@ -47,6 +47,9 @@ def _queryset_filtrado(request):
 
         if 'socio' in request.session:
             params['organizacion__socio'] = request.session['socio']
+            
+        if 'desde' in request.session:
+            params['organizacion__desde_socio'] = request.session['desde']
 
         if 'duenio' in  request.session:
             params['tenencia__dueno'] = request.session['duenio']
@@ -107,6 +110,7 @@ def inicio(request):
             request.session['municipio'] = municipio 
             request.session['comunidad'] = comunidad
             request.session['socio'] = form.cleaned_data['socio']
+            request.session['desde'] = form.cleaned_data['desde']
             request.session['duenio'] = form.cleaned_data['dueno']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
@@ -433,12 +437,13 @@ def cultivos(request):
     tabla = {} 
     for i in Cultivos.objects.all():
         key = slugify(i.nombre).replace('-', '_')
+        key2 = slugify(i.unidad).replace('-', '_')
         query = a.filter(cultivosfinca__cultivos = i)
         totales = query.aggregate(total=Sum('cultivosfinca__total'))['total']
         consumo = query.aggregate(consumo=Sum('cultivosfinca__consumo'))['consumo']
         libre = query.aggregate(libre=Sum('cultivosfinca__venta_libre'))['libre']
         organizada =query.aggregate(organizada=Sum('cultivosfinca__venta_organizada'))['organizada']
-        tabla[key] = {'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
+        tabla[key] = {'key2':key2,'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
     #*******************************************
     return render_to_response('achuapa/cultivos.html',
                              {'tabla':tabla,'num_familias':num_familias},
@@ -480,13 +485,26 @@ def ingresos(request):
     #******************************
     #*******calculos de las variables ingreso************
     tabla = {}
+    respuesta = {}
+    respuesta['bruto']=[]
+    respuesta['ingreso']=0
+    respuesta['ingreso_total']=0
+    respuesta['ingreso_otro']=0
+    respuesta['brutoo'] = 0
+    respuesta['total_neto'] = 0
     for i in Rubros.objects.all():
         key = slugify(i.nombre).replace('-','_')
+        key2 = slugify(i.unidad).replace('-','_')
         query = a.filter(ingresofamiliar__rubro = i)
         numero = query.count()
         cantidad = query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad']
         precio = query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio']
-        tabla[key] = {'numero':numero,'cantidad':cantidad,'precio':precio}
+        ingreso = cantidad * precio if cantidad != None and precio != None else 0
+        respuesta['ingreso']= query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad'] * query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio'] if cantidad != None and precio != None else 0
+        respuesta['ingreso_total'] +=  respuesta['ingreso']
+        
+        tabla[key] = {'key2':key2,'numero':numero,'cantidad':cantidad,
+                      'precio':precio,'ingreso':ingreso}
         
     #********* calculos de las variables de otros ingresos******
     matriz = {}
@@ -496,12 +514,18 @@ def ingresos(request):
         frecuencia = consulta.count()
         meses = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses']
         ingreso = consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso']
-        ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
+        ingresototal = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses'] * consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso'] if meses != None and ingreso != None else 0
+        respuesta['ingreso_otro'] +=  ingresototal
+        #ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
         matriz[key] = {'frecuencia':frecuencia,'meses':meses,
                        'ingreso':ingreso,'ingresototal':ingresototal}
+                       
+    respuesta['brutoo'] = (respuesta['ingreso_total'] + respuesta['ingreso_otro']) / num_familias
+    respuesta['total_neto'] = respuesta['brutoo'] * 0.6
         
     return render_to_response('achuapa/ingresos.html',
-                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz},
+                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz,
+                              'respuesta':respuesta},
                               context_instance=RequestContext(request))
                               
 @session_required
@@ -615,11 +639,11 @@ def equipos(request):
         key = slugify(i.nombre).replace('-','_')
         query = a.filter(propiedades__equipo = i)
         frecuencia = query.count()
-        por_equipo = saca_porcentajes(frecuencia, totales['numero'])
+        por_equipo = saca_porcentajes(frecuencia, num_familia)
         equipo = query.aggregate(equipo=Sum('propiedades__cantidad_equipo'))['equipo']
-        por_cantidad = saca_porcentajes(equipo, totales['cantidad_equipo'])
+        cantidad_pro = query.aggregate(cantidad_pro=Avg('propiedades__cantidad_equipo'))['cantidad_pro']
         tabla[key] = {'frecuencia':frecuencia, 'por_equipo':por_equipo,
-                      'equipo':equipo,'por_cantidad':por_cantidad}
+                      'equipo':equipo,'cantidad_pro':cantidad_pro}
     
     #******** tabla de infraestructura *************
     tabla_infra = {}
@@ -634,11 +658,12 @@ def equipos(request):
         key = slugify(j.nombre).replace('-','_')
         query = a.filter(propiedades__infraestructura = j)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_infra['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         infraestructura = query.aggregate(infraestructura=Sum('propiedades__cantidad_infra'))['infraestructura']
-        por_infra = saca_porcentajes(infraestructura, totales_infra['cantidad_infra'])
+        infraestructura_pro = query.aggregate(infraestructura_pro=Avg('propiedades__cantidad_infra'))['infraestructura_pro']
         tabla_infra[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
-                             'infraestructura':infraestructura,'por_infra':por_infra}
+                             'infraestructura':infraestructura,
+                             'infraestructura_pro':infraestructura_pro}
                              
     #******************* tabla de herramientas ***************************
     herramienta = {}
@@ -653,9 +678,9 @@ def equipos(request):
         key = slugify(k.nombre).replace('-','_')
         query = a.filter(herramientas__herramienta = k)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_herramientas['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         herra = query.aggregate(herramientas=Sum('herramientas__numero'))['herramientas']
-        por_herra = saca_porcentajes(herra, totales_herramientas['cantidad_herra'])
+        por_herra = query.aggregate(por_herra=Avg('herramientas__numero'))['por_herra']
         herramienta[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
                             'herra':herra,'por_herra':por_herra}
                             
@@ -672,9 +697,9 @@ def equipos(request):
         key = slugify(m.nombre).replace('-','_')
         query = a.filter(transporte__transporte = m)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_transporte['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         trans = query.aggregate(transporte=Sum('transporte__numero'))['transporte']
-        por_trans = saca_porcentajes(trans, totales_transporte['cantidad_trans'])
+        por_trans = query.aggregate(por_trans=Avg('transporte__numero'))['por_trans']
         transporte[key] = {'frecuencia':frecuencia,'por_frecuencia':por_frecuencia,
                            'trans':trans,'por_trans':por_trans}
            
@@ -946,39 +971,27 @@ def seguridad_alimentaria(request):
     num_familia = a.count()
     #******************************************
     tabla = {}
-    totales = {}
-    
-    totales['numero'] = a.aggregate(numero=Count('seguridad__alimento'))['numero']
-    totales['porcentaje_num'] = 100
-    totales['producen'] = a.aggregate(producen=Sum('seguridad__producen'))['producen']
-    totales['porcentaje_prod'] = 100
-    totales['compran'] = a.aggregate(compran=Sum('seguridad__compran'))['compran']
-    totales['porcentaje_compran'] = 100
-    totales['consumen'] = a.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
-    totales['porcentaje_consumen'] = 100
-    totales['consumen_invierno'] = a.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
-    totales['porcentaje_invierno'] = 100
     
     for u in Alimentos.objects.all():
         key = slugify(u.nombre).replace('-','_')
         query = a.filter(seguridad__alimento = u)
         frecuencia = query.count()
-        producen = query.aggregate(producen=Sum('seguridad__producen'))['producen']
-        por_producen = saca_porcentajes(producen, totales['producen'])
-        compran = query.aggregate(compran=Sum('seguridad__compran'))['compran']
-        por_compran = saca_porcentajes(compran, totales['compran'])
-        consumen = query.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
-        por_consumen = saca_porcentajes(consumen, totales['consumen'])
-        invierno = query.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
-        por_invierno = saca_porcentajes(invierno, totales['consumen_invierno'])
+        producen = query.filter(seguridad__alimento=u,seguridad__producen=1).aggregate(producen=Count('seguridad__producen'))['producen']
+        por_producen = saca_porcentajes(producen, num_familia)
+        compran = query.filter(seguridad__alimento=u,seguridad__compran=1).aggregate(compran=Count('seguridad__compran'))['compran']
+        por_compran = saca_porcentajes(compran, num_familia)
+        consumen = query.filter(seguridad__alimento=u,seguridad__consumen=1).aggregate(consumen=Count('seguridad__consumen'))['consumen']
+        por_consumen = saca_porcentajes(consumen, num_familia)
+        invierno = query.filter(seguridad__alimento=u,seguridad__consumen_invierno=1).aggregate(invierno=Count('seguridad__consumen_invierno'))['invierno']
+        por_invierno = saca_porcentajes(invierno, num_familia)
         tabla[key] = {'frecuencia':frecuencia, 'producen':producen, 'por_producen':por_producen,
                       'compran':compran,'por_compran':por_compran,'consumen':consumen, 
                       'por_consumen':por_consumen, 'invierno':invierno,
                       'por_invierno':por_invierno}
+                     
                       
     return render_to_response('achuapa/seguridad.html',{'tabla':tabla,
-                              'num_familia':num_familia,
-                              'totales':totales},
+                              'num_familia':num_familia},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..

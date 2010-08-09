@@ -277,6 +277,7 @@ border-radius:5px;
 -khtml-border-radius: 5px;
 -webkit-border-radius: 5px;
 margin-right:6px;
+font-size:13px;
 
 
 
@@ -529,7 +530,7 @@ background:#73903D ;
 }
 
 #id_cooperativa, #id_fecha, #id_departamento, #id_municipio,
-#id_comunidad, #id_socio, #id_sexo, #id_dueno{
+#id_comunidad, #id_socio, #id_sexo, #id_dueno,#id_desde{
     width:200px;
     height:30px;
     background: #fff url(../imagen/combobox.png) repeat-x;

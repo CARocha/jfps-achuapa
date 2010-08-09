@@ -38,10 +38,10 @@ Número de familia: {{num_familia}}
  <thead>
     <tr>
         <th>EQUIPOS</th>
-        <th>FRECUENCIA</th>
+        <th>Frecuencia</th>
         <th>%</th>
-        <th>CANTIDAD</th>
-        <th>%</th>
+        <th>Cantidad</th>
+        <th>Promedio por familia</th>
     </tr>
   </thead>
     {%for key, value in tabla.items%}
@@ -50,7 +50,7 @@ Número de familia: {{num_familia}}
         <td>{{value.frecuencia|floatformat}}</td>
         <td>{{value.por_equipo|floatformat}}</td>
         <td>{{value.equipo|floatformat}}</td>
-        <td>{{value.por_cantidad|floatformat}}</td>
+        <td>{{value.cantidad_pro|floatformat}}</td>
     </tr>
     {%endfor%}
 </table>
@@ -63,7 +63,7 @@ Número de familia: {{num_familia}}
         <th>FRECUENCIA</th>
         <th>%</th>
         <th>CANTIDAD</th>
-        <th>%</th>
+        <th>Promedio por familia</th>
     </tr>
   </thead>
     {%for key, value in tabla_infra.items%}
@@ -72,7 +72,7 @@ Número de familia: {{num_familia}}
         <td>{{value.frecuencia|floatformat}}</td>
         <td>{{value.por_frecuencia|floatformat}}</td>
          <td>{{value.infraestructura|floatformat}}</td>
-        <td>{{value.por_infra|floatformat}}</td>
+        <td>{{value.infraestructura_pro|floatformat}}</td>
     </tr>
     {%endfor%}
 </table>
@@ -85,7 +85,7 @@ Número de familia: {{num_familia}}
         <th>FRECUENCIA</th>
         <th>%</th>
         <th>CANTIDAD</th>
-        <th>%</th>
+        <th>Promedio por familia</th>
     </tr>
  </thead>
     {%for key, value in herramienta.items%}
@@ -107,7 +107,7 @@ Número de familia: {{num_familia}}
         <th>FRECUENCIA</th>
         <th>%</th>
         <th>CANTIDAD</th>
-        <th>%</th>
+        <th>Promedio por familia</th>
     </tr>
  </thead>
     {%for key, value in transporte.items%}
