@@ -517,6 +517,7 @@ class OcupaCredito(models.Model):
         verbose_name_plural = "Credito-Ocupa"
     def __unicode__(self):
         return self.nombre
+
 CHOICE_SATISFACCION = ((1,"Menos de 25 % de las necesidades"),(2,"Entre 25 y 50 % de las necesidades"),(3,"Entre 50 y 100 % de las necesidades"))
         
 class Credito(models.Model):

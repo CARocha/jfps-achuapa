@@ -716,28 +716,19 @@ def ahorro_credito(request):
     tabla_ahorro = {}
     totales_ahorro = {}
 
-    totales_ahorro['numero'] = consulta.aggregate(numero=Count('ahorro__ahorro'))['numero'] 
-    totales_ahorro['porcentaje_num'] = 100
-
-    columnas_ahorro = [opcion[1] for opcion in CHOICE_AHORRO]
+    columnas_ahorro = ['Si', '%']
 
     for pregunta in AhorroPregunta.objects.all():
         key = slugify(pregunta.nombre).replace('-', '_')
-        query = consulta.filter(ahorro__ahorro = pregunta)
-        numero = query.count()
-        porcentaje_num = saca_porcentajes(numero, totales_ahorro['numero'])
-        #formato key: [numero, porcentaje, respuestas....]
-        tabla_ahorro[key] = [numero, porcentaje_num]
-        for opcion in CHOICE_AHORRO:
-            subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = opcion[0]).count()
-            subkey = slugify(opcion[1]).replace('-', '_')
-            tabla_ahorro[key].append(subquery)
+        #opciones solo si
+        subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = 1).count()
+        tabla_ahorro[key] = [subquery, saca_porcentajes(subquery, consulta.count())]
 
     #credito
     tabla_credito= {}
     totales_credito= {}
 
-    totales_credito['numero'] = consulta.aggregate(numero=Count('credito'))['numero'] 
+    totales_credito['numero'] = consulta.count()
     totales_credito['porcentaje_num'] = 100
 
     recibe = consulta.filter(credito__recibe = 1).count()
@@ -774,9 +765,11 @@ def ahorro_credito_grafos(request, tipo):
                 'A nombre de quien ahorra', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'origen': #de donde viene el credito
-        #TODO: make this graph
+        for origen in DaCredito.objects.all():
+            data.append(consulta.filter(credito__quien_credito= origen).count())
+            legends.append(origen.nombre)
         return grafos.make_graph(data, legends, 
-                'Tenencia de los solares', return_json = True,
+                'Origen del Crédito', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'satisfaccion':
         for opcion in CHOICE_SATISFACCION:
@@ -786,7 +779,12 @@ def ahorro_credito_grafos(request, tipo):
                 'Nivel de satisfacción con el crédito', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'uso':
-        pass
+        for uso in OcupaCredito.objects.all():
+            data.append(consulta.filter(credito__ocupa_credito = uso).count())
+            legends.append(uso.nombre)
+        return grafos.make_graph(data, legends, 
+                'Uso del Crédito', return_json = True,
+                type = grafos.PIE_CHART_3D)
     else:
         raise Http404
 
@@ -839,12 +837,13 @@ def educacion(request):
 def salud(request):
     '''salud'''
     consulta = _queryset_filtrado(request)
+    numero = consulta.count()
     tabla_estado = []
     tabla_sitio = []
 
     for choice in SEXO_CHOICES:
         query = consulta.filter(salud__edad=choice[0])
-        numero = query.count()
+        casos = query.count()
         resultados = query.aggregate(bs = Sum('salud__buena_salud'),
                                      ds = Sum('salud__delicada_salud'),
                                      ec = Sum('salud__cronica'),
@@ -853,13 +852,13 @@ def salud(request):
                                      clinica = Sum('salud__clinica'),
                                      nologra = Sum('salud__nologra')
                                      )
-        fila_estado = [choice[1], numero,
+        fila_estado = [choice[1], casos,
                 saca_porcentajes(resultados['bs'], numero, False),
                 saca_porcentajes(resultados['ds'], numero, False),
                 saca_porcentajes(resultados['ec'], numero, False)]
         tabla_estado.append(fila_estado)
 
-        fila_sitio = [choice[1], numero,
+        fila_sitio = [choice[1], casos,
                       calcular_positivos(resultados['centro'], numero),
                       calcular_positivos(resultados['medico'], numero),
                       calcular_positivos(resultados['clinica'], numero),
