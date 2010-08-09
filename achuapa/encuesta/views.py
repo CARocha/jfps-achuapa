@@ -124,6 +124,7 @@ def inicio(request):
             #request.session['socio'] = form.cleaned_data['socio']
             #request.session['desde'] = form.cleaned_data['desde']
             #request.session['duenio'] = form.cleaned_data['dueno']
+            print request.session['socio']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
 #        else:
