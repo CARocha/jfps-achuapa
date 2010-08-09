@@ -49,12 +49,23 @@
 </script>
 {% endblock %}
 {% block titulo %}Formulario de consulta{% endblock %}
-
+                   {%block filtros%}
+                           <div id="filtros">
+                                <span class="variables">Variables</span>
+                                <span class="variables_filtro"><b>Cooperativa</b><br>{%if request.session.cooperativa%}{{session.cooperativa}}{%endif%}</span>
+                                <span class="variables_filtro"><b>Año</b><br>{{request.session.fecha}}</span>
+                                <span class="variables_filtro"><b>Departamento</b><br>{{request.session.departamento}}</span>
+                                <span class="variables_filtro"><b>Municipio</b><br>{{request.session.municipio.nombre}}</span>
+                                <span class="variables_filtro"><b>Comunidad</b><br>{{request.session.comunidad.nombre}}</span>
+                            </div>
+                   {%endblock%}
+	 {%block menu%}
+        {%endblock%}
 {% block contenido %}
                     <form action"." method="POST">
                         {% csrf_token %}
 
-                    <div id="formulario_tabla">
+                    <div id="formulario_tabla" >
                         <div class="form_label"><b>{{form.cooperativa.label}}</b></div>
                         <div class="form_widget">{{form.cooperativa}}</div></br style="clear:both">
                         <div class="form_label"><b>{{form.fecha.label}}</b></div>
@@ -74,8 +85,27 @@
 
                       <input type="submit" value="Consultar" id="boton" class="filtro"/>
                     </form>
-                    <br>
-    </div>
-</div>
+                    {%if centinela = 1 %}
+                    <div id="indicadores" class="der">
+                        <h2 class="titulo_indicadores">INDICADORES</h2>
+                        <div id="contenedor_indicadores">
+                            <a href="/familia" class="familia">Familia</a>
+                            <a href="/organizacion" class="organizacion">Organización</a>
+                            <a href="/fincas"class="fincas">Fincas</a>
+                            <a href="/arboles"class="arboles">Árboles</a>
+                            <a href="/animales"class="animales">Animales</a>
+                            <a href="/cultivos"class="familia">Cultivos</a>
+                            <a href="/ingresos"class="ingresos">Ingresos</a>
+                            <a href="/equipos"class="bienes">Bienes</a>
+                            <a href="/ahorro_credito" class="ahorro">Ahorro y Crédito</a>
+                            <a href="/servicios"class="familia">Servicios</a>
+                            <a href="/seguridad_alimentaria" class="seguridad">Seguridad Alimentaria</a>
+                        </div>
+                        
+                    </div>
+                   
+                    {%endif%}
+                         <div class="separador"></div>
+
 {% endblock %}
 
