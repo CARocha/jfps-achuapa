@@ -268,13 +268,10 @@ def fincas(request):
     totales = {}
     consulta = _queryset_filtrado(request)
 
-    total_encuesta = consulta.count()
-
-    totales['numero'] = consulta.aggregate(numero=Count('tierra__uso_tierra'))['numero'] 
+    totales['numero'] = consulta.count() 
     totales['porcentaje_num'] = 100
     totales['manzanas'] = consulta.aggregate(area=Sum('tierra__areas'))['area']
     totales['porcentaje_mz'] = 100
-
 
     for uso in UsoTierra.objects.exclude(id=1):
         key = slugify(uso.nombre).replace('-', '_')
@@ -892,7 +889,7 @@ def salud_grafos(request, tipo):
     data = [] 
     legends = []
     if int(tipo) in [numero[0] for numero in SEXO_CHOICES]:
-        for opcion in CHOICE_DISPONIBILIDAD:
+        for opcion in CHOICE_SALUD:
             data.append(consulta.filter(salud__frecuencia=opcion[0]).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del salud para %s' % SEXO_CHOICES[int(tipo)-1][1]
