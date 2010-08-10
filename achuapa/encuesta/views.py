@@ -131,10 +131,12 @@ def inicio(request):
 #            mensaje = "Formulario con errores"
 #            dict = {'form': form, 'mensaje': mensaje,'user': request.user}
 #            return direct_to_template(request, 'achuapa/inicio.html', dict)
+            centinela = 1 #Variable para aparecer el menu de indicadores a lado del formulario
     else:
         form = AchuapaForm()
         mensaje = ":P"
-    dict = {'form': form,'user': request.user,}
+        centinela = 0
+    dict = {'form': form,'user': request.user,'centinela':centinela}
     return render_to_response('achuapa/inicio.html', dict,
                               context_instance=RequestContext(request))
 
