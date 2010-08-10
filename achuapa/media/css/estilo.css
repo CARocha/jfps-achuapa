@@ -565,6 +565,62 @@ padding-right:15px;
   background: #85a846 ;
 
 }
+#contenido_interno form{
+    width:360px;
+    float:left;
+}
+#formulario_tabla{
+    width:360px;
+}
+#indicadores{
+    width:560px;
+    height:256px;
+    background: #dddcd1;
+}
+
+#contenedor_indicadores{
+    margin:15px;
+}
+
+#contenedor_indicadores a{
+    *width:160px;
+    width:110px;
+    *height:40px;
+    height:26px;
+    display:block;
+    float:left;
+    margin-right:15px;
+    margin-bottom:10px;
+    border-bottom:#cecdbc 1px solid;
+    padding-left:50px;
+    padding-top:14px;
+    font-size:11px;
+    text-decoration:none;
+    color:#5a5a5a;
+}
+
+#contenedor_indicadores a:hover{
+    color:#000
+}
+
+.familia{background:#f9f8f8 url(../imagen/familia.jpg) no-repeat;}
+.organizacion{background:#f9f8f8 url(../imagen/organizacion.jpg) no-repeat;}
+.fincas{background:#f9f8f8 url(../imagen/fincas.jpg) no-repeat;}
+.arboles{background:#f9f8f8 url(../imagen/arboles.jpg) no-repeat;}
+.animales{background:#f9f8f8 url(../imagen/animales.jpg) no-repeat;}
+.cultivos{background:#f9f8f8 url(../imagen/cultivos.jpg) no-repeat;}
+.ingresos{background:#f9f8f8 url(../imagen/ingresos.jpg) no-repeat;}
+.bienes{background:#f9f8f8 url(../imagen/bienes.jpg) no-repeat;}
+.ahorro{background:#f9f8f8 url(../imagen/credito.jpg) no-repeat;}
+.servicios{background:#f9f8f8 url(../imagen/servicios.jpg) no-repeat;}
+.seguridad{background:#f9f8f8 url(../imagen/seguridad.jpg) no-repeat;}
+
+.titulo_indicadores{
+    font-size:17px;
+    padding-left:15px;
+    background: #cbc9b9;
+    margin: 0px 0px 0px 0px;
+}
 
 /* --------------Termina contenido-------------- */
 

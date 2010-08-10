@@ -109,19 +109,33 @@ def inicio(request):
 
             request.session['municipio'] = municipio 
             request.session['comunidad'] = comunidad
-            request.session['socio'] = form.cleaned_data['socio']
-            request.session['desde'] = form.cleaned_data['desde']
-            request.session['duenio'] = form.cleaned_data['dueno']
+            if form.cleaned_data['socio'] == 0:
+                request.session['socio'] = None
+            else:
+                request.session['socio'] = form.cleaned_data['socio']
+            if form.cleaned_data['desde'] == 0:
+                request.session['desde'] = None
+            else:
+                request.session['desde'] = form.cleaned_data['desde']
+            if form.cleaned_data['dueno'] == 0:
+                request.session['duenio'] = None
+            else:
+                request.session['duenio'] = form.cleaned_data['dueno']   
+            #request.session['socio'] = form.cleaned_data['socio']
+            #request.session['desde'] = form.cleaned_data['desde']
+            #request.session['duenio'] = form.cleaned_data['dueno']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
 #        else:
 #            mensaje = "Formulario con errores"
 #            dict = {'form': form, 'mensaje': mensaje,'user': request.user}
 #            return direct_to_template(request, 'achuapa/inicio.html', dict)
+            centinela = 1 #Variable para aparecer el menu de indicadores a lado del formulario
     else:
         form = AchuapaForm()
         mensaje = ":P"
-    dict = {'form': form,'user': request.user,}
+        centinela = 0
+    dict = {'form': form,'user': request.user,'centinela':centinela}
     return render_to_response('achuapa/inicio.html', dict,
                               context_instance=RequestContext(request))
 
