@@ -109,22 +109,21 @@ def inicio(request):
 
             request.session['municipio'] = municipio 
             request.session['comunidad'] = comunidad
-            if form.cleaned_data['socio'] == 0:
+            if form.cleaned_data['socio'] == 'nada':
                 request.session['socio'] = None
             else:
                 request.session['socio'] = form.cleaned_data['socio']
-            if form.cleaned_data['desde'] == 0:
+            if form.cleaned_data['desde'] == 'nada':
                 request.session['desde'] = None
             else:
                 request.session['desde'] = form.cleaned_data['desde']
-            if form.cleaned_data['dueno'] == 0:
+            if form.cleaned_data['dueno'] == 'nada':
                 request.session['duenio'] = None
             else:
                 request.session['duenio'] = form.cleaned_data['dueno']   
             #request.session['socio'] = form.cleaned_data['socio']
             #request.session['desde'] = form.cleaned_data['desde']
             #request.session['duenio'] = form.cleaned_data['dueno']
-            print request.session['socio']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
 #        else:
