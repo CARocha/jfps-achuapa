@@ -30,8 +30,8 @@
 {% block contenido %}
 Disponibilidad
 <ul>
-    <li><a href="#" onCLick="disp(1)">Disponibilidad en Ojo de Agua</a></li>
-    <li><a href="#" onCLick="disp(2)">Disponibilidad en Quebrada</a></li>
+    <li><a href="#" onCLick="disp(1)">Disponibilidad en Quebrada</a></li>
+    <li><a href="#" onCLick="disp(2)">Disponibilidad en Ojo de Agua</a></li>
     <li><a href="#" onCLick="disp(3)">Disponibilidad en Pozo Comunitario</a></li>
     <li><a href="#" onCLick="disp(4)">Disponibilidad en Pozo Propio</a></li>
     <li><a href="#" onCLick="disp(5)">Disponibilidad en Agua Entubada llave comunitaria</a></li>
@@ -39,8 +39,8 @@ Disponibilidad
 </ul>
 Calidad
 <ul>
-    <li><a href="#" onCLick="calidad(1)">Calidad en Ojo de Agua</a></li>
-    <li><a href="#" onCLick="calidad(2)">Calidad en Quebrada</a></li>
+    <li><a href="#" onCLick="calidad(1)">Calidad en Quebrada</a></li>
+    <li><a href="#" onCLick="calidad(2)">Calidad en Ojo de Agua</a></li>
     <li><a href="#" onCLick="calidad(3)">Calidad en Pozo Comunitario</a></li>
     <li><a href="#" onCLick="calidad(4)">Calidad en Pozo Propio</a></li>
     <li><a href="#" onCLick="calidad(5)">Calidad en Agua Entubada llave comunitaria</a></li>
@@ -55,6 +55,7 @@ Calidad
         <th>%</th>
         <th>Cantidad</th>
         <th>% Cantidad</th>
+        <th>Cantidad/Familia</th>
     </tr>
  </thead>
     {% for fila in tabla%}
@@ -64,12 +65,6 @@ Calidad
         {%endfor%}
     </tr>
     {%endfor%}
-    <tr>
-        <td>Totales</td>
-        {%for total in totales%}
-        <td>{{total}}</td>
-        {%endfor%}
-    </tr>
 </table>
 
 {% endblock %}

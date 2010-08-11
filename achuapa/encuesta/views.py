@@ -911,15 +911,20 @@ def agua(request):
         query = consulta.filter(agua__fuente=choice[0])
         numero = query.count()
         resultados = query.aggregate(cantidad=Sum('agua__cantidad'))
+        prom = resultados['cantidad']/float(consulta.count())
         fila = [choice[1], numero,
-                saca_porcentajes(numero, total['total'], False),
+                #saca_porcentajes(numero, total['total'], False),
+                saca_porcentajes(numero, consulta.count(), False),
                 resultados['cantidad'],
-                saca_porcentajes(resultados['cantidad'], total['cantidad'], False)]
+                saca_porcentajes(resultados['cantidad'], total['cantidad'], False),
+                "%.2f" % prom]
         tabla.append(fila)
 
-    totales = [total['total'], 100, total['cantidad'], 100]
+    #totales = [total['total'], 100, total['cantidad'], 100]
+    totales = [consulta.count(), 100, total['cantidad'], 100]
     return render_to_response('achuapa/agua.html', 
-                              {'tabla':tabla, 'totales':totales},
+                              #{'tabla':tabla, 'totales':totales},
+                              {'tabla':tabla},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -947,7 +952,7 @@ def agua_grafos_calidad(request, tipo):
     legends = []
     if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
         for opcion in CHOICE_CALIDAD_AGUA:
-            data.append(consulta.filter(agua__calidad=opcion[0]).count())
+            data.append(consulta.filter(agua__calidad=opcion[0], agua__fuente = tipo).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
         return grafos.make_graph(data, legends, 
