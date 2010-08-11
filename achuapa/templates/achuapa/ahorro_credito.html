@@ -4,9 +4,6 @@
 {%block titulo%}Ahorro y crédito{%endblock%}
 {%block extra_header%}
 <script type="text/javascript">
-    //si activo es 0 el html interno esta vacio
-    //caso si activo es otro num sustituir grafico
-    //si activo es el mismo id, esconder grafico
     var activo = 0; 
     function click_callback(id){
         $.getJSON('/grafo/ahorro-credito/' + id, function(data) {
@@ -35,8 +32,6 @@ Gráficos
  <thead>
     <tr>
         <th>Pregunta</th>
-        <th>Número</th>
-        <th>Porcentaje Número</th>
         {%for columna in columnas_ahorro%}
         <th>{{columna}}</th>
         {%endfor%}
