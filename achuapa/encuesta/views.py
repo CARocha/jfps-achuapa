@@ -425,10 +425,10 @@ def arboles_grafos(request, tipo):
     elif tipo == 'nativos':
         nativo = consulta.aggregate(nati=Count('reforestacion__nativos'))['nati']
         nonativo = consulta.aggregate(noti=Count('reforestacion__nonativos'))['noti']
-        data = [nativo,nonativo]
+        data = [[nativo], [nonativo]]
         legends = ['Nativos','NoNativos']
         message = "Especie de arboles"
-        return grafos.make_graph(data, legends, message,
+        return grafos.make_graph(data, legends, message, multiline=True,
                                  return_json = True, type=grafos.GROUPED_BAR_CHART_V)
     else:
         raise Http404
