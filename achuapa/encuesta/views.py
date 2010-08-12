@@ -423,19 +423,13 @@ def arboles_grafos(request, tipo):
                'Tipo Frutal', return_json = True,
                type = grafos.PIE_CHART_3D)
     elif tipo == 'nativos':
-        for opcion in Nativos.objects.all():
-            data.append(consulta.filter(reforestacion__nativos=opcion).count())
-            legends.append(opcion.nombre)
-        return grafos.make_graph(data, legends,
-               'Arboles Nativos', return_json = True,
-               type = grafos.PIE_CHART_3D)
-    elif tipo == 'nonativos':
-        for opcion in NoNativos.objects.all():
-            data.append(consulta.filter(reforestacion__nonativos=opcion).count())
-            legends.append(opcion.nombre)
-        return grafos.make_graph(data, legends,
-               'Arboles No Nativos', return_json = True,
-               type = grafos.PIE_CHART_3D)
+        nativo = consulta.aggregate(nati=Count('reforestacion__nativos'))['nati']
+        nonativo = consulta.aggregate(noti=Count('reforestacion__nonativos'))['noti']
+        data = [nativo,nonativo]
+        legends = ['Nativos','NoNativos']
+        message = "Especie de arboles"
+        return grafos.make_graph(data, legends, message,
+                                 return_json = True, type=grafos.GROUPED_BAR_CHART_V)
     else:
         raise Http404
     
