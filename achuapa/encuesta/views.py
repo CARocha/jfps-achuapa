@@ -837,7 +837,6 @@ def educacion(request):
                 pri_completa = Sum('educacion__pri_completa'), secun_incompleta = Sum('educacion__secun_incompleta'),
                 secun_completa = Sum('educacion__secun_completa'), universitario = Sum('educacion__estudiante_universitario'),
                 tecnico_graduado = Sum('educacion__tecnico_graduado'))
-        print objeto
         tabla_educacion.append({'label': choice[1], 'objeto': objeto})
 
     
@@ -866,16 +865,21 @@ def salud(request):
                                      clinica = Sum('salud__clinica'),
                                      nologra = Sum('salud__nologra')
                                      )
+
+        total_estado = resultados['bs'] + resultados['ds'] + resultados['ec']
+
         fila_estado = [choice[1], casos,
-                saca_porcentajes(resultados['bs'], numero, False),
-                saca_porcentajes(resultados['ds'], numero, False),
-                saca_porcentajes(resultados['ec'], numero, False)]
+                saca_porcentajes(resultados['bs'], total_estado, False),
+                saca_porcentajes(resultados['ds'], total_estado, False),
+                saca_porcentajes(resultados['ec'], total_estado, False)]
         tabla_estado.append(fila_estado)
 
+        total_sitio = resultados['centro'] + resultados['medico'] + resultados['clinica']
+
         fila_sitio = [choice[1], casos,
-                      calcular_positivos(resultados['centro'], numero),
-                      calcular_positivos(resultados['medico'], numero),
-                      calcular_positivos(resultados['clinica'], numero),
+                      saca_porcentajes(resultados['centro'], total_sitio, False),
+                      saca_porcentajes(resultados['medico'], total_sitio, False),
+                      saca_porcentajes(resultados['clinica'], total_sitio, False),
                       resultados['nologra']]
         tabla_sitio.append(fila_sitio)
 
@@ -891,7 +895,7 @@ def salud_grafos(request, tipo):
     legends = []
     if int(tipo) in [numero[0] for numero in SEXO_CHOICES]:
         for opcion in CHOICE_SALUD:
-            data.append(consulta.filter(salud__frecuencia=opcion[0]).count())
+            data.append(consulta.filter(salud__frecuencia=opcion[0], salud__edad = int(tipo)).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del salud para %s' % SEXO_CHOICES[int(tipo)-1][1]
         return grafos.make_graph(data, legends, 
@@ -935,7 +939,7 @@ def agua_grafos_disponibilidad(request, tipo):
     legends = []
     if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
         for opcion in CHOICE_DISPONIBILIDAD:
-            data.append(consulta.filter(agua__diponibilidad=opcion[0]).count())
+            data.append(consulta.filter(agua__diponibilidad=opcion[0], agua__fuente = int(tipo)).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
         return grafos.make_graph(data, legends, 
@@ -966,16 +970,23 @@ def luz(request):
     '''Tabla de acceso a energia electrica'''
     consulta = _queryset_filtrado(request)
     tabla = []
-    total = consulta.aggregate(total=Count('propiedades__cantidad_equipo'))
+    total_tiene_luz = 0            
 
     for choice in CHOICE_EQUIPO:
         query = consulta.filter(propiedades__tipo_equipo=choice[0])
         resultados = query.aggregate(cantidad=Sum('propiedades__cantidad_equipo'))
-                                     
-        fila = [choice[1], 
-                resultados['cantidad'],
-                saca_porcentajes(resultados['cantidad'], total['total'], False)]
-        tabla.append(fila)
+
+        if choice[0] == 1:
+            total_tiene_luz = consulta.count() 
+            fila = [choice[1], 
+                    resultados['cantidad'],
+                    saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
+            tabla.append(fila)
+        else:
+            fila = [choice[1], 
+                    resultados['cantidad'],
+                    saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
+            tabla.append(fila)
 
     return render_to_response('achuapa/luz.html', 
                               {'tabla':tabla},
