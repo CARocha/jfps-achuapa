@@ -144,7 +144,7 @@ def familia(request):
     '''Tabla de familias(migracion)'''
     #*******Variables globales**********
     a = _queryset_filtrado(request)
-    num_familia = a.count()
+    num_familias = a.count()
     #**********************************
     tabla = {}
     totales = {}
@@ -712,7 +712,7 @@ def equipos(request):
                            'trans':trans,'por_trans':por_trans}
            
     return render_to_response('achuapa/equipos.html', {'tabla':tabla,'totales':totales,
-                              'num_familia':num_familia,'tabla_infra':tabla_infra,
+                              'num_familias':num_familia,'tabla_infra':tabla_infra,
                               'herramienta':herramienta,'transporte':transporte},
                                context_instance=RequestContext(request))
 
@@ -1014,7 +1014,7 @@ def seguridad_alimentaria(request):
                      
                       
     return render_to_response('achuapa/seguridad.html',{'tabla':tabla,
-                              'num_familia':num_familia},
+                              'num_familias':num_familia},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..

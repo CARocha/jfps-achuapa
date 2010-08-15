@@ -23,12 +23,15 @@
 {%block titulo%}Las Fincas{%endblock%}
 
 {% block contenido %}
-Gráficos
-<ul>
-    <li><a href="#" onCLick="click_callback('tenencia')">Tenencia de la Tierra</a></li>
-    <li><a href="#" onCLick="click_callback('solares')">Tenencia de los solares</a></li>
-    <li><a href="#" onCLick="click_callback('propietario')">Dueño de la Propiedad</a></li>
-</ul>
+<div id="sidebar">
+    <div class="graficos_widget">
+        <h1>Gráficos</h1>
+        <a href="#" onCLick="click_callback('tenencia')">Tenencia de la Tierra</a>
+        <a href="#" onCLick="click_callback('solares')">Tenencia de los solares</a>
+        <a href="#" onCLick="click_callback('propietario')">Dueño de la Propiedad</a>
+    </div>
+</div>
+
 <div id="grafo"></div>
 <table>
 <caption>Las Fincas</caption>
