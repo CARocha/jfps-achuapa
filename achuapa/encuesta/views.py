@@ -248,7 +248,8 @@ def organizacion(request):
             tabla_beneficio[sexo].append(calcular_negativos(hombres[llave], hombres['num']))
     
     return render_to_response('achuapa/organizacion.html', 
-                              {'tabla_socio': tabla_socio, 'tabla_beneficio': tabla_beneficio},
+                              {'tabla_socio': tabla_socio, 'num_familias': consulta.count(),
+                               'tabla_beneficio': tabla_beneficio},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -495,7 +496,8 @@ def animales(request):
 
     
     return render_to_response('achuapa/animales.html', 
-                              {'tabla':tabla, 'totales': totales},
+                              {'tabla':tabla, 'totales': totales, 
+                               'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -764,7 +766,8 @@ def ahorro_credito(request):
     tabla_credito['al_dia'] = [al_dia, saca_porcentajes(al_dia, totales_credito['numero'])] 
 
     dicc = {'tabla_ahorro':tabla_ahorro, 'columnas_ahorro': columnas_ahorro, 
-            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito}
+            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito,
+            'num_familias': consulta.count()}
 
     return render_to_response('achuapa/ahorro_credito.html', dicc,
                               context_instance=RequestContext(request))
@@ -813,7 +816,9 @@ def ahorro_credito_grafos(request, tipo):
 @session_required
 def servicios(request):
     '''servicios: educacion, salud, agua, luz'''
-    return render_to_response('achuapa/servicios.html', 
+    familias = _queryset_filtrado(request).count()
+    return render_to_response('achuapa/servicios.html',
+                              {'num_familias': familias}, 
                               context_instance=RequestContext(request))
     
 @session_required
@@ -850,7 +855,9 @@ def educacion(request):
     
     return render_to_response('achuapa/educacion.html', 
                               {'tabla_no':tabla_no, 'totales_no': totales_no,
-                              'tabla_educacion':tabla_educacion, 'totales_educacion': totales_educacion},
+                               'tabla_educacion':tabla_educacion, 
+                               'totales_educacion': totales_educacion,
+                               'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 
@@ -892,7 +899,9 @@ def salud(request):
         tabla_sitio.append(fila_sitio)
 
     return render_to_response('achuapa/salud.html', 
-                              {'tabla_estado':tabla_estado, 'tabla_sitio': tabla_sitio},
+                              {'tabla_estado':tabla_estado, 
+                               'tabla_sitio': tabla_sitio,
+                               'num_familias': numero},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -936,7 +945,7 @@ def agua(request):
     totales = [consulta.count(), 100, total['cantidad'], 100]
     return render_to_response('achuapa/agua.html', 
                               #{'tabla':tabla, 'totales':totales},
-                              {'tabla':tabla},
+                              {'tabla':tabla, 'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -997,7 +1006,7 @@ def luz(request):
             tabla.append(fila)
 
     return render_to_response('achuapa/luz.html', 
-                              {'tabla':tabla},
+                              {'tabla':tabla, 'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
