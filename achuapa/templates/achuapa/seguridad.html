@@ -2,39 +2,26 @@
 {%load unslugify %}
 {%block titulo%}La Seguridad Alimentaria{%endblock%}
 {% block contenido %}
-número de familias: {{num_familia}}
 <table>
 <caption>La Seguridad Alimentaria</caption>
  <thead>
     <tr>
         <th>ALIMENTOS</th>
-        <th>FRECUENCIA</th>
-        <th>PRODUCEN</th>
+<!--        <th>FRECUENCIA</th>-->
+        <th>Producen</th>
         <th>%</th>
-        <th>COMPRAN</th>
+        <th>Compran</th>
         <th>%</th>
-        <th>CONSUMEN</th>
+        <th>Consumen suficiente verano</th>
         <th>%</th>
-        <th>CONSUMEN INVIERNO</th>
+        <th>Consumen suficiente invierno</th>
         <th>%</th>
     </tr>
  </thead>
-  <tr>
-        <td>Total</td>
-        <td>{{totales.numero}}</td>
-        <td>{{totales.producen}}</td>
-        <td>{{totales.porcentaje_prod}}</td>
-        <td>{{totales.compran}}</td>
-        <td>{{totales.porcentaje_compran}}</td>
-        <td>{{totales.consumen}}</td>
-        <td>{{totales.porcentaje_consumen}}</td>
-        <td>{{totales.consumen_invierno}}</td>
-        <td>{{totales.porcentaje_invierno}}</td>
-    </tr>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
-        <td>{{value.frecuencia|floatformat}}</td>
+<!--        <td>{{value.frecuencia|floatformat}}</td>-->
         <td>{{value.producen|floatformat}}</td>
         <td>{{value.por_producen|floatformat}}</td>
         <td>{{value.compran|floatformat}}</td>
@@ -46,5 +33,4 @@ número de familias: {{num_familia}}
     </tr>
     {%endfor%}
 </table>
-
 {% endblock %}

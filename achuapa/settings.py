@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'django.contrib.humanize',
     # Agregando los app del proyecto
     'achuapa.encuesta',
     'achuapa.lugar',

@@ -2,22 +2,22 @@
 {%load unslugify %}
 {%block titulo%}Los Cultivos{%endblock%}
 {%block contenido%}
-
-número de familias: {{num_familias}}
 <table>
 <caption>Los cultivos y la producción</caption>
  <thead>
     <tr>
         <th>CULTIVOS</th>
-        <th>TOTALES</th>
-        <th>CONSUMO</th>
-        <th>VENTA LIBRE</th>
-        <th>VENTA ORGANIZADA</th>
+        <th>Unidad</th>
+        <th>Total produccion por año</th>
+        <th>Consumo por año</th>
+        <th>Venta libre por año</th>
+        <th>Vente organizada por año</th>
     </tr>
  </thead>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
+        <td>{{value.key2|unslugify}}</td>
         <td>{{value.totales|floatformat}}</td>
         <td>{{value.consumo|floatformat}}</td>
         <td>{{value.libre|floatformat}}</td>

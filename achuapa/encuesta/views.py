@@ -32,8 +32,8 @@ def _queryset_filtrado(request):
     params = {}
     if 'fecha' in request.session:
         params['fecha__year'] = anio 
-        if 'cooperativa' in request.session:
-            params['datos__cooperativa'] = request.session['cooperativa']
+#        if 'cooperativa' in request.session:
+#            params['datos__cooperativa'] = request.session['cooperativa']
 
         if 'departamento' in request.session:
             #incluye municipio y comunidad
@@ -47,6 +47,9 @@ def _queryset_filtrado(request):
 
         if 'socio' in request.session:
             params['organizacion__socio'] = request.session['socio']
+            
+        if 'desde' in request.session:
+            params['organizacion__desde_socio'] = request.session['desde']
 
         if 'duenio' in  request.session:
             params['tenencia__dueno'] = request.session['duenio']
@@ -91,7 +94,7 @@ def inicio(request):
                 cooperativa = Datosgenerales.objects.get(id=form.cleaned_data['cooperativa'])
             except:
                 cooperativa = None
-            request.session['cooperativa'] = cooperativa
+            #request.session['cooperativa'] = cooperativa
             request.session['fecha'] = form.cleaned_data['fecha']
             request.session['departamento'] = form.cleaned_data['departamento']
             try:
@@ -106,18 +109,33 @@ def inicio(request):
 
             request.session['municipio'] = municipio 
             request.session['comunidad'] = comunidad
-            request.session['socio'] = form.cleaned_data['socio']
-            request.session['duenio'] = form.cleaned_data['dueno']
+            if form.cleaned_data['socio'] == 'nada':
+                request.session['socio'] = None
+            else:
+                request.session['socio'] = form.cleaned_data['socio']
+            if form.cleaned_data['desde'] == 'nada':
+                request.session['desde'] = None
+            else:
+                request.session['desde'] = form.cleaned_data['desde']
+            if form.cleaned_data['dueno'] == 'nada':
+                request.session['duenio'] = None
+            else:
+                request.session['duenio'] = form.cleaned_data['dueno']   
+            #request.session['socio'] = form.cleaned_data['socio']
+            #request.session['desde'] = form.cleaned_data['desde']
+            #request.session['duenio'] = form.cleaned_data['dueno']
             mensaje = "Todas las variables estan correctamente :)"
             request.session['activo'] = True
 #        else:
 #            mensaje = "Formulario con errores"
 #            dict = {'form': form, 'mensaje': mensaje,'user': request.user}
 #            return direct_to_template(request, 'achuapa/inicio.html', dict)
+            centinela = 1 #Variable para aparecer el menu de indicadores a lado del formulario
     else:
         form = AchuapaForm()
         mensaje = ":P"
-    dict = {'form': form,'user': request.user,}
+        centinela = 0
+    dict = {'form': form,'user': request.user,'centinela':centinela}
     return render_to_response('achuapa/inicio.html', dict,
                               context_instance=RequestContext(request))
 
@@ -126,7 +144,7 @@ def familia(request):
     '''Tabla de familias(migracion)'''
     #*******Variables globales**********
     a = _queryset_filtrado(request)
-    num_familia = a.count()
+    num_familias = a.count()
     #**********************************
     tabla = {}
     totales = {}
@@ -164,26 +182,40 @@ def organizacion(request):
 
     #fila si % no % <5 % >5 %
     hombres = consulta.filter(datos__sexo = 1).aggregate(socio = Sum('organizacion__socio'),
-                                                         tiempo_socio = Sum('organizacion__desde_socio'),
                                                          conyugue = Sum('organizacion__socio_cooperativa'),
-                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
                                                          hijo = Sum('organizacion__hijos_socios'),
-                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
                                                          num = Count('organizacion__socio'),
                                                          miembro = Sum('organizacion__miembro'),
                                                          comision = Sum('organizacion__comision'),
                                                          capacitacion = Sum('organizacion__cargo'))
 
-    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
-                                                         tiempo_socio = Sum('organizacion__desde_socio'),
-                                                         conyugue = Sum('organizacion__socio_cooperativa'),
-                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
-                                                         hijo = Sum('organizacion__hijos_socios'),
+    hombres_tiempo = consulta.filter(datos__sexo=1, 
+                                      organizacion__desde_socio__isnull = False,
+                                      organizacion__desde_socio_coop__isnull = False,
+                                      organizacion__desde_hijo__isnull = False).aggregate(
                                                          tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         num = Count('organizacion__socio'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'))
+
+
+    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
+                                                         conyugue = Sum('organizacion__socio_cooperativa'),
+                                                         hijo = Sum('organizacion__hijos_socios'),
                                                          num = Count('organizacion__socio'),
                                                          miembro = Sum('organizacion__miembro'),
                                                          comision = Sum('organizacion__comision'),
                                                          capacitacion = Sum('organizacion__cargo'))
+
+    mujeres_tiempo = consulta.filter(datos__sexo=2, 
+                                      organizacion__desde_socio__isnull = False,
+                                      organizacion__desde_socio_coop__isnull = False,
+                                      organizacion__desde_hijo__isnull = False).aggregate(
+                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         num = Count('organizacion__socio'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'))
+
     
     lista_llaves = [('socio', 'tiempo_socio'), 
                     ('conyugue', 'tiempo_conyugue'), 
@@ -194,19 +226,19 @@ def organizacion(request):
                                           calcular_positivos(hombres[valor], hombres['num'], True),
                                           calcular_negativos(hombres[valor], hombres['num'], False),
                                           calcular_negativos(hombres[valor], hombres['num'], True),
-                                          calcular_positivos(hombres[tiempo], hombres['num'], False),
-                                          calcular_positivos(hombres[tiempo], hombres['num'], True),
-                                          calcular_negativos(hombres[tiempo], hombres['num'], False),
-                                          calcular_negativos(hombres[tiempo], hombres['num'], True)]
+                                          calcular_positivos(hombres_tiempo[tiempo], hombres_tiempo['num'], False),
+                                          calcular_positivos(hombres_tiempo[tiempo], hombres_tiempo['num'], True),
+                                          calcular_negativos(hombres_tiempo[tiempo], hombres_tiempo['num'], False),
+                                          calcular_negativos(hombres_tiempo[tiempo], hombres_tiempo['num'], True)]
 
         tabla_socio['mujeres_' + valor] = [calcular_positivos(mujeres[valor], mujeres['num'], False),
                                           calcular_positivos(mujeres[valor], mujeres['num'], True),
                                           calcular_negativos(mujeres[valor], mujeres['num'], False),
                                           calcular_negativos(mujeres[valor], mujeres['num'], True),
-                                          calcular_positivos(mujeres[tiempo], mujeres['num'], False),
-                                          calcular_positivos(mujeres[tiempo], mujeres['num'], True),
-                                          calcular_negativos(mujeres[tiempo], mujeres['num'], False),
-                                          calcular_negativos(mujeres[tiempo], mujeres['num'], True)]
+                                          calcular_positivos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], False),
+                                          calcular_positivos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], True),
+                                          calcular_negativos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], False),
+                                          calcular_negativos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], True)]
 
     for llave in ('miembro', 'comision', 'capacitacion'):
         for sexo in ('hombres', 'mujeres'):
@@ -216,7 +248,8 @@ def organizacion(request):
             tabla_beneficio[sexo].append(calcular_negativos(hombres[llave], hombres['num']))
     
     return render_to_response('achuapa/organizacion.html', 
-                              {'tabla_socio': tabla_socio, 'tabla_beneficio': tabla_beneficio},
+                              {'tabla_socio': tabla_socio, 'num_familias': consulta.count(),
+                               'tabla_beneficio': tabla_beneficio},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -252,13 +285,10 @@ def fincas(request):
     totales = {}
     consulta = _queryset_filtrado(request)
 
-    total_encuesta = consulta.count()
-
-    totales['numero'] = consulta.aggregate(numero=Count('tierra__uso_tierra'))['numero'] 
+    totales['numero'] = consulta.count() 
     totales['porcentaje_num'] = 100
     totales['manzanas'] = consulta.aggregate(area=Sum('tierra__areas'))['area']
     totales['porcentaje_mz'] = 100
-
 
     for uso in UsoTierra.objects.exclude(id=1):
         key = slugify(uso.nombre).replace('-', '_')
@@ -408,19 +438,13 @@ def arboles_grafos(request, tipo):
                'Tipo Frutal', return_json = True,
                type = grafos.PIE_CHART_3D)
     elif tipo == 'nativos':
-        for opcion in Nativos.objects.all():
-            data.append(consulta.filter(reforestacion__nativos=opcion).count())
-            legends.append(opcion.nombre)
-        return grafos.make_graph(data, legends,
-               'Arboles Nativos', return_json = True,
-               type = grafos.PIE_CHART_3D)
-    elif tipo == 'nonativos':
-        for opcion in NoNativos.objects.all():
-            data.append(consulta.filter(reforestacion__nonativos=opcion).count())
-            legends.append(opcion.nombre)
-        return grafos.make_graph(data, legends,
-               'Arboles No Nativos', return_json = True,
-               type = grafos.PIE_CHART_3D)
+        nativo = consulta.aggregate(nati=Count('reforestacion__nativos'))['nati']
+        nonativo = consulta.aggregate(noti=Count('reforestacion__nonativos'))['noti']
+        data = [[nativo], [nonativo]]
+        legends = ['Nativos','NoNativos']
+        message = "Especie de arboles"
+        return grafos.make_graph(data, legends, message, multiline=True,
+                                 return_json = True, type=grafos.GROUPED_BAR_CHART_V)
     else:
         raise Http404
     
@@ -436,12 +460,13 @@ def cultivos(request):
     tabla = {} 
     for i in Cultivos.objects.all():
         key = slugify(i.nombre).replace('-', '_')
+        key2 = slugify(i.unidad).replace('-', '_')
         query = a.filter(cultivosfinca__cultivos = i)
         totales = query.aggregate(total=Sum('cultivosfinca__total'))['total']
         consumo = query.aggregate(consumo=Sum('cultivosfinca__consumo'))['consumo']
         libre = query.aggregate(libre=Sum('cultivosfinca__venta_libre'))['libre']
         organizada =query.aggregate(organizada=Sum('cultivosfinca__venta_organizada'))['organizada']
-        tabla[key] = {'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
+        tabla[key] = {'key2':key2,'totales':totales,'consumo':consumo,'libre':libre,'organizada':organizada}
     #*******************************************
     return render_to_response('achuapa/cultivos.html',
                              {'tabla':tabla,'num_familias':num_familias},
@@ -471,7 +496,8 @@ def animales(request):
 
     
     return render_to_response('achuapa/animales.html', 
-                              {'tabla':tabla, 'totales': totales},
+                              {'tabla':tabla, 'totales': totales, 
+                               'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -483,13 +509,26 @@ def ingresos(request):
     #******************************
     #*******calculos de las variables ingreso************
     tabla = {}
+    respuesta = {}
+    respuesta['bruto']=[]
+    respuesta['ingreso']=0
+    respuesta['ingreso_total']=0
+    respuesta['ingreso_otro']=0
+    respuesta['brutoo'] = 0
+    respuesta['total_neto'] = 0
     for i in Rubros.objects.all():
         key = slugify(i.nombre).replace('-','_')
+        key2 = slugify(i.unidad).replace('-','_')
         query = a.filter(ingresofamiliar__rubro = i)
         numero = query.count()
         cantidad = query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad']
         precio = query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio']
-        tabla[key] = {'numero':numero,'cantidad':cantidad,'precio':precio}
+        ingreso = cantidad * precio if cantidad != None and precio != None else 0
+        respuesta['ingreso']= query.aggregate(cantidad=Sum('ingresofamiliar__cantidad'))['cantidad'] * query.aggregate(precio=Avg('ingresofamiliar__precio'))['precio'] if cantidad != None and precio != None else 0
+        respuesta['ingreso_total'] +=  respuesta['ingreso']
+        
+        tabla[key] = {'key2':key2,'numero':numero,'cantidad':cantidad,
+                      'precio':precio,'ingreso':ingreso}
         
     #********* calculos de las variables de otros ingresos******
     matriz = {}
@@ -499,12 +538,18 @@ def ingresos(request):
         frecuencia = consulta.count()
         meses = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses']
         ingreso = consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso']
-        ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
+        ingresototal = consulta.aggregate(meses=Avg('otrosingreso__meses'))['meses'] * consulta.aggregate(ingreso=Avg('otrosingreso__ingreso'))['ingreso'] if meses != None and ingreso != None else 0
+        respuesta['ingreso_otro'] +=  ingresototal
+        #ingresototal = consulta.aggregate(total=Avg('otrosingreso__ingreso_total'))['total']
         matriz[key] = {'frecuencia':frecuencia,'meses':meses,
                        'ingreso':ingreso,'ingresototal':ingresototal}
+                       
+    respuesta['brutoo'] = round((respuesta['ingreso_total'] + respuesta['ingreso_otro']) / num_familias,2)
+    respuesta['total_neto'] = round(respuesta['brutoo'] * 0.6,2)
         
     return render_to_response('achuapa/ingresos.html',
-                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz},
+                              {'tabla':tabla,'num_familias':num_familias,'matriz':matriz,
+                              'respuesta':respuesta},
                               context_instance=RequestContext(request))
                               
 @session_required
@@ -618,11 +663,11 @@ def equipos(request):
         key = slugify(i.nombre).replace('-','_')
         query = a.filter(propiedades__equipo = i)
         frecuencia = query.count()
-        por_equipo = saca_porcentajes(frecuencia, totales['numero'])
+        por_equipo = saca_porcentajes(frecuencia, num_familia)
         equipo = query.aggregate(equipo=Sum('propiedades__cantidad_equipo'))['equipo']
-        por_cantidad = saca_porcentajes(equipo, totales['cantidad_equipo'])
+        cantidad_pro = query.aggregate(cantidad_pro=Avg('propiedades__cantidad_equipo'))['cantidad_pro']
         tabla[key] = {'frecuencia':frecuencia, 'por_equipo':por_equipo,
-                      'equipo':equipo,'por_cantidad':por_cantidad}
+                      'equipo':equipo,'cantidad_pro':cantidad_pro}
     
     #******** tabla de infraestructura *************
     tabla_infra = {}
@@ -637,11 +682,12 @@ def equipos(request):
         key = slugify(j.nombre).replace('-','_')
         query = a.filter(propiedades__infraestructura = j)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_infra['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         infraestructura = query.aggregate(infraestructura=Sum('propiedades__cantidad_infra'))['infraestructura']
-        por_infra = saca_porcentajes(infraestructura, totales_infra['cantidad_infra'])
+        infraestructura_pro = query.aggregate(infraestructura_pro=Avg('propiedades__cantidad_infra'))['infraestructura_pro']
         tabla_infra[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
-                             'infraestructura':infraestructura,'por_infra':por_infra}
+                             'infraestructura':infraestructura,
+                             'infraestructura_pro':infraestructura_pro}
                              
     #******************* tabla de herramientas ***************************
     herramienta = {}
@@ -656,9 +702,9 @@ def equipos(request):
         key = slugify(k.nombre).replace('-','_')
         query = a.filter(herramientas__herramienta = k)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_herramientas['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         herra = query.aggregate(herramientas=Sum('herramientas__numero'))['herramientas']
-        por_herra = saca_porcentajes(herra, totales_herramientas['cantidad_herra'])
+        por_herra = query.aggregate(por_herra=Avg('herramientas__numero'))['por_herra']
         herramienta[key] = {'frecuencia':frecuencia, 'por_frecuencia':por_frecuencia,
                             'herra':herra,'por_herra':por_herra}
                             
@@ -675,14 +721,14 @@ def equipos(request):
         key = slugify(m.nombre).replace('-','_')
         query = a.filter(transporte__transporte = m)
         frecuencia = query.count()
-        por_frecuencia = saca_porcentajes(frecuencia, totales_transporte['numero'])
+        por_frecuencia = saca_porcentajes(frecuencia, num_familia)
         trans = query.aggregate(transporte=Sum('transporte__numero'))['transporte']
-        por_trans = saca_porcentajes(trans, totales_transporte['cantidad_trans'])
+        por_trans = query.aggregate(por_trans=Avg('transporte__numero'))['por_trans']
         transporte[key] = {'frecuencia':frecuencia,'por_frecuencia':por_frecuencia,
                            'trans':trans,'por_trans':por_trans}
            
     return render_to_response('achuapa/equipos.html', {'tabla':tabla,'totales':totales,
-                              'num_familia':num_familia,'tabla_infra':tabla_infra,
+                              'num_familias':num_familia,'tabla_infra':tabla_infra,
                               'herramienta':herramienta,'transporte':transporte},
                                context_instance=RequestContext(request))
 
@@ -694,28 +740,19 @@ def ahorro_credito(request):
     tabla_ahorro = {}
     totales_ahorro = {}
 
-    totales_ahorro['numero'] = consulta.aggregate(numero=Count('ahorro__ahorro'))['numero'] 
-    totales_ahorro['porcentaje_num'] = 100
-
-    columnas_ahorro = [opcion[1] for opcion in CHOICE_AHORRO]
+    columnas_ahorro = ['Si', '%']
 
     for pregunta in AhorroPregunta.objects.all():
         key = slugify(pregunta.nombre).replace('-', '_')
-        query = consulta.filter(ahorro__ahorro = pregunta)
-        numero = query.count()
-        porcentaje_num = saca_porcentajes(numero, totales_ahorro['numero'])
-        #formato key: [numero, porcentaje, respuestas....]
-        tabla_ahorro[key] = [numero, porcentaje_num]
-        for opcion in CHOICE_AHORRO:
-            subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = opcion[0]).count()
-            subkey = slugify(opcion[1]).replace('-', '_')
-            tabla_ahorro[key].append(subquery)
+        #opciones solo si
+        subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = 1).count()
+        tabla_ahorro[key] = [subquery, saca_porcentajes(subquery, consulta.count())]
 
     #credito
     tabla_credito= {}
     totales_credito= {}
 
-    totales_credito['numero'] = consulta.aggregate(numero=Count('credito'))['numero'] 
+    totales_credito['numero'] = consulta.count()
     totales_credito['porcentaje_num'] = 100
 
     recibe = consulta.filter(credito__recibe = 1).count()
@@ -729,7 +766,8 @@ def ahorro_credito(request):
     tabla_credito['al_dia'] = [al_dia, saca_porcentajes(al_dia, totales_credito['numero'])] 
 
     dicc = {'tabla_ahorro':tabla_ahorro, 'columnas_ahorro': columnas_ahorro, 
-            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito}
+            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito,
+            'num_familias': consulta.count()}
 
     return render_to_response('achuapa/ahorro_credito.html', dicc,
                               context_instance=RequestContext(request))
@@ -752,9 +790,11 @@ def ahorro_credito_grafos(request, tipo):
                 'A nombre de quien ahorra', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'origen': #de donde viene el credito
-        #TODO: make this graph
+        for origen in DaCredito.objects.all():
+            data.append(consulta.filter(credito__quien_credito= origen).count())
+            legends.append(origen.nombre)
         return grafos.make_graph(data, legends, 
-                'Tenencia de los solares', return_json = True,
+                'Origen del Crédito', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'satisfaccion':
         for opcion in CHOICE_SATISFACCION:
@@ -764,14 +804,21 @@ def ahorro_credito_grafos(request, tipo):
                 'Nivel de satisfacción con el crédito', return_json = True,
                 type = grafos.PIE_CHART_3D)
     elif tipo == 'uso':
-        pass
+        for uso in OcupaCredito.objects.all():
+            data.append(consulta.filter(credito__ocupa_credito = uso).count())
+            legends.append(uso.nombre)
+        return grafos.make_graph(data, legends, 
+                'Uso del Crédito', return_json = True,
+                type = grafos.PIE_CHART_3D)
     else:
         raise Http404
 
 @session_required
 def servicios(request):
     '''servicios: educacion, salud, agua, luz'''
-    return render_to_response('achuapa/servicios.html', 
+    familias = _queryset_filtrado(request).count()
+    return render_to_response('achuapa/servicios.html',
+                              {'num_familias': familias}, 
                               context_instance=RequestContext(request))
     
 @session_required
@@ -803,13 +850,22 @@ def educacion(request):
                 pri_completa = Sum('educacion__pri_completa'), secun_incompleta = Sum('educacion__secun_incompleta'),
                 secun_completa = Sum('educacion__secun_completa'), universitario = Sum('educacion__estudiante_universitario'),
                 tecnico_graduado = Sum('educacion__tecnico_graduado'))
-        print objeto
-        tabla_educacion.append({'label': choice[1], 'objeto': objeto})
+        fila = [choice[1], objeto['num_total'],
+                saca_porcentajes(objeto['no_lee'], objeto['num_total'], False),
+                saca_porcentajes(objeto['pri_incompleta'], objeto['num_total'], False),
+                saca_porcentajes(objeto['pri_completa'], objeto['num_total'], False),
+                saca_porcentajes(objeto['secun_incompleta'], objeto['num_total'], False),
+                saca_porcentajes(objeto['secun_completa'], objeto['num_total'], False),
+                saca_porcentajes(objeto['universitario'], objeto['num_total'], False),
+                saca_porcentajes(objeto['tecnico_graduado'], objeto['num_total'], False)]
+        tabla_educacion.append(fila)
 
     
     return render_to_response('achuapa/educacion.html', 
                               {'tabla_no':tabla_no, 'totales_no': totales_no,
-                              'tabla_educacion':tabla_educacion, 'totales_educacion': totales_educacion},
+                               'tabla_educacion':tabla_educacion, 
+                               'totales_educacion': totales_educacion,
+                               'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 
@@ -817,12 +873,13 @@ def educacion(request):
 def salud(request):
     '''salud'''
     consulta = _queryset_filtrado(request)
+    numero = consulta.count()
     tabla_estado = []
     tabla_sitio = []
 
     for choice in SEXO_CHOICES:
         query = consulta.filter(salud__edad=choice[0])
-        numero = query.count()
+        casos = query.count()
         resultados = query.aggregate(bs = Sum('salud__buena_salud'),
                                      ds = Sum('salud__delicada_salud'),
                                      ec = Sum('salud__cronica'),
@@ -831,21 +888,28 @@ def salud(request):
                                      clinica = Sum('salud__clinica'),
                                      nologra = Sum('salud__nologra')
                                      )
-        fila_estado = [choice[1], numero,
-                saca_porcentajes(resultados['bs'], numero, False),
-                saca_porcentajes(resultados['ds'], numero, False),
-                saca_porcentajes(resultados['ec'], numero, False)]
+
+        total_estado = resultados['bs'] + resultados['ds'] + resultados['ec']
+
+        fila_estado = [choice[1], casos,
+                saca_porcentajes(resultados['bs'], total_estado, False),
+                saca_porcentajes(resultados['ds'], total_estado, False),
+                saca_porcentajes(resultados['ec'], total_estado, False)]
         tabla_estado.append(fila_estado)
 
-        fila_sitio = [choice[1], numero,
-                      calcular_positivos(resultados['centro'], numero),
-                      calcular_positivos(resultados['medico'], numero),
-                      calcular_positivos(resultados['clinica'], numero),
+        total_sitio = resultados['centro'] + resultados['medico'] + resultados['clinica']
+
+        fila_sitio = [choice[1], casos,
+                      saca_porcentajes(resultados['centro'], total_sitio, False),
+                      saca_porcentajes(resultados['medico'], total_sitio, False),
+                      saca_porcentajes(resultados['clinica'], total_sitio, False),
                       resultados['nologra']]
         tabla_sitio.append(fila_sitio)
 
     return render_to_response('achuapa/salud.html', 
-                              {'tabla_estado':tabla_estado, 'tabla_sitio': tabla_sitio},
+                              {'tabla_estado':tabla_estado, 
+                               'tabla_sitio': tabla_sitio,
+                               'num_familias': numero},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -855,8 +919,8 @@ def salud_grafos(request, tipo):
     data = [] 
     legends = []
     if int(tipo) in [numero[0] for numero in SEXO_CHOICES]:
-        for opcion in CHOICE_DISPONIBILIDAD:
-            data.append(consulta.filter(salud__frecuencia=opcion[0]).count())
+        for opcion in CHOICE_SALUD:
+            data.append(consulta.filter(salud__frecuencia=opcion[0], salud__edad = int(tipo)).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del salud para %s' % SEXO_CHOICES[int(tipo)-1][1]
         return grafos.make_graph(data, legends, 
@@ -876,15 +940,20 @@ def agua(request):
         query = consulta.filter(agua__fuente=choice[0])
         numero = query.count()
         resultados = query.aggregate(cantidad=Sum('agua__cantidad'))
+        prom = float(numero)/resultados['cantidad']
         fila = [choice[1], numero,
-                saca_porcentajes(numero, total['total'], False),
+                #saca_porcentajes(numero, total['total'], False),
+                saca_porcentajes(numero, consulta.count(), False),
                 resultados['cantidad'],
-                saca_porcentajes(resultados['cantidad'], total['cantidad'], False)]
+                #saca_porcentajes(resultados['cantidad'], total['cantidad'], False),
+                "%.2f" % prom]
         tabla.append(fila)
 
-    totales = [total['total'], 100, total['cantidad'], 100]
+    #totales = [total['total'], 100, total['cantidad'], 100]
+    totales = [consulta.count(), 100, total['cantidad'], 100]
     return render_to_response('achuapa/agua.html', 
-                              {'tabla':tabla, 'totales':totales},
+                              #{'tabla':tabla, 'totales':totales},
+                              {'tabla':tabla, 'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -895,7 +964,7 @@ def agua_grafos_disponibilidad(request, tipo):
     legends = []
     if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
         for opcion in CHOICE_DISPONIBILIDAD:
-            data.append(consulta.filter(agua__diponibilidad=opcion[0]).count())
+            data.append(consulta.filter(agua__diponibilidad=opcion[0], agua__fuente = int(tipo)).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
         return grafos.make_graph(data, legends, 
@@ -912,7 +981,7 @@ def agua_grafos_calidad(request, tipo):
     legends = []
     if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
         for opcion in CHOICE_CALIDAD_AGUA:
-            data.append(consulta.filter(agua__calidad=opcion[0]).count())
+            data.append(consulta.filter(agua__calidad=opcion[0], agua__fuente = tipo).count())
             legends.append(opcion[1])
         titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
         return grafos.make_graph(data, legends, 
@@ -926,19 +995,26 @@ def luz(request):
     '''Tabla de acceso a energia electrica'''
     consulta = _queryset_filtrado(request)
     tabla = []
-    total = consulta.aggregate(total=Count('propiedades__cantidad_equipo'))
+    total_tiene_luz = 0            
 
     for choice in CHOICE_EQUIPO:
         query = consulta.filter(propiedades__tipo_equipo=choice[0])
         resultados = query.aggregate(cantidad=Sum('propiedades__cantidad_equipo'))
-                                     
-        fila = [choice[1], 
-                resultados['cantidad'],
-                saca_porcentajes(resultados['cantidad'], total['total'], False)]
-        tabla.append(fila)
+
+        if choice[0] == 1:
+            total_tiene_luz = consulta.count() 
+            fila = [choice[1], 
+                    resultados['cantidad'],
+                    saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
+            tabla.append(fila)
+        else:
+            fila = [choice[1], 
+                    resultados['cantidad'],
+                    saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
+            tabla.append(fila)
 
     return render_to_response('achuapa/luz.html', 
-                              {'tabla':tabla},
+                              {'tabla':tabla, 'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -949,39 +1025,27 @@ def seguridad_alimentaria(request):
     num_familia = a.count()
     #******************************************
     tabla = {}
-    totales = {}
-    
-    totales['numero'] = a.aggregate(numero=Count('seguridad__alimento'))['numero']
-    totales['porcentaje_num'] = 100
-    totales['producen'] = a.aggregate(producen=Sum('seguridad__producen'))['producen']
-    totales['porcentaje_prod'] = 100
-    totales['compran'] = a.aggregate(compran=Sum('seguridad__compran'))['compran']
-    totales['porcentaje_compran'] = 100
-    totales['consumen'] = a.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
-    totales['porcentaje_consumen'] = 100
-    totales['consumen_invierno'] = a.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
-    totales['porcentaje_invierno'] = 100
     
     for u in Alimentos.objects.all():
         key = slugify(u.nombre).replace('-','_')
         query = a.filter(seguridad__alimento = u)
         frecuencia = query.count()
-        producen = query.aggregate(producen=Sum('seguridad__producen'))['producen']
-        por_producen = saca_porcentajes(producen, totales['producen'])
-        compran = query.aggregate(compran=Sum('seguridad__compran'))['compran']
-        por_compran = saca_porcentajes(compran, totales['compran'])
-        consumen = query.aggregate(consumen=Sum('seguridad__consumen'))['consumen']
-        por_consumen = saca_porcentajes(consumen, totales['consumen'])
-        invierno = query.aggregate(invierno=Sum('seguridad__consumen_invierno'))['invierno']
-        por_invierno = saca_porcentajes(invierno, totales['consumen_invierno'])
+        producen = query.filter(seguridad__alimento=u,seguridad__producen=1).aggregate(producen=Count('seguridad__producen'))['producen']
+        por_producen = saca_porcentajes(producen, num_familia)
+        compran = query.filter(seguridad__alimento=u,seguridad__compran=1).aggregate(compran=Count('seguridad__compran'))['compran']
+        por_compran = saca_porcentajes(compran, num_familia)
+        consumen = query.filter(seguridad__alimento=u,seguridad__consumen=1).aggregate(consumen=Count('seguridad__consumen'))['consumen']
+        por_consumen = saca_porcentajes(consumen, num_familia)
+        invierno = query.filter(seguridad__alimento=u,seguridad__consumen_invierno=1).aggregate(invierno=Count('seguridad__consumen_invierno'))['invierno']
+        por_invierno = saca_porcentajes(invierno, num_familia)
         tabla[key] = {'frecuencia':frecuencia, 'producen':producen, 'por_producen':por_producen,
                       'compran':compran,'por_compran':por_compran,'consumen':consumen, 
                       'por_consumen':por_consumen, 'invierno':invierno,
                       'por_invierno':por_invierno}
+                     
                       
     return render_to_response('achuapa/seguridad.html',{'tabla':tabla,
-                              'num_familia':num_familia,
-                              'totales':totales},
+                              'num_familias':num_familia},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..
@@ -1058,6 +1122,7 @@ def calcular_positivos(suma, numero, porcentaje=True):
 
 def calcular_negativos(suma, numero, porcentaje = True):
     positivos = calcular_positivos(suma, numero, porcentaje)
+    positivos = float(positivos)
     if porcentaje:
         return 100 - positivos
     else:

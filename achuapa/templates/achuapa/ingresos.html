@@ -1,4 +1,5 @@
 {% extends "base.html"%}
+{% load humanize %}
 {%load unslugify %}
 {%block titulo%}Los Ingresos de las familias{%endblock%}
 {% block extra_header %}
@@ -18,9 +19,6 @@
 </script>
 {% endblock %}
 {%block contenido%}
-
-número de familias: {{num_familias}}
-
 <h2>Graficos de los distintas especies de árboles</h2>
 <ul>
  <li><a href="#" onCLick="click_callback('vendio')">A quien venden</a></li>
@@ -35,21 +33,33 @@ número de familias: {{num_familias}}
  <thead>
     <tr>
         <th>RUBROS</th>
-        <th>UNIDAD</th>
-        <th>FRECUENCIA</th>
-        <th>CANTIDAD</th>
-        <th>PRECIO PROMEDIO</th>
+        <th>Frecuencia</th>
+        <th>Unidad</th>
+        <th>Cantidad</th>
+        <th>Precio promedio</th>
+        <th>Ingreso por venta</th>
     </tr>
  </thead>
     {%for key, value in tabla.items%}
     <tr>
         <td>{{key|unslugify}}</td>
-        <td>{{unidad|unslugify}}</td>
         <td>{{value.numero|floatformat}}</td>
+        <td>{{value.key2|unslugify}}</td>
         <td>{{value.cantidad|floatformat}}</td>
         <td>{{value.precio|floatformat}}</td>
-    </tr>
+        <td>{{value.ingreso|floatformat}}</td>
+        
     {%endfor%}
+   
+    <tr>
+        <th>TOTAL VENTA RUBROS</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>{{respuesta.ingreso_total|floatformat:2}}</th>
+    </tr>
+
 </table>
 <br><br>
 <table>
@@ -72,6 +82,28 @@ número de familias: {{num_familias}}
         <td>{{value.ingresototal|floatformat}}</td>
     </tr>
     {%endfor%}
+    
+    <tr>
+        <th>TOTAL OTROS INGRESO</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>{{respuesta.ingreso_otro|floatformat:2}}</th>
+    </tr>
 </table>
+<br><br>
+<table>
+    <tr colspan="2">
+        <th>INGRESO BRUTO</th>
 
+        <th>{{respuesta.brutoo|intcomma}}</th>
+    </tr>
+</table>
+<table>
+    <tr colspan="2">
+        <th>INGRESO NETO</th>
+        
+        <th>{{respuesta.total_neto|intcomma}}</th>
+    </tr>
+</table>
 {%endblock%}

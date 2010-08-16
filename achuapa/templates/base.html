@@ -28,11 +28,12 @@
         <!-- comienza algo de pimp -->
         {%block pimp%}{%endblock%}
        
-        
+    
 <div id="contenedor" class="centro">  
     <!-- Comienza Contenido-->
 	<div id="contenido">
 	 {%block menu%}
+        
         <div id="menu">
             <ul>
                 <li><a href="/familia">Familia</a></li>
@@ -48,6 +49,7 @@
                 <li><a href="/seguridad_alimentaria">Seguridad Alimentaria</a></li>
             </ul>
         </div>
+
         {%endblock%}
                  
              <!-- Comienza Columna derecha--> 
@@ -59,11 +61,15 @@
                            <div id="filtros">
                                 <span class="variables">Variables</span>
                                 
-                                <span class="variables_filtro"><b>Cooperativa</b><br>{%if request.session.cooperativa%}{{session.cooperativa}}{%endif%}</span>
-                                <span class="variables_filtro"><b>Año</b><br>{{request.session.fecha}}</span>
-                                <span class="variables_filtro"><b>Departamento</b><br>{{request.session.departamento}}</span>
-                                <span class="variables_filtro"><b>Municipio</b><br>{{request.session.municipio.nombre}}</span>
-                                <span class="variables_filtro"><b>Comunidad</b><br>{{request.session.comunidad.nombre}}</span>
+                                {%if num_familias%}<span class="variables_filtro"><b>Familias</b><br>{{num_familias}}</span>{%endif%}
+                                {%comment%}{%if request.session.cooperativa%}<span class="variables_filtro"><b>Cooperativa</b><br>{{session.cooperativa}}</span>{%endif%}{%endcomment%}
+                                {%if request.session.fecha%}<span class="variables_filtro"><b>Año</b><br>{{request.session.fecha}}</span>{%endif%}
+                                {%if request.session.departamento%}<span class="variables_filtro"><b>Departamento</b><br>{{request.session.departamento}}</span>{%endif%}
+                                {%if request.session.municipio.nombre%}<span class="variables_filtro"><b>Municipio</b><br>{{request.session.municipio.nombre}}</span>{%endif%}
+                                {%if request.session.comunidad.nombre%}<span class="variables_filtro"><b>Comunidad</b><br>{{request.session.comunidad.nombre}}</span>{%endif%}
+                                {%if request.session.socio%}<span class="variables_filtro"><b>Socio</b><br>{%if request.session.socio = '1'%}Si{%else%}No{%endif%}</span>{%endif%}
+                                {%if request.session.desde%}<span class="variables_filtro"><b>Años de socio</b><br>{%if request.session.desde = '1'%}Menos de 5 {%else%}Mas de 5 {%endif%}</span>{%endif%}
+                                {%if request.session.duenio%}<span class="variables_filtro"><b>Tipo Dueño</b><br>{%if request.session.duenio = '1'%}Hombre{%endif%}{%if request.session.duenio = '2'%}Mujer{%endif%}{%if request.session.duenio = '3'%}Mancomunado{%endif%}{%if request.session.duenio = '4'%}Parientes{%endif%}{%if request.session.duenio = '5'%}Colectivo{%endif%}{%if request.session.duenio = '6'%}No hay{%endif%}</span>{%endif%}
                                 <a href="/index">Nueva Consulta</a>
                             </div>
                    {%endblock%}
