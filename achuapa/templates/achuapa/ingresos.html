@@ -1,4 +1,5 @@
 {% extends "base.html"%}
+{% load humanize %}
 {%load unslugify %}
 {%block titulo%}Los Ingresos de las familias{%endblock%}
 {% block extra_header %}
@@ -59,7 +60,7 @@ número de familias: {{num_familias}}
         <th></th>
         <th></th>
         <th></th>
-        <th>{{respuesta.ingreso_total|floatformat}}</th>
+        <th>{{respuesta.ingreso_total|floatformat:2}}</th>
     </tr>
 
 </table>
@@ -90,7 +91,7 @@ número de familias: {{num_familias}}
         <th></th>
         <th></th>
         <th></th>
-        <th>{{respuesta.ingreso_otro|floatformat}}</th>
+        <th>{{respuesta.ingreso_otro|floatformat:2}}</th>
     </tr>
 </table>
 <br><br>
@@ -98,14 +99,14 @@ número de familias: {{num_familias}}
     <tr colspan="2">
         <th>INGRESO BRUTO</th>
 
-        <th>{{respuesta.brutoo|floatformat}}</th>
+        <th>{{respuesta.brutoo|intcomma}}</th>
     </tr>
 </table>
 <table>
     <tr colspan="2">
         <th>INGRESO NETO</th>
         
-        <th>{{respuesta.total_neto|floatformat}}</th>
+        <th>{{respuesta.total_neto|intcomma}}</th>
     </tr>
 </table>
 {%endblock%}
