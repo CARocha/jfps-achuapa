@@ -850,7 +850,15 @@ def educacion(request):
                 pri_completa = Sum('educacion__pri_completa'), secun_incompleta = Sum('educacion__secun_incompleta'),
                 secun_completa = Sum('educacion__secun_completa'), universitario = Sum('educacion__estudiante_universitario'),
                 tecnico_graduado = Sum('educacion__tecnico_graduado'))
-        tabla_educacion.append({'label': choice[1], 'objeto': objeto})
+        fila = [choice[1], objeto['num_total'],
+                saca_porcentajes(objeto['no_lee'], objeto['num_total'], False),
+                saca_porcentajes(objeto['pri_incompleta'], objeto['num_total'], False),
+                saca_porcentajes(objeto['pri_completa'], objeto['num_total'], False),
+                saca_porcentajes(objeto['secun_incompleta'], objeto['num_total'], False),
+                saca_porcentajes(objeto['secun_completa'], objeto['num_total'], False),
+                saca_porcentajes(objeto['universitario'], objeto['num_total'], False),
+                saca_porcentajes(objeto['tecnico_graduado'], objeto['num_total'], False)]
+        tabla_educacion.append(fila)
 
     
     return render_to_response('achuapa/educacion.html', 
