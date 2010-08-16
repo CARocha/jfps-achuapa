@@ -144,7 +144,7 @@ def familia(request):
     '''Tabla de familias(migracion)'''
     #*******Variables globales**********
     a = _queryset_filtrado(request)
-    num_familia = a.count()
+    num_familias = a.count()
     #**********************************
     tabla = {}
     totales = {}
@@ -182,26 +182,40 @@ def organizacion(request):
 
     #fila si % no % <5 % >5 %
     hombres = consulta.filter(datos__sexo = 1).aggregate(socio = Sum('organizacion__socio'),
-                                                         tiempo_socio = Sum('organizacion__desde_socio'),
                                                          conyugue = Sum('organizacion__socio_cooperativa'),
-                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
                                                          hijo = Sum('organizacion__hijos_socios'),
-                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
                                                          num = Count('organizacion__socio'),
                                                          miembro = Sum('organizacion__miembro'),
                                                          comision = Sum('organizacion__comision'),
                                                          capacitacion = Sum('organizacion__cargo'))
 
-    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
-                                                         tiempo_socio = Sum('organizacion__desde_socio'),
-                                                         conyugue = Sum('organizacion__socio_cooperativa'),
-                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
-                                                         hijo = Sum('organizacion__hijos_socios'),
+    hombres_tiempo = consulta.filter(datos__sexo=1, 
+                                      organizacion__desde_socio__isnull = False,
+                                      organizacion__desde_socio_coop__isnull = False,
+                                      organizacion__desde_hijo__isnull = False).aggregate(
                                                          tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         num = Count('organizacion__socio'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'))
+
+
+    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
+                                                         conyugue = Sum('organizacion__socio_cooperativa'),
+                                                         hijo = Sum('organizacion__hijos_socios'),
                                                          num = Count('organizacion__socio'),
                                                          miembro = Sum('organizacion__miembro'),
                                                          comision = Sum('organizacion__comision'),
                                                          capacitacion = Sum('organizacion__cargo'))
+
+    mujeres_tiempo = consulta.filter(datos__sexo=2, 
+                                      organizacion__desde_socio__isnull = False,
+                                      organizacion__desde_socio_coop__isnull = False,
+                                      organizacion__desde_hijo__isnull = False).aggregate(
+                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         num = Count('organizacion__socio'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'))
+
     
     lista_llaves = [('socio', 'tiempo_socio'), 
                     ('conyugue', 'tiempo_conyugue'), 
@@ -212,19 +226,19 @@ def organizacion(request):
                                           calcular_positivos(hombres[valor], hombres['num'], True),
                                           calcular_negativos(hombres[valor], hombres['num'], False),
                                           calcular_negativos(hombres[valor], hombres['num'], True),
-                                          calcular_positivos(hombres[tiempo], hombres['num'], False),
-                                          calcular_positivos(hombres[tiempo], hombres['num'], True),
-                                          calcular_negativos(hombres[tiempo], hombres['num'], False),
-                                          calcular_negativos(hombres[tiempo], hombres['num'], True)]
+                                          calcular_positivos(hombres_tiempo[tiempo], hombres_tiempo['num'], False),
+                                          calcular_positivos(hombres_tiempo[tiempo], hombres_tiempo['num'], True),
+                                          calcular_negativos(hombres_tiempo[tiempo], hombres_tiempo['num'], False),
+                                          calcular_negativos(hombres_tiempo[tiempo], hombres_tiempo['num'], True)]
 
         tabla_socio['mujeres_' + valor] = [calcular_positivos(mujeres[valor], mujeres['num'], False),
                                           calcular_positivos(mujeres[valor], mujeres['num'], True),
                                           calcular_negativos(mujeres[valor], mujeres['num'], False),
                                           calcular_negativos(mujeres[valor], mujeres['num'], True),
-                                          calcular_positivos(mujeres[tiempo], mujeres['num'], False),
-                                          calcular_positivos(mujeres[tiempo], mujeres['num'], True),
-                                          calcular_negativos(mujeres[tiempo], mujeres['num'], False),
-                                          calcular_negativos(mujeres[tiempo], mujeres['num'], True)]
+                                          calcular_positivos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], False),
+                                          calcular_positivos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], True),
+                                          calcular_negativos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], False),
+                                          calcular_negativos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], True)]
 
     for llave in ('miembro', 'comision', 'capacitacion'):
         for sexo in ('hombres', 'mujeres'):
@@ -234,7 +248,8 @@ def organizacion(request):
             tabla_beneficio[sexo].append(calcular_negativos(hombres[llave], hombres['num']))
     
     return render_to_response('achuapa/organizacion.html', 
-                              {'tabla_socio': tabla_socio, 'tabla_beneficio': tabla_beneficio},
+                              {'tabla_socio': tabla_socio, 'num_familias': consulta.count(),
+                               'tabla_beneficio': tabla_beneficio},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -481,7 +496,8 @@ def animales(request):
 
     
     return render_to_response('achuapa/animales.html', 
-                              {'tabla':tabla, 'totales': totales},
+                              {'tabla':tabla, 'totales': totales, 
+                               'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -712,7 +728,7 @@ def equipos(request):
                            'trans':trans,'por_trans':por_trans}
            
     return render_to_response('achuapa/equipos.html', {'tabla':tabla,'totales':totales,
-                              'num_familia':num_familia,'tabla_infra':tabla_infra,
+                              'num_familias':num_familia,'tabla_infra':tabla_infra,
                               'herramienta':herramienta,'transporte':transporte},
                                context_instance=RequestContext(request))
 
@@ -750,7 +766,8 @@ def ahorro_credito(request):
     tabla_credito['al_dia'] = [al_dia, saca_porcentajes(al_dia, totales_credito['numero'])] 
 
     dicc = {'tabla_ahorro':tabla_ahorro, 'columnas_ahorro': columnas_ahorro, 
-            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito}
+            'totales_ahorro': totales_ahorro, 'tabla_credito': tabla_credito,
+            'num_familias': consulta.count()}
 
     return render_to_response('achuapa/ahorro_credito.html', dicc,
                               context_instance=RequestContext(request))
@@ -799,7 +816,9 @@ def ahorro_credito_grafos(request, tipo):
 @session_required
 def servicios(request):
     '''servicios: educacion, salud, agua, luz'''
-    return render_to_response('achuapa/servicios.html', 
+    familias = _queryset_filtrado(request).count()
+    return render_to_response('achuapa/servicios.html',
+                              {'num_familias': familias}, 
                               context_instance=RequestContext(request))
     
 @session_required
@@ -836,7 +855,9 @@ def educacion(request):
     
     return render_to_response('achuapa/educacion.html', 
                               {'tabla_no':tabla_no, 'totales_no': totales_no,
-                              'tabla_educacion':tabla_educacion, 'totales_educacion': totales_educacion},
+                               'tabla_educacion':tabla_educacion, 
+                               'totales_educacion': totales_educacion,
+                               'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 
@@ -878,7 +899,9 @@ def salud(request):
         tabla_sitio.append(fila_sitio)
 
     return render_to_response('achuapa/salud.html', 
-                              {'tabla_estado':tabla_estado, 'tabla_sitio': tabla_sitio},
+                              {'tabla_estado':tabla_estado, 
+                               'tabla_sitio': tabla_sitio,
+                               'num_familias': numero},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -922,7 +945,7 @@ def agua(request):
     totales = [consulta.count(), 100, total['cantidad'], 100]
     return render_to_response('achuapa/agua.html', 
                               #{'tabla':tabla, 'totales':totales},
-                              {'tabla':tabla},
+                              {'tabla':tabla, 'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -983,7 +1006,7 @@ def luz(request):
             tabla.append(fila)
 
     return render_to_response('achuapa/luz.html', 
-                              {'tabla':tabla},
+                              {'tabla':tabla, 'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -1014,7 +1037,7 @@ def seguridad_alimentaria(request):
                      
                       
     return render_to_response('achuapa/seguridad.html',{'tabla':tabla,
-                              'num_familia':num_familia},
+                              'num_familias':num_familia},
                                context_instance=RequestContext(request))
     
 # Vistas para obtener los municipios, comunidades, socio, etc..
@@ -1091,6 +1114,7 @@ def calcular_positivos(suma, numero, porcentaje=True):
 
 def calcular_negativos(suma, numero, porcentaje = True):
     positivos = calcular_positivos(suma, numero, porcentaje)
+    positivos = float(positivos)
     if porcentaje:
         return 100 - positivos
     else:

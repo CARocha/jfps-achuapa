@@ -19,22 +19,19 @@
 </script>
 {% endblock %}
 {% block contenido %}
-
-número de familias: {{num_familias}}
-
-<h2>Graficos de los distintos Tipos de arboles</h2>
-<ul>
- <li><a href="#" onCLick="click_callback('maderable')">Arbol Maderable</a></li>
- <li><a href="#" onCLick="click_callback('forrajero')">Árbol Forrajero</a></li>
- <li><a href="#" onCLick="click_callback('energetico')">Árbol Energetico</a></li>
- <li><a href="#" onCLick="click_callback('frutal')">Árbol Frutal</a></li>
-</ul>
-
-<h2>Graficos de los distintas especies de árboles</h2>
-<ul>
- <li><a href="#" onCLick="click_callback('nativos')">Arboles por especie</a></li>
-</ul>
-
+<div id="sidebar">
+    <div class="graficos_widget">
+        <h1>Graficos tipos de arboles</h1>
+        <a href="#" onCLick="click_callback('maderable')">Arbol Maderable</a>
+        <a href="#" onCLick="click_callback('forrajero')">Árbol Forrajero</a>
+        <a href="#" onCLick="click_callback('energetico')">Árbol Energetico</a>
+        <a href="#" onCLick="click_callback('frutal')">Árbol Frutal</a>
+    </div>
+    <div class="graficos_widget">
+        <h1>Graficos especies de árboles</h1>
+        <a href="#" onCLick="click_callback('nativos')">Arboles por especie</a>
+    </div>
+</div>
 <div id="grafo"></div>
 <table>
 <caption>Tabla Existencia de Arboles</caption>
