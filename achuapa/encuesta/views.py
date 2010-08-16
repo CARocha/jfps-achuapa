@@ -544,8 +544,8 @@ def ingresos(request):
         matriz[key] = {'frecuencia':frecuencia,'meses':meses,
                        'ingreso':ingreso,'ingresototal':ingresototal}
                        
-    respuesta['brutoo'] = (respuesta['ingreso_total'] + respuesta['ingreso_otro']) / num_familias
-    respuesta['total_neto'] = respuesta['brutoo'] * 0.6
+    respuesta['brutoo'] = round((respuesta['ingreso_total'] + respuesta['ingreso_otro']) / num_familias,2)
+    respuesta['total_neto'] = round(respuesta['brutoo'] * 0.6,2)
         
     return render_to_response('achuapa/ingresos.html',
                               {'tabla':tabla,'num_familias':num_familias,'matriz':matriz,
