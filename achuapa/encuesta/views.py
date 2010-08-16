@@ -182,26 +182,40 @@ def organizacion(request):
 
     #fila si % no % <5 % >5 %
     hombres = consulta.filter(datos__sexo = 1).aggregate(socio = Sum('organizacion__socio'),
-                                                         tiempo_socio = Sum('organizacion__desde_socio'),
                                                          conyugue = Sum('organizacion__socio_cooperativa'),
-                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
                                                          hijo = Sum('organizacion__hijos_socios'),
-                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
                                                          num = Count('organizacion__socio'),
                                                          miembro = Sum('organizacion__miembro'),
                                                          comision = Sum('organizacion__comision'),
                                                          capacitacion = Sum('organizacion__cargo'))
 
-    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
-                                                         tiempo_socio = Sum('organizacion__desde_socio'),
-                                                         conyugue = Sum('organizacion__socio_cooperativa'),
-                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
-                                                         hijo = Sum('organizacion__hijos_socios'),
+    hombres_tiempo = consulta.filter(datos__sexo=1, 
+                                      organizacion__desde_socio__isnull = False,
+                                      organizacion__desde_socio_coop__isnull = False,
+                                      organizacion__desde_hijo__isnull = False).aggregate(
                                                          tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         num = Count('organizacion__socio'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'))
+
+
+    mujeres = consulta.filter(datos__sexo = 2).aggregate(socio = Sum('organizacion__socio'),
+                                                         conyugue = Sum('organizacion__socio_cooperativa'),
+                                                         hijo = Sum('organizacion__hijos_socios'),
                                                          num = Count('organizacion__socio'),
                                                          miembro = Sum('organizacion__miembro'),
                                                          comision = Sum('organizacion__comision'),
                                                          capacitacion = Sum('organizacion__cargo'))
+
+    mujeres_tiempo = consulta.filter(datos__sexo=2, 
+                                      organizacion__desde_socio__isnull = False,
+                                      organizacion__desde_socio_coop__isnull = False,
+                                      organizacion__desde_hijo__isnull = False).aggregate(
+                                                         tiempo_hijo = Sum('organizacion__desde_hijo'),
+                                                         num = Count('organizacion__socio'),
+                                                         tiempo_conyugue = Sum('organizacion__desde_socio_coop'),
+                                                         tiempo_socio = Sum('organizacion__desde_socio'))
+
     
     lista_llaves = [('socio', 'tiempo_socio'), 
                     ('conyugue', 'tiempo_conyugue'), 
@@ -212,19 +226,19 @@ def organizacion(request):
                                           calcular_positivos(hombres[valor], hombres['num'], True),
                                           calcular_negativos(hombres[valor], hombres['num'], False),
                                           calcular_negativos(hombres[valor], hombres['num'], True),
-                                          calcular_positivos(hombres[tiempo], hombres['num'], False),
-                                          calcular_positivos(hombres[tiempo], hombres['num'], True),
-                                          calcular_negativos(hombres[tiempo], hombres['num'], False),
-                                          calcular_negativos(hombres[tiempo], hombres['num'], True)]
+                                          calcular_positivos(hombres_tiempo[tiempo], hombres_tiempo['num'], False),
+                                          calcular_positivos(hombres_tiempo[tiempo], hombres_tiempo['num'], True),
+                                          calcular_negativos(hombres_tiempo[tiempo], hombres_tiempo['num'], False),
+                                          calcular_negativos(hombres_tiempo[tiempo], hombres_tiempo['num'], True)]
 
         tabla_socio['mujeres_' + valor] = [calcular_positivos(mujeres[valor], mujeres['num'], False),
                                           calcular_positivos(mujeres[valor], mujeres['num'], True),
                                           calcular_negativos(mujeres[valor], mujeres['num'], False),
                                           calcular_negativos(mujeres[valor], mujeres['num'], True),
-                                          calcular_positivos(mujeres[tiempo], mujeres['num'], False),
-                                          calcular_positivos(mujeres[tiempo], mujeres['num'], True),
-                                          calcular_negativos(mujeres[tiempo], mujeres['num'], False),
-                                          calcular_negativos(mujeres[tiempo], mujeres['num'], True)]
+                                          calcular_positivos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], False),
+                                          calcular_positivos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], True),
+                                          calcular_negativos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], False),
+                                          calcular_negativos(mujeres_tiempo[tiempo], mujeres_tiempo['num'], True)]
 
     for llave in ('miembro', 'comision', 'capacitacion'):
         for sexo in ('hombres', 'mujeres'):
@@ -1091,6 +1105,7 @@ def calcular_positivos(suma, numero, porcentaje=True):
 
 def calcular_negativos(suma, numero, porcentaje = True):
     positivos = calcular_positivos(suma, numero, porcentaje)
+    positivos = float(positivos)
     if porcentaje:
         return 100 - positivos
     else:
