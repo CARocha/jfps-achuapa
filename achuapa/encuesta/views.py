@@ -932,12 +932,12 @@ def agua(request):
         query = consulta.filter(agua__fuente=choice[0])
         numero = query.count()
         resultados = query.aggregate(cantidad=Sum('agua__cantidad'))
-        prom = resultados['cantidad']/float(consulta.count())
+        prom = float(numero)/resultados['cantidad']
         fila = [choice[1], numero,
                 #saca_porcentajes(numero, total['total'], False),
                 saca_porcentajes(numero, consulta.count(), False),
                 resultados['cantidad'],
-                saca_porcentajes(resultados['cantidad'], total['cantidad'], False),
+                #saca_porcentajes(resultados['cantidad'], total['cantidad'], False),
                 "%.2f" % prom]
         tabla.append(fila)
 
