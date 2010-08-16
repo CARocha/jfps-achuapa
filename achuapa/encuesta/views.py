@@ -32,8 +32,8 @@ def _queryset_filtrado(request):
     params = {}
     if 'fecha' in request.session:
         params['fecha__year'] = anio 
-        if 'cooperativa' in request.session:
-            params['datos__cooperativa'] = request.session['cooperativa']
+#        if 'cooperativa' in request.session:
+#            params['datos__cooperativa'] = request.session['cooperativa']
 
         if 'departamento' in request.session:
             #incluye municipio y comunidad
@@ -94,7 +94,7 @@ def inicio(request):
                 cooperativa = Datosgenerales.objects.get(id=form.cleaned_data['cooperativa'])
             except:
                 cooperativa = None
-            request.session['cooperativa'] = cooperativa
+            #request.session['cooperativa'] = cooperativa
             request.session['fecha'] = form.cleaned_data['fecha']
             request.session['departamento'] = form.cleaned_data['departamento']
             try:
