@@ -32,16 +32,14 @@ Gráficos
  <thead>
     <tr>
         <th>Pregunta</th>
-        {%for columna in columnas_ahorro%}
-        <th>{{columna}}</th>
-        {%endfor%}
+        <th>Sí</th>
+        <th>Porcentaje</th>
     </tr>
  </thead>
-    {%for key, value in tabla_ahorro.items%}
+    {%for fila in tabla_ahorro%}
     <tr>
-        <td>{{key|unslugify}}</td>
-        {%for numero in value%}
-        <td>{{numero|floatformat}}</td>
+        {%for celda in fila %}
+        <td>{{celda}}</td>
         {%endfor%}
     </tr>
     {%endfor%}
