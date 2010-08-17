@@ -14,20 +14,74 @@
             }
         });
     }
+$(document).ready(function() {
+    $("#grafico1").click(function(){
+        $("#grafico1").addClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+    
+    $("#grafico2").click(function(){
+        $("#grafico2").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico3").click(function(){
+        $("#grafico3").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+    $("#grafico4").click(function(){
+        $("#grafico4").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico5").click(function(){
+        $("#grafico5").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico6").click(function(){
+        $("#grafico6").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+    });
+});
 </script>
 {% endblock %}
 {%block titulo%}Los Equipos{%endblock%}
 
 {% block contenido %}
-<h2>Graficos de los distintos bienes</h2>
-<ul>
- <li><a href="#" onCLick="click_callback('tipocasa')">Tipo Casa</a></li>
- <li><a href="#" onCLick="click_callback('tipopiso')">Tipo Piso</a></li>
- <li><a href="#" onCLick="click_callback('tipotecho')">Tipo Techo</a></li>
- <li><a href="#" onCLick="click_callback('ambiente')">Ambientes</a></li>
- <li><a href="#" onCLick="click_callback('letrina')">Letrina</a></li>
- <li><a href="#" onCLick="click_callback('lavadero')">Lavadero</a></li>
-</ul>
+    <div class="graficos_widget">
+        <h1>Graficos de bienes</h1>
+        <a id="grafico1" href="#" onCLick="click_callback('tipocasa')">Tipo Casa</a></a>
+        <a id="grafico2" href="#" onCLick="click_callback('tipopiso')">Tipo Piso</a>
+        <a id="grafico3" href="#" onCLick="click_callback('tipotecho')">Tipo Techo</a>
+        <a id="grafico4" href="#" onCLick="click_callback('ambiente')">Ambientes</a>
+        <a id="grafico5" href="#" onCLick="click_callback('letrina')">Letrina</a>
+        <a id="grafico6" href="#" onCLick="click_callback('lavadero')">Lavadero</a>
+    </div>
  <div id="grafo"></div>
 <table>
 <caption>Los Equipos</caption>
