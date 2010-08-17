@@ -477,6 +477,7 @@ def animales(request):
     '''Los animales y la produccion'''
     consulta = _queryset_filtrado(request)
     tabla = {}
+    tabla_produccion = []
     totales = {}
 
     totales['numero'] = consulta.aggregate(numero=Count('fincaproduccion__animales'))['numero'] 
@@ -488,16 +489,20 @@ def animales(request):
         key = slugify(animal.nombre).replace('-', '_')
         query = consulta.filter(fincaproduccion__animales = animal)
         numero = query.count()
+        producto = FincaProduccion.objects.filter(animales = animal)[0].producto
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
-        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'))['cantidad']
-        porcentaje_animal = saca_porcentajes(animales, totales['animales'])
+        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'),
+                                   produccion = Sum('fincaproduccion__total_produccion'))
+        porcentaje_animal = saca_porcentajes(animales['cantidad'], totales['animales'])
         tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
-                      'animales': animales, 'porcentaje_animal': porcentaje_animal}
+                      'animales': animales['cantidad'], 'porcentaje_animal': porcentaje_animal}
+        tabla_produccion.append([animal.nombre, animales['cantidad'], 
+                                 producto.nombre, animales['produccion']])
 
-    
     return render_to_response('achuapa/animales.html', 
                               {'tabla':tabla, 'totales': totales, 
-                               'num_familias': consulta.count()},
+                               'num_familias': consulta.count(),
+                               'tabla_produccion': tabla_produccion},
                               context_instance=RequestContext(request))
 
 @session_required

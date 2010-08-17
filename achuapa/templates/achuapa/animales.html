@@ -32,5 +32,25 @@
     {%endfor%}
 </table>
 
+<table>
+<caption>Los Animales y la Producción </caption>
+ <thead>
+    <tr>
+        <th>Animal</th>
+        <th>Cantidad</th>
+        <th>Producto</th>
+        <th>Cantidad Producida</th>
+    </tr>
+ </thead>
+    {%for fila in tabla_produccion%}
+    <tr>
+        {%for celda in fila%}
+        <td>{{celda}}</td>
+        {%endfor%}
+    </tr>
+    {%endfor%}
+</table>
+
+
 
 {% endblock %}
