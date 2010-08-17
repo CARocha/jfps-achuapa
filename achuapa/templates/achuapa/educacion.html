@@ -36,15 +36,9 @@
  </thead>
     {%for fila in tabla_educacion%}
     <tr>
-        <td>{{fila.label}}</td>
-        <td>{{fila.objeto.num_total}}</td>
-        <td>{{fila.objeto.no_lee}}</td>
-        <td>{{fila.objeto.pri_incompleta}}</td>
-        <td>{{fila.objeto.pri_completa}}</td>
-        <td>{{fila.objeto.secun_incompleta}}</td>
-        <td>{{fila.objeto.secun_completa}}</td>
-        <td>{{fila.objeto.universitario}}</td>
-        <td>{{fila.objeto.tecnico_graduado}}</td>
+        {%for celda in fila %}
+            <td>{{celda}}</td>
+        {%endfor%}
     </tr>
     {%endfor%}
 
