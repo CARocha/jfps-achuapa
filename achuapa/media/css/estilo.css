@@ -615,12 +615,50 @@ padding-right:15px;
 .ahorro{background:#f9f8f8 url(../imagen/credito.jpg) no-repeat;}
 .servicios{background:#f9f8f8 url(../imagen/servicios.jpg) no-repeat;}
 .seguridad{background:#f9f8f8 url(../imagen/seguridad.jpg) no-repeat;}
+.agua{background:#f9f8f8 url(../imagen/agua.jpg) no-repeat;}
+.salud{background:#f9f8f8 url(../imagen/salud.jpg) no-repeat;}
+.luz{background:#f9f8f8 url(../imagen/luz.jpg) no-repeat;}
+.educacion{background:#f9f8f8 url(../imagen/educacion.jpg) no-repeat;}
 
 .titulo_indicadores{
     font-size:17px;
     padding-left:15px;
     background: #cbc9b9;
     margin: 0px 0px 0px 0px;
+}
+
+#contenedor_servicio{
+    padding:10px;
+    padding-left:30px;
+    width:640px;
+    *width:680px;
+    height:35px;
+    background:#dddcd1;
+  border-radius:3px;
+  -moz-border-radius:3px; 
+  -webkit-border-radius:3px;
+  float:left;
+  margin-bottom:10px;
+}
+
+#contenedor_servicio a{
+    width:78px;
+    *width:128px;
+    height:23px;
+    *height:33px;
+    display:block;
+    float:left;
+    margin-right:25px;
+    border-bottom:#cecdbc 1px solid;
+    padding-left:50px;
+    padding-top:10px;
+    font-size:11px;
+    text-decoration:none;
+    color:#5a5a5a;
+}
+
+#contenedor_servicio a:hover{
+    color:#000
 }
 
 /* --------------Graficos widget-------------- */

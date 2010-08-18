@@ -19,18 +19,78 @@
             }
         });
     }
+$(document).ready(function() {
+    $("#grafico1").click(function(){
+        $("#grafico1").addClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+    
+    $("#grafico2").click(function(){
+        $("#grafico2").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico3").click(function(){
+        $("#grafico3").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+    $("#grafico4").click(function(){
+        $("#grafico4").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico5").click(function(){
+        $("#grafico5").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico6").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico6").click(function(){
+        $("#grafico5").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+    });
+});
 </script>
 {%endblock%}
 {% block contenido %}
-Gráficos
-<ul>
-    <li><a href="#" onCLick="click_callback(1)">Hombres de mas de 15 años</a></li>
-    <li><a href="#" onCLick="click_callback(2)">Mujeres de mas de 15 años</a></li>
-    <li><a href="#" onCLick="click_callback(3)">Hombres de 7 a 15 años</a></li>
-    <li><a href="#" onCLick="click_callback(4)">Mujeres de 7 a 15 años</a></li>
-    <li><a href="#" onCLick="click_callback(5)">Niños menor de 6 años</a></li>
-    <li><a href="#" onCLick="click_callback(6)">Niñas menores de 6 años</a></li>
-</ul>
+<div id="contenedor_servicio">
+    <a href="/salud" class="salud">Salud</a>
+    <a href="/educacion" class="educacion">Educación</a>
+    <a href="/agua"class="agua">Agua</a>
+    <a href="/luz"class="luz">Luz</a>
+</div>
+    <div class="graficos_widget">
+        <h1>Graficos </h1>
+        <a id="grafico1" href="#" onCLick="click_callback(1)">Hombres de mas de 15 años</a>
+        <a id="grafico2" href="#" onCLick="click_callback(2)">Mujeres de mas de 15 años</a>
+        <a id="grafico3" href="#" onCLick="click_callback(3)">Hombres de 7 a 15 años</a>
+        <a id="grafico4" href="#" onCLick="click_callback(4)">Mujeres de 7 a 15 años</a>
+        <a id="grafico5" href="#" onCLick="click_callback(5)">Niños menor de 6 años</a>
+        <a id="grafico6" href="#" onCLick="click_callback(6)">Niñas menores de 6 años</a>
+    </div>
 <div id="grafo"></div>
 <table>
  <thead>
