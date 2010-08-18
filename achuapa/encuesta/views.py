@@ -964,11 +964,17 @@ def agua_grafos_disponibilidad(request, tipo):
     consulta = _queryset_filtrado(request)
     data = [] 
     legends = []
-    if int(tipo) in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
-        for opcion in CHOICE_DISPONIBILIDAD:
-            data.append(consulta.filter(agua__diponibilidad=opcion[0], agua__fuente = int(tipo)).count())
+    tipo = int(tipo)
+    if tipo in [numero[0] for numero in CHOICE_FUENTE_AGUA]:
+        if tipo in [1, 2]:
+            choices = CHOICE_DISPONIBILIDAD[:2]  
+        else:
+            choices = CHOICE_DISPONIBILIDAD[2:]
+
+        for opcion in choices:
+            data.append(consulta.filter(agua__diponibilidad=opcion[0], agua__fuente = tipo).count())
             legends.append(opcion[1])
-        titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[int(tipo) - 1][1]
+        titulo = 'Disponibilidad del agua en %s' % CHOICE_FUENTE_AGUA[tipo - 1][1]
         return grafos.make_graph(data, legends, 
                 titulo, return_json = True,
                 type = grafos.PIE_CHART_3D)
