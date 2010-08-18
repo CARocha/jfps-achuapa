@@ -272,7 +272,7 @@ def organizacion_grafos(request, tipo):
             data.append(consulta.filter(organizacion__beneficio=opcion).count())
             legends.append(opcion.nombre)
         return grafos.make_graph(data, legends, 
-                'Por que soy miembro de ...', return_json = True,
+                'Por que soy miembro de la cooperativa', return_json = True,
                 type = grafos.PIE_CHART_3D)
     else:
         raise Http404
@@ -477,6 +477,7 @@ def animales(request):
     '''Los animales y la produccion'''
     consulta = _queryset_filtrado(request)
     tabla = {}
+    tabla_produccion = []
     totales = {}
 
     totales['numero'] = consulta.aggregate(numero=Count('fincaproduccion__animales'))['numero'] 
@@ -488,16 +489,20 @@ def animales(request):
         key = slugify(animal.nombre).replace('-', '_')
         query = consulta.filter(fincaproduccion__animales = animal)
         numero = query.count()
+        producto = FincaProduccion.objects.filter(animales = animal)[0].producto
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
-        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'))['cantidad']
-        porcentaje_animal = saca_porcentajes(animales, totales['animales'])
+        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'),
+                                   produccion = Sum('fincaproduccion__total_produccion'))
+        porcentaje_animal = saca_porcentajes(animales['cantidad'], totales['animales'])
         tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
-                      'animales': animales, 'porcentaje_animal': porcentaje_animal}
+                      'animales': animales['cantidad'], 'porcentaje_animal': porcentaje_animal}
+        tabla_produccion.append([animal.nombre, animales['cantidad'], 
+                                 producto.nombre, animales['produccion']])
 
-    
     return render_to_response('achuapa/animales.html', 
                               {'tabla':tabla, 'totales': totales, 
-                               'num_familias': consulta.count()},
+                               'num_familias': consulta.count(),
+                               'tabla_produccion': tabla_produccion},
                               context_instance=RequestContext(request))
 
 @session_required
@@ -737,16 +742,15 @@ def ahorro_credito(request):
     ''' ahorro y credito'''
     #ahorro
     consulta = _queryset_filtrado(request)
-    tabla_ahorro = {}
+    tabla_ahorro = []
     totales_ahorro = {}
 
     columnas_ahorro = ['Si', '%']
 
-    for pregunta in AhorroPregunta.objects.all():
-        key = slugify(pregunta.nombre).replace('-', '_')
+    for pregunta in AhorroPregunta.objects.exclude(id__in=[3, 5]):
         #opciones solo si
         subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = 1).count()
-        tabla_ahorro[key] = [subquery, saca_porcentajes(subquery, consulta.count())]
+        tabla_ahorro.append([pregunta.nombre, subquery, saca_porcentajes(subquery, consulta.count()), False])
 
     #credito
     tabla_credito= {}
@@ -859,7 +863,6 @@ def educacion(request):
                 saca_porcentajes(objeto['universitario'], objeto['num_total'], False),
                 saca_porcentajes(objeto['tecnico_graduado'], objeto['num_total'], False)]
         tabla_educacion.append(fila)
-
     
     return render_to_response('achuapa/educacion.html', 
                               {'tabla_no':tabla_no, 'totales_no': totales_no,
@@ -867,7 +870,6 @@ def educacion(request):
                                'totales_educacion': totales_educacion,
                                'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
-
 
 @session_required
 def salud(request):
@@ -1002,7 +1004,7 @@ def luz(request):
         resultados = query.aggregate(cantidad=Sum('propiedades__cantidad_equipo'))
 
         if choice[0] == 1:
-            total_tiene_luz = consulta.count() 
+            total_tiene_luz = resultados['cantidad'] 
             fila = [choice[1], 
                     resultados['cantidad'],
                     saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
