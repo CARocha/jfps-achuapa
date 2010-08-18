@@ -18,6 +18,26 @@
             }
         });
     }
+    $(document).ready(function() {
+    $("#grafico1").click(function(){
+        $("#grafico1").addClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+    });
+    
+    $("#grafico2").click(function(){
+        $("#grafico2").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico3").click(function(){
+        $("#grafico3").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+    });
+});
+
 </script>
 {%endblock%}
 {%block titulo%}Las Fincas{%endblock%}
@@ -26,12 +46,11 @@
 <div id="sidebar">
     <div class="graficos_widget">
         <h1>Gráficos</h1>
-        <a href="#" onCLick="click_callback('tenencia')">Tenencia de las Parcelas</a>
-        <a href="#" onCLick="click_callback('solares')">Tenencia de los solares</a>
-        <a href="#" onCLick="click_callback('propietario')">Dueño de la Propiedad</a>
+        <a href="#" id="grafico1" onCLick="click_callback('tenencia')">Tenencia de las Parcelas</a>
+        <a href="#" id="grafico2" onCLick="click_callback('solares')">Tenencia de los solares</a>
+        <a href="#" id="grafico3" onCLick="click_callback('propietario')">Dueño de la Propiedad</a>
     </div>
 </div>
-
 <div id="grafo"></div>
 <table>
 <caption>Las Fincas</caption>

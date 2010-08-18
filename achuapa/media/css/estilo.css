@@ -615,12 +615,50 @@ padding-right:15px;
 .ahorro{background:#f9f8f8 url(../imagen/credito.jpg) no-repeat;}
 .servicios{background:#f9f8f8 url(../imagen/servicios.jpg) no-repeat;}
 .seguridad{background:#f9f8f8 url(../imagen/seguridad.jpg) no-repeat;}
+.agua{background:#f9f8f8 url(../imagen/agua.jpg) no-repeat;}
+.salud{background:#f9f8f8 url(../imagen/salud.jpg) no-repeat;}
+.luz{background:#f9f8f8 url(../imagen/luz.jpg) no-repeat;}
+.educacion{background:#f9f8f8 url(../imagen/educacion.jpg) no-repeat;}
 
 .titulo_indicadores{
     font-size:17px;
     padding-left:15px;
     background: #cbc9b9;
     margin: 0px 0px 0px 0px;
+}
+
+#contenedor_servicio{
+    padding:10px;
+    padding-left:30px;
+    width:640px;
+    *width:680px;
+    height:35px;
+    background:#dddcd1;
+  border-radius:3px;
+  -moz-border-radius:3px; 
+  -webkit-border-radius:3px;
+  float:left;
+  margin-bottom:10px;
+}
+
+#contenedor_servicio a{
+    width:78px;
+    *width:128px;
+    height:23px;
+    *height:33px;
+    display:block;
+    float:left;
+    margin-right:25px;
+    border-bottom:#cecdbc 1px solid;
+    padding-left:50px;
+    padding-top:10px;
+    font-size:11px;
+    text-decoration:none;
+    color:#5a5a5a;
+}
+
+#contenedor_servicio a:hover{
+    color:#000
 }
 
 /* --------------Graficos widget-------------- */
@@ -637,6 +675,8 @@ padding-right:15px;
    -webkit-border-top-left-radius:7px;
    -webkit-border-top-right-radius:7px;
    border:#ebebe4 1px solid;
+   margin-bottom:10px;
+   float:right;
 }
 
 .graficos_widget h1{
@@ -646,7 +686,7 @@ padding-right:15px;
    -moz-border-radius-topleft:7px;
    -webkit-border-top-left-radius:7px;
    -webkit-border-top-right-radius:7px;
-   background:#c9c7b6;
+   background:#c9c7b6 url(../imagen/fondo_widget_titulo.png);
    color:#6c6c6c;
    font-size:16px;
    margin:0px;
@@ -656,20 +696,30 @@ padding-right:15px;
 .graficos_widget a{
     float:left;
     display:block;
-    width:230px;
+    width:215px;
     height:20px;
-    background:#fff url(../imagen/fondo_widget_grafico.png) repeat-x;
-    border-bottom:#ebebe4 1px solid;
+    background:#fff url(../imagen/fondo_widget_grafico.png);
+    border-bottom:#e1dccb 1px solid;
     text-decoration:none;
-    color:#8E8E8E;
+    color:#8B8989;
     font-size:13px;
     padding-top:7px;
-    padding-left:10px;
+    padding-left:25px;
 }
 
 .graficos_widget a:hover{
-    background:#fff url(../imagen/fondo_widget_grafico2.png) repeat-x;
-    color:#669D36;
+    background:#fff url(../imagen/fondo_widget_grafico2.png);
+    color:#5C5C5C;
+
+}
+.enlace_seleccionado {
+    background:#fff url(../imagen/fondo_widget_grafico3.png) !important;
+    color:#000!important;
+}
+
+.graficos_widget a:active{
+    background:#fff url(../imagen/fondo_widget_grafico3.png);
+    color:#000;
 
 }
 

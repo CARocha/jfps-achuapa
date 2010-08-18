@@ -16,20 +16,61 @@
             }
         });
     }
+$(document).ready(function() {
+    $("#grafico1").click(function(){
+        $("#grafico1").addClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+    });
+    
+    $("#grafico2").click(function(){
+        $("#grafico2").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico3").click(function(){
+        $("#grafico3").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+    });
+    $("#grafico4").click(function(){
+        $("#grafico4").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico5").removeClass('enlace_seleccionado');
+    });
+
+    $("#grafico5").click(function(){
+        $("#grafico5").addClass('enlace_seleccionado'); 
+        $("#grafico1").removeClass('enlace_seleccionado');
+        $("#grafico2").removeClass('enlace_seleccionado');
+        $("#grafico3").removeClass('enlace_seleccionado');
+        $("#grafico4").removeClass('enlace_seleccionado');
+    });
+});
 </script>
 {% endblock %}
 {% block contenido %}
 <div id="sidebar">
     <div class="graficos_widget">
         <h1>Graficos tipos de arboles</h1>
-        <a href="#" onCLick="click_callback('maderable')">Arbol Maderable</a>
-        <a href="#" onCLick="click_callback('forrajero')">Árbol Forrajero</a>
-        <a href="#" onCLick="click_callback('energetico')">Árbol Energetico</a>
-        <a href="#" onCLick="click_callback('frutal')">Árbol Frutal</a>
+        <a id="grafico1" href="#" onCLick="click_callback('maderable')">Arbol Maderable</a>
+        <a id="grafico2" href="#" onCLick="click_callback('forrajero')">Árbol Forrajero</a>
+        <a id="grafico3" href="#" onCLick="click_callback('energetico')">Árbol Energetico</a>
+        <a id="grafico4" href="#" onCLick="click_callback('frutal')">Árbol Frutal</a>
     </div>
+    <div id="separador"></div>
     <div class="graficos_widget">
         <h1>Graficos especies de árboles</h1>
-        <a href="#" onCLick="click_callback('nativos')">Arboles por especie</a>
+        <a id="grafico5" href="#" onCLick="click_callback('nativos')">Arboles por especie</a>
     </div>
 </div>
 <div id="grafo"></div>
@@ -68,7 +109,7 @@
     <td>{{frutalct}}</td>
 </tr>
 </table>
-<br><br>
+<br>
 <table>
 <caption>Reforestación en ultimo año</caption>
  <thead>
