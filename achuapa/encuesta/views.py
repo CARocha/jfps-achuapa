@@ -890,8 +890,18 @@ def salud(request):
                                      clinica = Sum('salud__clinica'),
                                      nologra = Sum('salud__nologra')
                                      )
+        
+        #validando que no sea none
+        if resultados['bs']:
+            total_estado = resultados['bs'] 
+        else:
+            total_estado = 0
 
-        total_estado = resultados['bs'] + resultados['ds'] + resultados['ec']
+        if resultados['ds']:
+            total_estado += resultados['ds'] 
+        
+        if resultados['ec']:
+            total_estado += resultados['ec']
 
         fila_estado = [choice[1], casos,
                 saca_porcentajes(resultados['bs'], total_estado, False),
@@ -899,7 +909,13 @@ def salud(request):
                 saca_porcentajes(resultados['ec'], total_estado, False)]
         tabla_estado.append(fila_estado)
 
-        total_sitio = resultados['centro'] + resultados['medico'] + resultados['clinica']
+        total_sitio = 0
+        if resultados['centro']:
+            total_sitio += resultados['centro']
+        if resultados['medico']:
+            total_sitio += resultados['medico']
+        if resultados['clinica']:
+            total_sitio += resultados['clinica']
 
         fila_sitio = [choice[1], casos,
                       saca_porcentajes(resultados['centro'], total_sitio, False),
