@@ -74,4 +74,4 @@ INSTALLED_APPS = (
     'achuapa.lugar',
 )
 
-NO_DATA_GRAPH_URL = '/media/imagen/erro_grafo.jpg'
+NO_DATA_GRAPH_URL = '/archivos/imagen/error_grafo.jpg'
