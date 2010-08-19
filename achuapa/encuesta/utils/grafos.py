@@ -33,13 +33,12 @@ def make_graph(data, legends, message=None,
         url = graph.get_url()
     except:
         url = NO_DATA_GRAPH_URL 
-    if return_json:
 
+    if return_json:
         dicc = {'url': url}
         return HttpResponse(simplejson.dumps(dicc), mimetype='application/javascript')
     else:
         return url 
-
 
 def _pie_graph(data, legends, size, type=PieChart3D):
     graph = type(size[0], size[1])
