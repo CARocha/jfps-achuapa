@@ -480,7 +480,7 @@ def animales(request):
     tabla_produccion = []
     totales = {}
 
-    totales['numero'] = consulta.aggregate(numero=Count('fincaproduccion__animales'))['numero'] 
+    totales['numero'] = consulta.count() 
     totales['porcentaje_num'] = 100
     totales['animales'] = consulta.aggregate(cantidad=Sum('fincaproduccion__cantidad'))['cantidad']
     totales['porcentaje_animal'] = 100
@@ -488,16 +488,21 @@ def animales(request):
     for animal in Animales.objects.all():
         key = slugify(animal.nombre).replace('-', '_')
         query = consulta.filter(fincaproduccion__animales = animal)
-        numero = query.count()
+        numero = query.distinct().count()
         producto = FincaProduccion.objects.filter(animales = animal)[0].producto
         porcentaje_num = saca_porcentajes(numero, totales['numero'])
         animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'),
+                                   venta_libre = Sum('fincaproduccion__venta'),
+                                   venta_organizada = Sum('fincaproduccion__venta_organizada'),
+                                   consumo = Sum('fincaproduccion__consumo'),
                                    produccion = Sum('fincaproduccion__total_produccion'))
         porcentaje_animal = saca_porcentajes(animales['cantidad'], totales['animales'])
         tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
                       'animales': animales['cantidad'], 'porcentaje_animal': porcentaje_animal}
         tabla_produccion.append([animal.nombre, animales['cantidad'], 
-                                 producto.nombre, animales['produccion']])
+                                 producto.nombre, producto.unidad, 
+                                 animales['produccion'], animales['consumo'], 
+                                 animales['venta_libre'], animales['venta_organizada']])
 
     return render_to_response('achuapa/animales.html', 
                               {'tabla':tabla, 'totales': totales, 
@@ -750,7 +755,7 @@ def ahorro_credito(request):
     for pregunta in AhorroPregunta.objects.exclude(id__in=[3, 5]):
         #opciones solo si
         subquery = consulta.filter(ahorro__ahorro = pregunta, ahorro__respuesta = 1).count()
-        tabla_ahorro.append([pregunta.nombre, subquery, saca_porcentajes(subquery, consulta.count()), False])
+        tabla_ahorro.append([pregunta.nombre, subquery, saca_porcentajes(subquery, consulta.count(), False)])
 
     #credito
     tabla_credito= {}
