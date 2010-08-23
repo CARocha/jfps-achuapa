@@ -1030,7 +1030,7 @@ def luz(request):
     total_tiene_luz = 0            
 
     for choice in CHOICE_EQUIPO:
-        query = consulta.filter(propiedades__tipo_equipo=choice[0]).distinct()
+        query = consulta.filter(propiedades__tipo_equipo=choice[0], propiedades__respuesta=1).distinct()
         resultados = query.count() 
         if choice[0] == 1:
             total_tiene_luz = resultados 
