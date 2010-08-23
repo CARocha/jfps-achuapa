@@ -476,7 +476,7 @@ def cultivos(request):
 def animales(request):
     '''Los animales y la produccion'''
     consulta = _queryset_filtrado(request)
-    tabla = {}
+    tabla = []
     tabla_produccion = []
     totales = {}
 
@@ -486,19 +486,19 @@ def animales(request):
     totales['porcentaje_animal'] = 100
 
     for animal in Animales.objects.all():
-        key = slugify(animal.nombre).replace('-', '_')
         query = consulta.filter(fincaproduccion__animales = animal)
         numero = query.distinct().count()
         producto = FincaProduccion.objects.filter(animales = animal)[0].producto
-        porcentaje_num = saca_porcentajes(numero, totales['numero'])
+        porcentaje_num = saca_porcentajes(numero, totales['numero'], False)
         animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'),
                                    venta_libre = Sum('fincaproduccion__venta'),
                                    venta_organizada = Sum('fincaproduccion__venta_organizada'),
                                    consumo = Sum('fincaproduccion__consumo'),
                                    produccion = Sum('fincaproduccion__total_produccion'))
-        porcentaje_animal = saca_porcentajes(animales['cantidad'], totales['animales'])
-        tabla[key] = {'numero': numero, 'porcentaje_num': porcentaje_num,
-                      'animales': animales['cantidad'], 'porcentaje_animal': porcentaje_animal}
+        animal_familia = animales['cantidad']/float(numero) 
+        animal_familia = "%.2f" % animal_familia
+        tabla.append([animal.nombre, numero, porcentaje_num,
+                      animales['cantidad'], animal_familia])
         tabla_produccion.append([animal.nombre, animales['cantidad'], 
                                  producto.nombre, producto.unidad, 
                                  animales['produccion'], animales['consumo'], 
@@ -1030,19 +1030,18 @@ def luz(request):
     total_tiene_luz = 0            
 
     for choice in CHOICE_EQUIPO:
-        query = consulta.filter(propiedades__tipo_equipo=choice[0])
-        resultados = query.aggregate(cantidad=Sum('propiedades__cantidad_equipo'))
-
+        query = consulta.filter(propiedades__tipo_equipo=choice[0]).distinct()
+        resultados = query.count() 
         if choice[0] == 1:
-            total_tiene_luz = resultados['cantidad'] 
+            total_tiene_luz = resultados 
             fila = [choice[1], 
-                    resultados['cantidad'],
-                    saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
+                    resultados,
+                    saca_porcentajes(resultados, consulta.count(), False)]
             tabla.append(fila)
         else:
             fila = [choice[1], 
-                    resultados['cantidad'],
-                    saca_porcentajes(resultados['cantidad'], total_tiene_luz, False)]
+                    resultados,
+                    saca_porcentajes(resultados, total_tiene_luz, False)]
             tabla.append(fila)
 
     return render_to_response('achuapa/luz.html', 

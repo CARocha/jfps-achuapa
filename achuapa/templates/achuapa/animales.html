@@ -11,7 +11,7 @@
         <th>Número</th>
         <th>%</th>
         <th>cantidad</th>
-        <th>%</th>
+        <th>Cantidad/Familia</th>
     </tr>
  </thead>
     <tr>
@@ -21,13 +21,11 @@
         <td>{{totales.animales}}</td>
         <td>{{totales.porcentaje_animal}}</td>
     </tr>
-    {%for key, value in tabla.items%}
+    {%for fila in tabla%}
     <tr>
-        <td>{{key|unslugify}}</td>
-        <td>{{value.numero|floatformat}}</td>
-        <td>{{value.porcentaje_num|floatformat}}</td>
-        <td>{{value.animales|floatformat}}</td>
-        <td>{{value.porcentaje_animal|floatformat}}</td>
+        {%for celda in fila%}
+            <td>{{celda}}</td>
+        {%endfor%}
     </tr>
     {%endfor%}
 </table>
