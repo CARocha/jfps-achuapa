@@ -490,12 +490,15 @@ def animales(request):
         numero = query.distinct().count()
         producto = FincaProduccion.objects.filter(animales = animal)[0].producto
         porcentaje_num = saca_porcentajes(numero, totales['numero'], False)
-        animales = query.aggregate(cantidad = Sum('fincaproduccion__animales'),
+        animales = query.aggregate(cantidad = Sum('fincaproduccion__cantidad'),
                                    venta_libre = Sum('fincaproduccion__venta'),
                                    venta_organizada = Sum('fincaproduccion__venta_organizada'),
                                    consumo = Sum('fincaproduccion__consumo'),
                                    produccion = Sum('fincaproduccion__total_produccion'))
-        animal_familia = animales['cantidad']/float(numero) 
+        try:
+            animal_familia = animales['cantidad']/float(numero) 
+        except:
+            animal_familia = 0
         animal_familia = "%.2f" % animal_familia
         tabla.append([animal.nombre, numero, porcentaje_num,
                       animales['cantidad'], animal_familia])
