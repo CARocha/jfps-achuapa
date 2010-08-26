@@ -967,7 +967,7 @@ def agua(request):
         numero = query.count()
         resultados = query.aggregate(cantidad=Sum('agua__cantidad'))
         try:
-            prom = float(numero)/resultados['cantidad']
+            prom = resultados['cantidad']/float(numero)
         except:
             prom = 0
         fila = [choice[1], numero,
