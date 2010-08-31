@@ -583,7 +583,7 @@ def grafos_ingreso(request, tipo):
                 type=grafos.PIE_CHART_3D)
     elif tipo == 'maneja':
         for opcion in CHOICE_MANEJA:
-            data.append(consulta.filter(ingresofamiliar__quien_vendio=opcion[0]).count())
+            data.append(consulta.filter(ingresofamiliar__maneja_negocio=opcion[0]).count())
             legends.append(opcion[1])
         return grafos.make_graph(data, legends,
                 'Quien maneja negocio', return_json=True,
