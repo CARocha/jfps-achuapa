@@ -302,7 +302,8 @@ def fincas(request):
 
     
     return render_to_response('achuapa/fincas.html', 
-                              {'tabla':tabla, 'totales': totales},
+                              {'tabla':tabla, 'totales': totales,
+                              'num_familias': consulta.count()},
                               context_instance=RequestContext(request))
 
 @session_required
